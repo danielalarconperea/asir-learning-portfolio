@@ -4,7 +4,7 @@
 
 Base del ciclo: sistemas, redes, programación, bases de datos y lenguaje de marcas.
 
-<img src="https://skillicons.dev/icons?i=linux,bash,powershell,mysql,py,html,css,js,bootstrap&perline=9" alt="Stack 1ASIR">
+<img src="https://skillicons.dev/icons?i=linux,bash,powershell,mysql,py,html,css,js,bootstrap,vscode&perline=10" alt="Stack 1ASIR">
 
 </div>
 

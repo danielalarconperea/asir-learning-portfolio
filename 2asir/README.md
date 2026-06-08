@@ -4,7 +4,7 @@
 
 Administración de sistemas, servicios de red, seguridad, bases de datos y despliegue web.
 
-<img src="https://skillicons.dev/icons?i=linux,bash,powershell,docker,nginx,apache,mysql,sqlite,html,css,js,php,wordpress,git&perline=7" alt="Stack 2ASIR">
+<img src="https://skillicons.dev/icons?i=linux,bash,powershell,docker,nginx,mysql,sqlite,html,css,js,php,wordpress,git,vscode&perline=7" alt="Stack 2ASIR">
 
 </div>
 
@@ -19,16 +19,16 @@ Administración de sistemas, servicios de red, seguridad, bases de datos y despl
 | Despliegue web | [web-deployment](./web-deployment/) | HTML, CSS, JavaScript, PHP, MySQL, WordPress, Apache/Nginx y prácticas de implantación. |
 | Ciberseguridad | [cybersecurity](./cybersecurity/) | Apuntes y prácticas de seguridad. |
 
-## Lo más representativo
+## Áreas trabajadas
 
 - Administración de servicios Linux y automatización con scripts.
 - Configuración y documentación de servicios de red.
 - Seguridad de red con ACL, routing y escenarios en Packet Tracer.
 - SQL avanzado y administración de bases de datos.
-- Despliegue web con PHP, MySQL, WordPress, Apache/Nginx, HTML, CSS y JavaScript.
+- Despliegue web con HTML, CSS, JavaScript, PHP, MySQL, WordPress y servidores web.
 
 ## Proyecto final
 
-El proyecto principal del curso está destacado aparte para que se vea mejor:
+Proyecto destacado del curso:
 
 [Sentinel-IT](../projects/final-project/)

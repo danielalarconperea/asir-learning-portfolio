@@ -2,17 +2,19 @@
 
 # ASIR Learning Portfolio
 
-Portfolio técnico de ASIR: sistemas, redes, servicios, seguridad, bases de datos, scripting y despliegue web.
+Portfolio técnico de Administración de Sistemas Informáticos en Red.
 
-<img src="https://skillicons.dev/icons?i=linux,bash,powershell,docker,nginx,apache,mysql,sqlite,html,css,js,php,wordpress,py,git,github&perline=8" alt="Stack principal">
+Sistemas, redes, servicios, seguridad, bases de datos, scripting y despliegue web.
+
+<img src="https://skillicons.dev/icons?i=linux,bash,powershell,docker,nginx,mysql,sqlite,html,css,js,php,wordpress,py,git,github,vscode&perline=8" alt="Stack principal">
 
 </div>
 
-## Qué quiero enseñar aquí
+## Resumen
 
-Este repositorio recoge mi trabajo de Administración de Sistemas Informáticos en Red, ordenado para que se pueda ver rápido qué he tocado y en qué contexto.
+Repositorio central con prácticas, apuntes y proyectos desarrollados durante ASIR. El contenido está organizado por cursos y áreas técnicas para facilitar la navegación y mostrar de forma clara el trabajo realizado.
 
-La parte más importante está en segundo curso: administración de sistemas, servicios de red, seguridad, bases de datos, despliegue web, Docker, scripting y el proyecto final. AWS aparece porque lo usé en Sentinel-IT, pero no es el foco principal del portfolio.
+El bloque principal del portfolio corresponde a segundo curso, donde se agrupan administración de sistemas, servicios de red, seguridad, bases de datos, despliegue web, CSS, JavaScript, PHP, WordPress, Docker y scripting.
 
 ## Vista rápida
 
@@ -25,9 +27,9 @@ La parte más importante está en segundo curso: administración de sistemas, se
 
 ## 2ASIR
 
-<img src="https://skillicons.dev/icons?i=linux,bash,powershell,docker,nginx,apache,mysql,html,css,js,php,wordpress&perline=6" alt="Stack trabajado en 2ASIR">
+<img src="https://skillicons.dev/icons?i=linux,bash,powershell,docker,nginx,mysql,html,css,js,php,wordpress,git&perline=6" alt="Stack trabajado en 2ASIR">
 
-Segundo es donde está la parte más completa del portfolio: administración Linux, scripting, servicios, redes, seguridad, bases de datos y despliegue web.
+Segundo curso reúne la parte más completa del portfolio: administración Linux, scripting, servicios, redes, seguridad, bases de datos y despliegue web.
 
 | Área | Carpeta |
 | --- | --- |
@@ -35,7 +37,7 @@ Segundo es donde está la parte más completa del portfolio: administración Lin
 | Servicios de red | [network-services](./2asir/network-services/) |
 | Seguridad de red | [network-security](./2asir/network-security/) |
 | Bases de datos | [database-administration](./2asir/database-administration/) |
-| Despliegue web | [web-deployment](./2asir/web-deployment/) |
+| Despliegue web, CSS y JavaScript | [web-deployment](./2asir/web-deployment/) |
 | Ciberseguridad | [cybersecurity](./2asir/cybersecurity/) |
 
 ## Proyecto destacado
@@ -48,7 +50,7 @@ Segundo es donde está la parte más completa del portfolio: administración Lin
 
 SOC autónomo y distribuido montado sobre dos nodos Raspberry Pi. El sistema recoge telemetría desde un nodo expuesto, la envía por MQTT/mTLS a AWS IoT Core y la analiza desde un nodo coordinador con dashboard Flask, SQLite y apoyo de IA para triage de eventos.
 
-<img src="https://skillicons.dev/icons?i=raspberrypi,aws,docker,py,flask,sqlite,linux,bash&perline=8" alt="Stack de Sentinel-IT">
+<img src="https://skillicons.dev/icons?i=raspberrypi,linux,docker,py,flask,sqlite,aws,bash&perline=8" alt="Stack de Sentinel-IT">
 
 [Ver proyecto](./projects/final-project/)
 
@@ -69,6 +71,6 @@ asir-learning-portfolio/
 `-- python-learning-lab/
 ```
 
-## Nota
+## Tipo de contenido
 
-Hay material de distinto tipo: prácticas completas, apuntes, ejercicios de clase y pruebas de aprendizaje. La intención no es presentar todo como producto final, sino dejar el ciclo ordenado y enseñar mejor las áreas técnicas que he trabajado.
+El repositorio combina prácticas completas, apuntes, ejercicios de clase, laboratorios y proyecto final. No todo el contenido representa aplicaciones terminadas; está organizado como portfolio académico y técnico.
