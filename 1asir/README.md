@@ -2,15 +2,9 @@
 
 # 1ASIR
 
-Primer curso: bases de sistemas, redes, programación, bases de datos y marcado web.
+Base del ciclo: sistemas, redes, programación, bases de datos y lenguaje de marcas.
 
-<p>
-  <img src="https://img.shields.io/badge/SQL-4479A1?style=flat-square&logo=mysql&logoColor=white" alt="SQL">
-  <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=111111" alt="JavaScript">
-  <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" alt="HTML5">
-  <img src="https://img.shields.io/badge/Linux-222222?style=flat-square&logo=linux&logoColor=white" alt="Linux">
-</p>
+<img src="https://skillicons.dev/icons?i=linux,bash,powershell,mysql,py,html,css,js,bootstrap&perline=9" alt="Stack 1ASIR">
 
 </div>
 
@@ -27,4 +21,4 @@ Primer curso: bases de sistemas, redes, programación, bases de datos y marcado 
 
 ## Enfoque
 
-Esta parte reúne la base del ciclo: ejercicios de clase, prácticas y apuntes que sirven para entender lo que después se trabaja con más profundidad en segundo.
+Esta parte reúne la base de primero. Sirve para entender el punto de partida antes de la parte más completa de segundo.
