@@ -1,17 +1,16 @@
 # Python Learning Lab
 
-Laboratorio de aprendizaje de Python.
+Ejercicios y pruebas de Python.
 
-Este espacio conserva ejercicios, pruebas y apuntes. No esta pensado como proyecto finalizado, sino como registro de aprendizaje.
+Esta carpeta es mas de aprendizaje que de proyecto terminado. La uso para guardar ejercicios, apuntes y pruebas que he ido haciendo.
 
 | Carpeta | Contenido |
 | --- | --- |
-| [basic](./basic/) | Ejercicios basicos de Python. |
-| [intermediate](./intermediate/) | Ejercicios intermedios, modulos, ficheros, expresiones regulares y juegos sencillos. |
-| [backend-experiments](./backend-experiments/) | Pruebas con FastAPI y backend. |
-| [backend-notes](./backend-notes/) | Apuntes y copias de aprendizaje backend. |
+| [basic](./basic/) | Bases de Python y ejercicios sencillos. |
+| [intermediate](./intermediate/) | Ficheros, expresiones regulares, modulos, fechas y pequenos juegos. |
+| [backend-experiments](./backend-experiments/) | Pruebas con FastAPI. |
+| [backend-notes](./backend-notes/) | Apuntes y pruebas de backend. |
 
 ## Nota
 
-Las pruebas de backend se mantienen aqui como material de aprendizaje. No se destacan como proyecto principal del portfolio.
-
+No lo presento como una aplicacion terminada; es mi zona para practicar y repasar.

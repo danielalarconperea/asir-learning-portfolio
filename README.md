@@ -1,23 +1,23 @@
-# ASIR Learning Portfolio
+# Portfolio ASIR
 
-Repositorio organizado de practicas, apuntes, laboratorios y proyectos realizados durante el ciclo de Administracion de Sistemas Informaticos en Red.
+Repositorio donde voy guardando mis practicas, apuntes y proyectos de Administracion de Sistemas Informaticos en Red.
 
-El objetivo de este repo es que el contenido sea facil de navegar y que tambien funcione como portfolio tecnico: sistemas, redes, bases de datos, scripting, seguridad, servicios de red y despliegue web.
+Lo he separado por cursos y por areas para tenerlo todo mas limpio: sistemas, redes, bases de datos, scripting, seguridad, servicios de red, despliegue web y proyecto final.
 
-## Vista rapida
+## Contenido
 
-| Area | Contenido |
+| Seccion | Que hay dentro |
 | --- | --- |
-| [1ASIR](./1asir/) | Bases de SQL, JavaScript, Python, redes, sistemas y lenguaje de marcas. |
-| [2ASIR](./2asir/) | Administracion de sistemas, servicios de red, seguridad, BBDD, despliegue web y TFG. |
-| [Projects](./projects/) | Proyectos destacados y trabajos con mas valor de portfolio. |
-| [Python Learning Lab](./python-learning-lab/) | Ejercicios y pruebas de aprendizaje en Python. |
+| [1ASIR](./1asir/) | Practicas de primer curso: SQL, Python, JavaScript, redes, sistemas y lenguaje de marcas. |
+| [2ASIR](./2asir/) | Practicas de segundo curso: administracion de sistemas, servicios, seguridad, bases de datos y despliegue web. |
+| [Projects](./projects/) | Proyectos que quiero tener mas visibles. |
+| [Python Learning Lab](./python-learning-lab/) | Ejercicios y pruebas de Python que he ido haciendo para aprender. |
 
-## Proyectos destacados
+## Proyecto destacado
 
 | Proyecto | Estado | Tecnologias | Enlace |
 | --- | --- | --- | --- |
-| Final Project - Distributed IoT Security Architecture | En desarrollo | Raspberry Pi, AWS IoT Core, MQTT/TLS, Docker, Python | [Ver proyecto](./projects/final-project/) |
+| Final Project - Distributed IoT Security Architecture | En desarrollo | Raspberry Pi, AWS IoT Core, MQTT/TLS, Docker, Python | [Ver](./projects/final-project/) |
 
 ## Estructura
 
@@ -48,15 +48,8 @@ asir-learning-portfolio/
     +-- intermediate/
 ```
 
-## Criterio de organizacion
+## Notas
 
-- Los contenidos de clase se agrupan por curso y modulo.
-- Los proyectos con valor de portfolio viven en `projects/`.
-- El TFG se referencia desde `2asir/final-project/`, pero los archivos reales estan en `projects/final-project/` para evitar duplicados.
-- Los experimentos de Python y backend se mantienen como laboratorio de aprendizaje, sin presentarlos como producto terminado.
+El proyecto final esta en `projects/final-project`, y tambien aparece enlazado desde `2asir/final-project` porque forma parte del contenido de segundo.
 
-## Notas de limpieza
-
-Este repo evita subir entornos virtuales, caches y archivos generados como `env/`, `venv/`, `__pycache__/` y `*.pyc`.
-
-Los videos pesados se mantienen fuera de Git para que el repositorio sea mas ligero y facil de revisar.
+Las pruebas sueltas y cosas menos pulidas estan separadas para no mezclarlas con lo principal.

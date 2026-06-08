@@ -1,14 +1,13 @@
-# Projects
+# Proyectos
 
-Zona para destacar proyectos con mas valor de portfolio.
+Aqui dejo los proyectos que quiero tener mas visibles y mejor documentados.
 
-## Featured
+## Destacados
 
 | Proyecto | Descripcion | Tecnologias | Enlace |
 | --- | --- | --- | --- |
-| Final Project - Distributed IoT Security Architecture | Arquitectura de seguridad IoT distribuida entre nodos Raspberry Pi, AWS IoT Core y servicios desplegados con Docker. | Raspberry Pi, AWS IoT Core, MQTT/TLS, Docker, Python, Linux | [Abrir](./final-project/) |
+| Final Project - Distributed IoT Security Architecture | Proyecto final basado en dos nodos Raspberry Pi conectados mediante AWS IoT Core y comunicacion MQTT/TLS. | Raspberry Pi, AWS IoT Core, MQTT/TLS, Docker, Python, Linux | [Ver proyecto](./final-project/) |
 
-## Archive
+## Archivo
 
-La carpeta [archive](./archive/) guarda borradores, pruebas antiguas o material que no conviene mostrar como primera capa del portfolio, pero que se conserva por contexto.
-
+En [archive](./archive/) dejo pruebas antiguas, borradores y material que quiero conservar, pero que no forma parte de la portada principal.

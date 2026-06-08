@@ -1,20 +1,19 @@
 # 2ASIR
 
-Contenido de segundo curso organizado por modulos y areas profesionales.
+Practicas, apuntes y proyectos de segundo curso.
 
 | Carpeta | Contenido |
 | --- | --- |
-| [web-deployment](./web-deployment/) | Implantacion de aplicaciones web, PHP, MySQL y JavaScript. |
-| [systems-administration](./systems-administration/) | Administracion Linux, scripting, cron, permisos, almacenamiento y servicios. |
-| [database-administration](./database-administration/) | Administracion de bases de datos y practicas SQL avanzadas. |
-| [network-security](./network-security/) | ACL, OSPF, configuraciones de red y laboratorios de seguridad. |
-| [network-services](./network-services/) | DHCP, DNS, FTP, SSH, Apache, correo, impresion y video. |
-| [cybersecurity](./cybersecurity/) | Practicas y notas de ciberseguridad. |
-| [final-project](./final-project/) | Acceso al proyecto final destacado. |
+| [web-deployment](./web-deployment/) | Implantacion web, PHP, MySQL y JavaScript. |
+| [systems-administration](./systems-administration/) | Linux, scripting, permisos, procesos, cron, almacenamiento y servicios. |
+| [database-administration](./database-administration/) | Administracion de bases de datos y SQL avanzado. |
+| [network-security](./network-security/) | ACL, OSPF, Packet Tracer y configuraciones de seguridad. |
+| [network-services](./network-services/) | DHCP, DNS, FTP, SSH, Apache, correo, impresion y otros servicios. |
+| [cybersecurity](./cybersecurity/) | Practicas y apuntes de ciberseguridad. |
+| [final-project](./final-project/) | Enlace al proyecto final. |
 
 ## Proyecto final
 
-El proyecto final esta destacado dentro de `projects/final-project` para que tambien funcione como portfolio visual:
+El proyecto final lo tengo destacado aparte para que se vea mejor:
 
-[Abrir Final Project](../projects/final-project/)
-
+[Final Project - Distributed IoT Security Architecture](../projects/final-project/)

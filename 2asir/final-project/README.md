@@ -1,10 +1,7 @@
 # Final Project
 
-Esta carpeta actua como referencia desde el contenido de 2ASIR.
+Proyecto final de segundo curso.
 
-Los archivos reales del proyecto estan en:
+Lo tengo enlazado desde aqui porque forma parte de 2ASIR, pero lo dejo desarrollado en la zona de proyectos para que este mas visible:
 
 [../../projects/final-project](../../projects/final-project/)
-
-Asi el proyecto aparece dentro del recorrido academico de segundo, pero tambien queda destacado en la zona de proyectos del portfolio.
-

@@ -1,34 +1,34 @@
 # Final Project - Distributed IoT Security Architecture
 
-Proyecto final centrado en una arquitectura de seguridad IoT distribuida entre dos nodos Raspberry Pi y AWS IoT Core.
+Proyecto final sobre una arquitectura de seguridad IoT distribuida usando Raspberry Pi y AWS IoT Core.
 
 ## Resumen
 
-El sistema plantea dos nodos fisicos conectados mediante mensajeria segura:
+La idea principal es conectar dos nodos fisicos mediante mensajeria segura:
 
-- Raspberry Pi 4 como nodo protegido/sensor.
-- AWS IoT Core como capa central de comunicacion segura mediante MQTT/TLS.
-- Raspberry Pi 5 como nodo coordinador, con API, base de datos, dashboard y agente de respuesta.
+- Raspberry Pi 4 como nodo protegido.
+- AWS IoT Core como punto central de comunicacion MQTT/TLS.
+- Raspberry Pi 5 como nodo coordinador, con API, base de datos, dashboard y logica de respuesta.
 
-## Valor tecnico
+## Partes principales
 
-| Area | Trabajo realizado |
+| Area | Contenido |
 | --- | --- |
-| Infraestructura | Despliegue en Raspberry Pi, Docker y servicios Linux. |
-| Seguridad | Comunicacion MQTT/TLS, monitorizacion, auditoria y simulacion de ataque. |
-| Backend | API, gestion de eventos y base de datos. |
-| Documentacion | Guias de uso, despliegue, arquitectura y pruebas. |
+| Infraestructura | Raspberry Pi, Docker y servicios Linux. |
+| Seguridad | MQTT/TLS, monitorizacion, auditoria y simulacion de ataque. |
+| Backend | API, gestion de eventos, base de datos y dashboard. |
+| Documentacion | Arquitectura, despliegue, pruebas y guias de uso. |
 
 ## Estructura
 
 ```text
 final-project/
-├── docs/                  # Documentacion tecnica y guias
-├── PI-5/                  # Nodo coordinador Raspberry Pi 5
-├── pi4-felix/             # Nodo protegido Raspberry Pi 4
-├── docker-compose.yml     # Orquestacion del entorno
-├── simulador_ataque.py    # Simulacion de ataque para pruebas
-└── CHANGELOG.md
++-- docs/                  # Documentacion tecnica
++-- PI-5/                  # Nodo coordinador
++-- pi4-felix/             # Nodo protegido
++-- docker-compose.yml
++-- simulador_ataque.py
++-- CHANGELOG.md
 ```
 
 ## Documentacion principal
@@ -44,5 +44,4 @@ final-project/
 
 ## Estado
 
-Proyecto en desarrollo y usado como trabajo final. La carpeta conserva codigo, documentacion, pruebas y material de despliegue.
-
+Proyecto en desarrollo. Aqui voy dejando el codigo, la documentacion y las pruebas relacionadas con el TFG.

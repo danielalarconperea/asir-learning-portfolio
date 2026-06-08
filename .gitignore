@@ -22,7 +22,7 @@ Thumbs.db
 *.tmp
 *.bak
 
-# Heavy media should live outside Git unless it is really needed.
+# Videos y archivos pesados
 *.mp4
 *.mov
 *.avi

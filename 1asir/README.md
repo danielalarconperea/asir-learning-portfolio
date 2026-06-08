@@ -1,17 +1,16 @@
 # 1ASIR
 
-Contenido de primer curso organizado por areas tecnicas.
+Practicas y apuntes de primer curso.
 
 | Carpeta | Contenido |
 | --- | --- |
-| [databases-sql](./databases-sql/) | Ejercicios y practicas de SQL. |
-| [markup-languages](./markup-languages/) | Lenguaje de marcas, HTML, CSS y contenidos relacionados. |
-| [networks](./networks/) | Practicas de redes y configuraciones. |
-| [programming-python](./programming-python/) | Ejercicios de programacion en Python. |
-| [systems](./systems/) | Sistemas, Bash, PowerShell y comandos utiles. |
-| [web-javascript](./web-javascript/) | Practicas de JavaScript y DOM. |
+| [databases-sql](./databases-sql/) | SQL, consultas, practicas y examenes. |
+| [markup-languages](./markup-languages/) | HTML, CSS, Bootstrap y lenguaje de marcas. |
+| [networks](./networks/) | Ejercicios de redes y configuraciones. |
+| [programming-python](./programming-python/) | Primeros ejercicios de Python. |
+| [systems](./systems/) | Bash, PowerShell, comandos y apuntes de sistemas. |
+| [web-javascript](./web-javascript/) | JavaScript, DOM y practicas web. |
 
-## Objetivo
+## Resumen
 
-Guardar el material de aprendizaje de primer curso de forma navegable, separando teoria, practicas y ejercicios por modulo.
-
+Esta parte es sobre todo material de base: ejercicios de clase, practicas, apuntes y pruebas que fui haciendo durante primero.
