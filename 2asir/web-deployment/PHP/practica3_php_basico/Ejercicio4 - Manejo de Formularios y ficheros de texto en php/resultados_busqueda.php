@@ -65,7 +65,6 @@
                 fclose($file); 
                 echo "</pre>";
 
-                // 5. Si el contador sigue en 0, no hubo coincidencias
                 if ($encontrados == 0) {
                     echo "<p>No se encontraron contactos que coincidan con '$termino'.</p>";
                 }

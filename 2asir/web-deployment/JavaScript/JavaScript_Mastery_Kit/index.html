@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Mastery Kit | Consola Interactiva</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0d1117;
+            --bg-card: #161b22;
+            --border: #30363d;
+            --text: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent-green: #3fb950;
+            --accent-blue: #58a6ff;
+            --accent-purple: #a371f7;
+            --accent-yellow: #d29922;
+            --accent-red: #f85149;
+            --glow: rgba(88, 166, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(63, 185, 80, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(88, 166, 255, 0.1) 0%, transparent 50%);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--text);
+            box-shadow: 0 0 20px var(--glow);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-color: transparent;
+            color: white;
+        }
+
+        .console-window {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .console-header {
+            background: linear-gradient(135deg, #1f2937, #111827);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red {
+            background: var(--accent-red);
+        }
+
+        .dot.yellow {
+            background: var(--accent-yellow);
+        }
+
+        .dot.green {
+            background: var(--accent-green);
+        }
+
+        .console-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        #console-output {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            padding: 1.5rem;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .log {
+            color: var(--text);
+        }
+
+        .error {
+            color: var(--accent-red);
+        }
+
+        .info {
+            color: var(--accent-blue);
+        }
+
+        .separator {
+            color: var(--accent-purple);
+            font-weight: bold;
+        }
+
+        .run-btn {
+            display: block;
+            margin: 2rem auto 0;
+            background: linear-gradient(135deg, var(--accent-green), #2ea043);
+            border: none;
+            color: white;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .run-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(63, 185, 80, 0.4);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>🚀 JavaScript Mastery Kit</h1>
+        <p>Selecciona un módulo y pulsa "Ejecutar" para ver la salida en consola.</p>
+    </header>
+    <div class="tabs">
+        <button class="tab-btn active" data-script="1">01. Fundamentos</button>
+        <button class="tab-btn" data-script="2">02. Control</button>
+        <button class="tab-btn" data-script="3">03. Funciones</button>
+        <button class="tab-btn" data-script="4">04. Avanzado</button>
+        <button class="tab-btn" data-script="5">05. Sistema</button>
+        <button class="tab-btn" data-script="6">06. DOM</button>
+        <button class="tab-btn" data-script="7">07. Formularios</button>
+        <button class="tab-btn" data-script="8">08. Strings</button>
+        <button class="tab-btn" data-script="9">09. Select</button>
+        <button class="tab-btn" data-script="10">10. Radio/Check</button>
+    </div>
+    <div class="console-window">
+        <div class="console-header">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="console-title" id="console-title">01_Fundamentos.js</span>
+        </div>
+        <div id="console-output"><span class="info">👋 Pulsa "Ejecutar Script" para ver la salida aquí.</span></div>
+    </div>
+    <button class="run-btn" id="run-btn">▶ Ejecutar Script</button>
+    <footer>
+        <p>Hecho con ❤️ para el curso de JavaScript | 1ASIR / 2ASIR</p>
+    </footer>
+
+    <script>
+        const consoleOutput = document.getElementById('console-output');
+        const consoleTitle = document.getElementById('console-title');
+        const runBtn = document.getElementById('run-btn');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        let currentScript = 1;
+        const titles = { 1: '01_Fundamentos.js', 2: '02_Estructuras_Control.js', 3: '03_Funciones_Modulos.js', 4: '04_Logica_Avanzada.js', 5: '05_Sistema_Complejo.js', 6: '06_DOM_Basico.js', 7: '07_Formularios_Eventos.js', 8: '08_Strings_Avanzado.js', 9: '09_Select_Options.js', 10: '10_Radio_Checkbox.js' };
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentScript = parseInt(btn.dataset.script);
+                consoleTitle.textContent = titles[currentScript];
+                consoleOutput.innerHTML = '<span class="info">👋 Pulsa "Ejecutar Script" para ver la salida aquí.</span>';
+            });
+        });
+
+        function log(msg) {
+            const isSeparator = String(msg).includes('---');
+            consoleOutput.innerHTML += `<span class="${isSeparator ? 'separator' : 'log'}">${escapeHtml(String(msg))}</span>\n`;
+        }
+        function logError(msg) { consoleOutput.innerHTML += `<span class="error">${escapeHtml(String(msg))}</span>\n`; }
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
+        runBtn.addEventListener('click', () => {
+            consoleOutput.innerHTML = '';
+            try {
+                if (currentScript === 1) script1();
+                else if (currentScript === 2) script2();
+                else if (currentScript === 3) script3();
+                else if (currentScript === 4) script4();
+                else if (currentScript === 5) script5();
+                else if (currentScript === 6) script6();
+                else if (currentScript === 7) script7();
+                else if (currentScript === 8) script8();
+                else if (currentScript === 9) script9();
+                else if (currentScript === 10) script10();
+                consoleOutput.innerHTML += `\n<span class="info">✅ Script ejecutado correctamente.</span>`;
+            } catch (e) { logError('Error: ' + e.message); }
+        });
+
+        // ============ SCRIPT 1: FUNDAMENTOS ============
+        function script1() {
+            log("-----------------------------------------");
+            log(" BIENVENIDO A LOS FUNDAMENTOS DE JS ");
+            log("-----------------------------------------");
+            const nombreCurso = "1ASIR / 2ASIR JavaScript";
+            let estudianteActual = "Estudiante Iniciado";
+            let nivelProgreso = 0;
+            log("Curso: " + nombreCurso);
+            log("Estudiante: " + estudianteActual);
+            estudianteActual = "Estudiante Avanzando";
+            nivelProgreso = 10;
+            log("Nuevo estado: " + estudianteActual + " - Nivel: " + nivelProgreso);
+            let texto = "Hola Mundo";
+            let numeroEntero = 42;
+            let esDivertido = true;
+            let valorDesconocido;
+            log("\n--- Tipos de Datos ---");
+            log("Tipo de 'texto': " + typeof texto);
+            log("Tipo de 'numeroEntero': " + typeof numeroEntero);
+            log("Tipo de 'esDivertido': " + typeof esDivertido);
+            log("Tipo de 'valorDesconocido': " + typeof valorDesconocido);
+            log("\n--- Operaciones Matemáticas ---");
+            log("10 + 5 = " + (10 + 5));
+            log("10 % 3 = " + (10 % 3) + " (Resto)");
+            let puntos = 100;
+            puntos += 50;
+            log("Puntos acumulados: " + puntos);
+            log("\n--- Mensaje Final ---");
+            log(`El usuario ${estudianteActual} tiene ${puntos} puntos y promedia ${puntos / 10} por nivel.`);
+            log("\n[!] Has completado el Nivel 01. ¡Pasa al siguiente script!");
+        }
+
+        // ============ SCRIPT 2: ESTRUCTURAS DE CONTROL ============
+        function script2() {
+            log("-----------------------------------------");
+            log(" CONTROLANDO EL FLUJO DEL PROGRAMA ");
+            log("-----------------------------------------");
+            let notaExamen = 7.5;
+            let asistencia = 80;
+            log(`\n--- Evaluando Alumno (Nota: ${notaExamen}, Asistencia: ${asistencia}%) ---`);
+            if (notaExamen >= 5 && asistencia >= 80) { log("Resultado: APROBADO ✅"); }
+            else if (notaExamen >= 5 && asistencia < 80) { log("Resultado: SUSPENDIDO por Asistencia ❌"); }
+            else { log("Resultado: SUSPENDIDO por Nota ❌"); }
+            let numero = 5;
+            let textoNumero = "5";
+            log("\n--- Comparación Estricta vs Laxa ---");
+            if (numero == textoNumero) { log("Con '==': Son iguales (JS convirtió el texto a número)."); }
+            if (numero === textoNumero) { log("Con '===': Son iguales."); } else { log("Con '===': NO son iguales (Diferente tipo). ¡MEJOR PRÁCTICA!"); }
+            let diaSemana = 3;
+            log("\n--- Switch Case ---");
+            switch (diaSemana) {
+                case 1: log("Es Lunes, ánimo."); break;
+                case 2: case 3: case 4: log("Es día laborable (Martes-Jueves)."); break;
+                case 5: log("¡Es Viernes!"); break;
+                default: log("Es fin de semana 🎉");
+            }
+            log("\n--- Bucle For (Contando hasta 5) ---");
+            for (let i = 1; i <= 5; i++) { log(`Iteración número: ${i}`); }
+            log("\n--- Bucle While (Cuenta regresiva) ---");
+            let contador = 3;
+            while (contador > 0) { log(`Despegue en T-minus: ${contador}...`); contador--; }
+            log("¡DESPEGUE! 🚀");
+            log("\n--- Break y Continue ---");
+            for (let i = 1; i <= 10; i++) {
+                if (i % 2 !== 0) continue;
+                log(`Encontrado par: ${i}`);
+                if (i === 6) { log("Paramos en 6 (break)."); break; }
+            }
+        }
+
+        // ============ SCRIPT 3: FUNCIONES ============
+        function script3() {
+            log("-----------------------------------------");
+            log(" FUNCIONES Y MODULARIDAD ");
+            log("-----------------------------------------");
+            function saludar(nombre) { log(`Hola, ${nombre}! Bienvenido al curso.`); }
+            log("\n--- Función Simple ---");
+            saludar("Estudiante");
+            saludar("Profesor");
+            function sumar(a, b) { return a + b; }
+            log("\n--- Función con Return ---");
+            let resultado = sumar(10, 5);
+            log(`La suma de 10 + 5 es: ${resultado}`);
+            log(`El doble de la suma es: ${sumar(10, 5) * 2}`);
+            const multiplicar = (a, b) => a * b;
+            const dividir = (a, b) => a / b;
+            log("\n--- Funciones Flecha ---");
+            log("Multiplicar 5 * 5: " + multiplicar(5, 5));
+            log("Dividir 10 / 2: " + dividir(10, 2));
+            let variableGlobal = "Soy visible en todo el archivo";
+            function pruebaScope() {
+                let variableLocal = "Solo soy visible DENTRO de esta función";
+                log("\n--- Dentro de la función ---");
+                log(variableGlobal);
+                log(variableLocal);
+            }
+            pruebaScope();
+            log("\n--- Fuera de la función ---");
+            log(variableGlobal);
+            function procesarUsuario(nombre, callback) { log(`Procesando a ${nombre}...`); callback(); }
+            log("\n--- Callbacks ---");
+            procesarUsuario("Ana", () => { log("¡Callback ejecutado! El usuario ha sido procesado."); });
+        }
+
+        // ============ SCRIPT 4: LÓGICA AVANZADA ============
+        function script4() {
+            log("-----------------------------------------");
+            log(" LÓGICA AVANZADA: DATOS COMPLEJOS ");
+            log("-----------------------------------------");
+            let estudiantes = ["Ana", "Carlos", "Beatriz"];
+            log(`\n--- Array Inicial: ${estudiantes} ---`);
+            estudiantes.push("David");
+            log("Después de push('David'): " + estudiantes);
+            log("\n--- Iterando con forEach ---");
+            estudiantes.forEach((nombre, indice) => { log(`${indice + 1}. ${nombre}`); });
+            log("\n--- Método .map() (Transformar) ---");
+            const correos = estudiantes.map(nombre => `${nombre.toLowerCase()}@escuela.com`);
+            log(correos.join(', '));
+            log("\n--- Método .filter() (Filtrar) ---");
+            const nombresLargos = estudiantes.filter(nombre => nombre.length > 4);
+            log("Nombres con más de 4 letras: " + nombresLargos);
+            const alumno = {
+                nombre: "Ana", edad: 21, activo: true, notas: [8, 9, 7],
+                saludar: function () { return `Hola, soy ${this.nombre} y tengo ${this.edad} años.`; },
+                calcularPromedio: function () { let suma = 0; this.notas.forEach(nota => suma += nota); return suma / this.notas.length; }
+            };
+            log("\n--- Objetos ---");
+            log(alumno.saludar());
+            log(`Promedio de notas: ${alumno.calcularPromedio()}`);
+            log(`¿Está activo?: ${alumno.activo ? "SÍ" : "NO"}`);
+            log("\n--- Manejo de Errores ---");
+            try { let resultado = funcionQueNoExiste(); log(resultado); }
+            catch (error) { logError("¡ERROR CAPTURADO! 🛡️"); logError("Mensaje del error: " + error.message); }
+            finally { log("Bloque 'finally' ejecutado. Limpiando recursos..."); }
+            log("El programa continúa ejecutándose correctamente ✅");
+        }
+
+        // ============ SCRIPT 5: SISTEMA COMPLEJO ============
+        function script5() {
+            log("-----------------------------------------");
+            log(" SISTEMA DE GESTIÓN ESCOLAR v1.0 ");
+            log("-----------------------------------------");
+            class Estudiante {
+                constructor(nombre, id) { this.nombre = nombre; this.id = id; this.notas = []; }
+                agregarNota(nota) {
+                    if (nota < 0 || nota > 10) { logError(`ERROR: La nota ${nota} no es válida (0-10).`); return; }
+                    this.notas.push(nota);
+                    log(`Nota ${nota} añadida a ${this.nombre}.`);
+                }
+                calcularPromedio() {
+                    if (this.notas.length === 0) return 0;
+                    const suma = this.notas.reduce((total, actual) => total + actual, 0);
+                    return (suma / this.notas.length).toFixed(2);
+                }
+                mostrarEstado() {
+                    const promedio = this.calcularPromedio();
+                    const estado = promedio >= 5 ? "APROBADO ✅" : "SUSPENDIDO ❌";
+                    return `${this.nombre} (ID: ${this.id}) - Promedio: ${promedio} - ${estado}`;
+                }
+            }
+            class Escuela {
+                constructor(nombre) { this.nombre = nombre; this.estudiantes = []; }
+                matricular(estudiante) { this.estudiantes.push(estudiante); log(`Estudiante ${estudiante.nombre} matriculado en ${this.nombre}.`); }
+                mostrarTodos() { log(`\n--- Listado de ${this.nombre} ---`); this.estudiantes.forEach(est => { log(est.mostrarEstado()); }); }
+                obtenerMejorEstudiante() {
+                    if (this.estudiantes.length === 0) return null;
+                    const ordenados = [...this.estudiantes].sort((a, b) => b.calcularPromedio() - a.calcularPromedio());
+                    return ordenados[0];
+                }
+            }
+            const miEscuela = new Escuela("Instituto Tech");
+            const ana = new Estudiante("Ana García", 101);
+            const carlos = new Estudiante("Carlos Pérez", 102);
+            const beatriz = new Estudiante("Beatriz López", 103);
+            miEscuela.matricular(ana);
+            miEscuela.matricular(carlos);
+            miEscuela.matricular(beatriz);
+            log("\n--- Añadiendo Notas ---");
+            ana.agregarNota(9.5); ana.agregarNota(8.0);
+            carlos.agregarNota(4.5); carlos.agregarNota(5.0);
+            beatriz.agregarNota(10); beatriz.agregarNota(9.8); beatriz.agregarNota(12);
+            miEscuela.mostrarTodos();
+            log("\n--- Cuadro de Honor ---");
+            const mejor = miEscuela.obtenerMejorEstudiante();
+            if (mejor) { log(`🏆 El mejor estudiante es: ${mejor.nombre} con un promedio de ${mejor.calcularPromedio()}`); }
+            log("\n[!] Sistema finalizado correctamente.");
+        }
+
+        // ============ SCRIPT 6: DOM BÁSICO ============
+        function script6() {
+            log("-----------------------------------------");
+            log(" DOM: MANIPULANDO LA PÁGINA WEB ");
+            log("-----------------------------------------");
+            log("\n--- Seleccionar Elementos ---");
+            const elementoSimulado = { id: "miDiv", innerHTML: "Hola Mundo" };
+            log("Elemento seleccionado: " + elementoSimulado.id);
+            log("Contenido actual: " + elementoSimulado.innerHTML);
+            log("\n--- Modificar Contenido ---");
+            let contenidoConHTML = "<strong>Texto en negrita</strong>";
+            log("textContent mostraría: " + contenidoConHTML + " (literal)");
+            log("innerHTML interpretaría las etiquetas y mostraría: Texto en negrita");
+            log("\n--- Modificar Estilos con .style ---");
+            const estilosEjemplo = { backgroundColor: "blue", fontFamily: "Arial", color: "white" };
+            log("Estilos que aplicaríamos:");
+            for (let prop in estilosEjemplo) { log(`  .style.${prop} = \"${estilosEjemplo[prop]}\"`); }
+            log("\n--- Seleccionar Múltiples Elementos ---");
+            const radiosSimulados = [{ value: "rojo", checked: false }, { value: "verde", checked: true }, { value: "azul", checked: false }];
+            log("Iterando sobre elementos con name='color':");
+            radiosSimulados.forEach((radio, i) => { const estado = radio.checked ? "✅ SELECCIONADO" : "⬜"; log(`  [${i}] Valor: ${radio.value} ${estado}`); });
+            log("\n[!] getElementById devuelve UN elemento, getElementsByName devuelve VARIOS.");
+        }
+
+        // ============ SCRIPT 7: FORMULARIOS Y EVENTOS ============
+        function script7() {
+            log("-----------------------------------------");
+            log(" FORMULARIOS Y EVENTOS ");
+            log("-----------------------------------------");
+            log("\n--- Acceder a Valores de Formulario ---");
+            const formularioSimulado = { nombre: { value: "Juan" }, edad: { value: "25" }, telefono: { value: "612345678" } };
+            log("Valores del formulario:");
+            log("  Nombre: " + formularioSimulado.nombre.value);
+            log("  Edad: " + formularioSimulado.edad.value);
+            log("  Teléfono: " + formularioSimulado.telefono.value);
+            log("\n--- Conversión de Tipos ---");
+            let edadTexto = "25";
+            let edadNumero = parseInt(edadTexto);
+            let precioTexto = "19.99";
+            let precioNumero = parseFloat(precioTexto);
+            log("Tipo de '25': " + typeof edadTexto);
+            log("Tipo de parseInt('25'): " + typeof edadNumero);
+            log("Tipo de parseFloat('19.99'): " + typeof precioNumero);
+            let base = parseFloat("10");
+            let altura = parseFloat("5");
+            let area = (base * altura) / 2;
+            log(`\nÁrea del triángulo (base=${base}, altura=${altura}): ${area}`);
+            log("\n--- Eventos Comunes ---");
+            const eventosComunes = { onclick: "CLIC (botones)", onchange: "CAMBIAR un valor", onsubmit: "ENVIAR formulario" };
+            log("Eventos más usados:");
+            for (let ev in eventosComunes) { log(`  ${ev}: ${eventosComunes[ev]}`); }
+            log("\n--- Calculadora Simple ---");
+            function calcularSuma(a, b) { let n1 = parseFloat(a); let n2 = parseFloat(b); if (isNaN(n1) || isNaN(n2)) return "Error: Introduce números válidos"; return n1 + n2; }
+            log("calcularSuma('10', '5') = " + calcularSuma("10", "5"));
+            log("calcularSuma('abc', '5') = " + calcularSuma("abc", "5"));
+            log("\n[!] SIEMPRE convierte con parseInt/parseFloat antes de calcular.");
+        }
+
+        // ============ SCRIPT 8: STRINGS AVANZADO ============
+        function script8() {
+            log("-----------------------------------------");
+            log(" STRINGS: MANIPULACIÓN DE TEXTO ");
+            log("-----------------------------------------");
+            log("\n--- Longitud de un String ---");
+            let mensaje = "Hola Mundo";
+            log(`Texto: \"${mensaje}\"`); log(`Longitud (.length): ${mensaje.length}`);
+            log("\n--- Buscar en un String ---");
+            let frase = "El perro se llama TOR";
+            log(`Frase: \"${frase}\"`); log(`indexOf('casa') = ${frase.indexOf("casa")} (no encontrado)`); log(`indexOf('perro') = ${frase.indexOf("perro")} (empieza en posición 3)`);
+            log(`includes('TOR') = ${frase.includes("TOR")}`); log(`includes('gato') = ${frase.includes("gato")}`);
+            log("\n--- Acceder a Caracteres ---");
+            let palabra = "JavaScript"; log(`Palabra: \"${palabra}\"`); log(`charAt(0) = '${palabra.charAt(0)}'`); log(`[palabra.length - 1] = '${palabra[palabra.length - 1]}'`);
+            log("\n--- Mayúsculas y Minúsculas ---");
+            let texto = "HoLa MuNdO"; log(`Original: \"${texto}\"`); log(`toUpperCase(): \"${texto.toUpperCase()}\"`); log(`toLowerCase(): \"${texto.toLowerCase()}\"`);
+            log("\n--- Extraer Subcadenas ---");
+            let cadena = "Hola, ¡mundo!"; log(`Cadena: \"${cadena}\"`); log(`slice(0, 4) = \"${cadena.slice(0, 4)}\"`); log(`slice(-6) = \"${cadena.slice(-6)}\"`);
+            log("\n--- Reemplazar Texto ---");
+            let saludo = "Hola, mundo"; log(`Original: \"${saludo}\"`); log(`replace('mundo', 'universo') = \"${saludo.replace("mundo", "universo")}\"`);
+            log("\n--- Dividir en Array ---");
+            let listaCSV = "manzana,pera,naranja"; let frutas = listaCSV.split(","); log(`CSV: \"${listaCSV}\"`); log("Resultado de split(','):"); frutas.forEach((f, i) => log(`  [${i}] ${f}`));
+            log("\n[!] Los strings son INMUTABLES. Los métodos devuelven NUEVOS strings.");
+        }
+
+        // ============ SCRIPT 9: SELECT Y OPTIONS ============
+        function script9() {
+            log("-----------------------------------------");
+            log(" SELECT Y OPTIONS ");
+            log("-----------------------------------------");
+            const selectSimulado = { selectedIndex: 1, options: [{ text: "Móvil", value: "1000" }, { text: "PC", value: "1200" }, { text: "Pantalla", value: "100" }, { text: "Teclado", value: "50" }] };
+            log("\n--- selectedIndex ---");
+            let indice = selectSimulado.selectedIndex; log("Índice seleccionado: " + indice);
+            log("\n--- Acceder a options[indice] ---");
+            let opcionActual = selectSimulado.options[indice]; log("Texto visible (.text): " + opcionActual.text); log("Valor interno (.value): " + opcionActual.value);
+            log("\n--- Listar Todas las Opciones ---"); log("Opciones disponibles:");
+            for (let i = 0; i < selectSimulado.options.length; i++) { let opt = selectSimulado.options[i]; let marcador = (i === selectSimulado.selectedIndex) ? " ✅" : ""; log(`  [${i}] ${opt.text} (valor: ${opt.value})${marcador}`); }
+            log("\n--- Ejemplo: Selector de Productos ---");
+            function obtenerPrecio(sel) { let idx = sel.selectedIndex; return { nombre: sel.options[idx].text, precio: parseFloat(sel.options[idx].value) }; }
+            let resultado = obtenerPrecio(selectSimulado); log(`Producto: ${resultado.nombre}`); log(`Precio: ${resultado.precio}€`);
+            log("\n[!] El evento 'onchange' se dispara cada vez que el usuario cambia la selección.");
+        }
+
+        // ============ SCRIPT 10: RADIO Y CHECKBOX ============
+        function script10() {
+            log("-----------------------------------------");
+            log(" RADIO BUTTONS Y CHECKBOXES ");
+            log("-----------------------------------------");
+            log("\n--- Radio vs Checkbox ---"); log("RADIO: Solo UNA opción puede estar seleccionada (mismo 'name')"); log("CHECKBOX: Múltiples opciones pueden estar marcadas");
+            const radiosMotor = [{ value: "0", checked: false, text: "Gasolina" }, { value: "1500", checked: true, text: "Diésel (+1500€)" }, { value: "3000", checked: false, text: "Híbrido (+3000€)" }];
+            log("\n--- Radio Buttons (Tipo de Motor) ---"); radiosMotor.forEach(radio => { let estado = radio.checked ? "🔘" : "⚪"; log(`  ${estado} ${radio.text}`); });
+            function obtenerRadioSeleccionado(radios) { for (let i = 0; i < radios.length; i++) { if (radios[i].checked) return radios[i]; } return null; }
+            let motorSel = obtenerRadioSeleccionado(radiosMotor); log(`\nMotor seleccionado: ${motorSel.text}`); log(`Valor (precio extra): ${motorSel.value}€`);
+            const checkboxesExtras = [{ value: "750", checked: false, text: "Metalizada (+750€)" }, { value: "200", checked: true, text: "Llantas (+200€)" }, { value: "800", checked: true, text: "Climatizador (+800€)" }, { value: "340", checked: false, text: "GPS (+340€)" }];
+            log("\n--- Checkboxes (Extras) ---"); checkboxesExtras.forEach(cb => { let estado = cb.checked ? "☑️" : "⬜"; log(`  ${estado} ${cb.text}`); });
+            function sumarCheckboxes(cbs) { let total = 0; for (let i = 0; i < cbs.length; i++) { if (cbs[i].checked) total += parseInt(cbs[i].value); } return total; }
+            let totalExtras = sumarCheckboxes(checkboxesExtras); log(`\nTotal extras seleccionados: ${totalExtras}€`);
+            log("\n--- Ejemplo: Configurador de PC ---");
+            const PRECIO_BASE = 500; const configuracion = { procesador: [{ value: 0, checked: true, text: "i3 (base)" }, { value: 100, checked: false, text: "i5 (+100€)" }], extras: [{ value: 50, checked: true, text: "SSD (+50€)" }, { value: 30, checked: true, text: "Teclado (+30€)" }] };
+            function calcularPC(config) { let total = PRECIO_BASE; let proc = obtenerRadioSeleccionado(config.procesador); total += parseInt(proc.value); total += sumarCheckboxes(config.extras); return total; }
+            log(`💰 PRECIO TOTAL: ${calcularPC(configuracion)}€`);
+            log("\n[!] Los radios con el mismo 'name' forman un grupo exclusivo.");
+        }
+    </script>
+</body>
+
+</html>

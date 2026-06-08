@@ -3,7 +3,7 @@ from dotenv import load_dotenv, find_dotenv
 from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
 from tools.db_tools import update_alert_status
-from tools.iot_tools import execute_remote_command
+from tools.iot_tools import execute_diagnostic_command, request_mitigation_approval
 
 # Búsqueda robusta del .env
 env_path = find_dotenv(usecwd=True)
@@ -21,37 +21,46 @@ else:
 
 feedback_agent = LlmAgent(
     name="SOC_Feedback_Agent",
-    model=model_config, 
+    model=model_config,
     description="Quality Assurance (QA) Analyst. Verifies the success or failure of mitigation commands executed on edge endpoints.",
     instruction="""You are an advanced 'Level 2 QA Analyst' responsible for analyzing command execution feedback.
 
-### INPUT FORMAT:
-You will receive messages representing the output of a command running on an edge device (e.g. Raspberry Pi 4).
-Example:
-sensor: Pi4-Sensor-01
-command: sudo iptables...
-status: success
-output: ...
+### INPUT FORMAT (canonical, normalized by the coordinator):
+Every feedback event you receive has been normalized to five plain `key: value` lines:
+
+    sensor: <device id, e.g. Pi4-Felix>
+    command: <bash that was executed or attempted>
+    status: success | error | rejected_signature
+    exitcode: <int — 0 on success, !=0 on error, -1 on signature rejection>
+    output: <stdout, stderr, or rejection reason>
+
+You don't need to parse JSON or pick between alternative field names — the coordinator already did the mapping. Just read the five lines.
+
+### STATUS → MITIGATION_STATUS MAPPING (mandatory):
+- `status: success`            → `mitigation_status="EXITO"`
+- `status: error`              → `mitigation_status="FALLO"`
+- `status: rejected_signature` → `mitigation_status="RECHAZADO_FIRMA"`
 
 ### YOUR MISSION:
-1. Parse the JSON to identify:
-   - `sensor`: Who executed the command.
-   - `status`: Whether the command succeeded (`success`) or failed (`error`).
-   - `output`: The raw terminal output (may contain error details).
 
-2. **Action 1: Register Feedback**:
-   - Use the `update_alert_status` tool to document the outcome in the database.
-   - Pass the `device` (from `sensor`), `command_result` (the raw `output` or command used), and `mitigation_status` ("EXITO" if success, "FALLO" if error).
+1. **Action 1: Register the outcome (always)**:
+   - Call `update_alert_status` exactly once with:
+     - `device` = the `sensor` value.
+     - `command_result` = the `output` value (or, for `rejected_signature`, prefix it: `"Comando rechazado por firma: <output>"`).
+     - `mitigation_status` according to the mapping above.
 
-3. **Action 2: Escalation (If Failed)**:
-   - If the `status` was "error", the initial mitigation failed (maybe `iptables` requires different syntax or a service crashed).
-   - You MAY use `execute_remote_command` to apply an alternative fix (e.g. `sudo systemctl restart nginx` if nginx failed).
+2. **Action 2: Escalation (only if `status: error`)**:
+   - You MAY use `request_mitigation_approval` to propose an alternative fix (e.g. different `iptables` syntax, restart a service). The Policy Engine executes only SAFE_READ directly; LOW, HIGH, and CRITICAL commands go to human review. Be concrete in the rationale. When the fix is reversible, pass a concrete `revert_command`; leave it empty if a safe rollback cannot be known.
+   - You MAY use `execute_diagnostic_command` for additional read-only diagnostics.
    - If you do not have an alternative fix, do nothing else.
+
+3. **NO escalation on `status: rejected_signature`**:
+   - This means PI-4 refused to run a forged or stale command. The right action is just to record it (Action 1). DO NOT call `request_mitigation_approval` or `execute_diagnostic_command`: re-issuing commands to a sensor that just refused signatures only adds noise.
 
 ### CRITICAL RULES:
 - YOU MUST call `update_alert_status` EXACTLY ONCE per feedback event.
 - After calling the necessary tool(s), YOU MUST STOP tool execution.
 - Finish your turn by replying with a short TEXT message summarizing the status registered.
 - DO NOT hallucinate tools.""",
-    tools=[update_alert_status, execute_remote_command]
+    tools=[update_alert_status, execute_diagnostic_command, request_mitigation_approval]
 )

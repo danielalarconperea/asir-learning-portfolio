@@ -1,0 +1,280 @@
+<!-- COPIA DESDE AQUÍ HACIA ABAJO EN TU BLOQUE "HTML PERSONALIZADO" PARA LA PÁGINA "BLOG" -->
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap');
+
+    :root {
+        --color-primary: #F97316;
+        --color-secondary: #374151;
+        --color-dark: #1F2937;
+        --color-text: #4B5563;
+        --font-main: 'Inter', sans-serif;
+        --font-headings: 'Montserrat', sans-serif;
+    }
+
+    #rs-blog-container {
+        font-family: var(--font-main);
+        color: var(--color-text);
+        line-height: 1.6;
+        /* Fondo removido para integración con WordPress */
+    }
+
+    #rs-blog-container h1, 
+    #rs-blog-container h2, 
+    #rs-blog-container h3 {
+        font-family: var(--font-headings);
+        color: var(--color-secondary);
+    }
+
+    /* Header Section */
+    .rs-page-header {
+        background-color: var(--color-dark);
+        padding: 6rem 1rem;
+        text-align: center;
+        color: white;
+        border-radius: 0 0 3rem 3rem; /* Bordes inferiores para suavizar sobre blanco */
+        margin-bottom: 4rem;
+    }
+
+    .rs-page-header h1 {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        color: white;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+    }
+
+    .rs-page-header p {
+        color: #9CA3AF;
+        max-width: 600px;
+        margin: 0 auto;
+        font-size: 1.25rem;
+    }
+
+    /* Blog Grid */
+    .rs-blog-section {
+        max-width: 1200px;
+        margin: 0 auto 6rem auto;
+        padding: 0 2rem;
+    }
+
+    .rs-blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 4rem;
+    }
+
+    .rs-post-card {
+        text-decoration: none;
+        display: block;
+        transition: all 0.3s ease;
+    }
+
+    .rs-post-img-wrapper {
+        position: relative;
+        height: 400px;
+        overflow: hidden;
+        border-radius: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .rs-post-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 1s ease;
+    }
+
+    .rs-post-card:hover img {
+        transform: scale(1.05);
+    }
+
+    .rs-post-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(31, 41, 55, 0.6), transparent);
+    }
+
+    .rs-post-meta {
+        position: absolute;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .rs-meta-pill {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(4px);
+        padding: 0.5rem 1rem;
+        border-radius: 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--color-secondary);
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .rs-meta-pill-primary {
+        background: var(--color-primary);
+        color: white;
+    }
+
+    .rs-post-card h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        transition: color 0.3s ease;
+        line-height: 1.2;
+    }
+
+    .rs-post-card:hover h2 {
+        color: var(--color-primary);
+    }
+
+    .rs-post-card p {
+        font-size: 1.125rem;
+        margin-bottom: 1.5rem;
+        color: var(--color-text);
+    }
+
+    .rs-read-more {
+        color: var(--color-primary);
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .rs-post-card:hover .rs-read-more {
+        text-decoration: underline;
+        text-underline-offset: 8px;
+    }
+
+    /* Newsletter Section */
+    .rs-newsletter {
+        max-width: 900px;
+        margin: 8rem auto;
+        background: #FFF7ED;
+        padding: 4rem;
+        border-radius: 3.5rem;
+        text-align: center;
+        border: 1px solid #FFEDD5;
+    }
+
+    .rs-newsletter h3 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .rs-newsletter-form {
+        display: flex;
+        gap: 1rem;
+        max-width: 500px;
+        margin: 2rem auto 0;
+    }
+
+    .rs-newsletter-form input {
+        flex: 1;
+        padding: 1.25rem 1.5rem;
+        border-radius: 1.25rem;
+        border: 1px solid #FED7AA;
+        outline: none;
+        font-family: var(--font-main);
+        transition: all 0.3s ease;
+    }
+
+    .rs-newsletter-form input:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+    }
+
+    .rs-newsletter-form button {
+        background: var(--color-secondary);
+        color: white;
+        padding: 1.25rem 2rem;
+        border-radius: 1.25rem;
+        border: none;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .rs-newsletter-form button:hover {
+        background: var(--color-primary);
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .rs-blog-grid { grid-template-columns: 1fr; }
+        .rs-newsletter-form { flex-direction: column; }
+        .rs-newsletter { padding: 3rem 1.5rem; margin: 4rem 1rem; }
+        .rs-page-header { border-radius: 0; }
+    }
+</style>
+
+<div id="rs-blog-container">
+    <header class="rs-page-header">
+        <h1>Blog de Montaña</h1>
+        <p>Consejos, guías técnicas y crónicas de nuestras últimas expediciones.</p>
+    </header>
+
+    <section class="rs-blog-section">
+        <div class="rs-blog-grid">
+            <!-- Article 1 -->
+            <article class="rs-post-card">
+                <div class="rs-post-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800" alt="Material de escalada">
+                    <div class="rs-post-overlay"></div>
+                    <div class="rs-post-meta">
+                        <div class="rs-meta-pill">
+                            <span style="font-size: 14px; margin-right: 6px;">📅</span> 15 de Mayo, 2024
+                        </div>
+                        <div class="rs-meta-pill rs-meta-pill-primary">
+                            👤 Guía Roca & Senda
+                        </div>
+                    </div>
+                </div>
+                <h2>Equipo básico para tu primera escalada en roca</h2>
+                <p>¿Vas a empezar a escalar? Aquí tienes la lista definitiva del material imprescindible.</p>
+                <div class="rs-read-more">
+                    Leer más <span style="margin-left: 0.5rem">→</span>
+                </div>
+            </article>
+
+            <!-- Article 2 -->
+            <article class="rs-post-card">
+                <div class="rs-post-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1501555088652-021faa106b9b?auto=format&fit=crop&q=80&w=800" alt="Senderismo">
+                    <div class="rs-post-overlay"></div>
+                    <div class="rs-post-meta">
+                        <div class="rs-meta-pill">
+                            <span style="font-size: 14px; margin-right: 6px;">📅</span> 22 de Junio, 2024
+                        </div>
+                        <div class="rs-meta-pill rs-meta-pill-primary">
+                            👤 Guía Roca & Senda
+                        </div>
+                    </div>
+                </div>
+                <h2>Cómo prepararse físicamente para un trekking de 5 días</h2>
+                <p>Entrenamiento de resistencia y consejos de nutrición para disfrutar de la alta montaña.</p>
+                <div class="rs-read-more">
+                    Leer más <span style="margin-left: 0.5rem">→</span>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="rs-newsletter">
+        <h3>No te pierdas ninguna expedición</h3>
+        <p>Suscríbete a nuestra newsletter para recibir consejos técnicos y ofertas exclusivas.</p>
+        <div class="rs-newsletter-form">
+            <input type="email" placeholder="Tu email">
+            <button>Unirme</button>
+        </div>
+    </section>
+</div>
+<!-- COPIA HASTA AQUÍ -->

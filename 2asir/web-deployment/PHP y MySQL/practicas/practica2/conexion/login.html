@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca - Iniciar Sesión</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h1>📚 Biblioteca Escolar</h1>
+                <p>Iniciar Sesión</p>
+            </div>
+            
+            <form action="procesar_login.php" method="POST" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required 
+                           placeholder="usuario@escuela.es">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" name="password" required 
+                           placeholder="••••••••">
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Ingresar</button>
+                </div>
+                
+                <div class="auth-links">
+                    <a href="index.php">Volver al inicio</a>
+                    <a href="registro.php">Crear cuenta</a>
+                </div>
+                
+                <?php if (isset($_GET['error'])): ?>
+                <div class="alert alert-error">
+                    <?php 
+                    switch($_GET['error']) {
+                        case 'credenciales': echo 'Email o contraseña incorrectos'; break;
+                        case 'bloqueado': echo 'Cuenta temporalmente bloqueada'; break;
+                        case 'sesion': echo 'Debe iniciar sesión'; break;
+                        default: echo 'Error al iniciar sesión';
+                    }
+                    ?>
+                </div>
+                <?php endif; ?>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

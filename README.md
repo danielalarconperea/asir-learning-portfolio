@@ -17,7 +17,7 @@ Esta organizado por cursos y por areas: sistemas, redes, bases de datos, scripti
 
 | Proyecto | Tipo | Tecnologias | Enlace |
 | --- | --- | --- | --- |
-| Final Project - Distributed IoT Security Architecture | Proyecto final | Raspberry Pi, AWS IoT Core, MQTT/TLS, Docker, Python | [Ver](./projects/final-project/) |
+| Sentinel-IT | Proyecto final | Raspberry Pi, AWS IoT Core, MQTT/mTLS, Docker, Python, Flask | [Ver](./projects/final-project/) |
 
 ## Estructura
 

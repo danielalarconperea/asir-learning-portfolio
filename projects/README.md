@@ -2,4 +2,4 @@
 
 | Proyecto | Descripcion | Tecnologias | Enlace |
 | --- | --- | --- | --- |
-| Final Project - Distributed IoT Security Architecture | Arquitectura de seguridad IoT distribuida entre dos nodos Raspberry Pi usando AWS IoT Core y comunicacion MQTT/TLS. | Raspberry Pi, AWS IoT Core, MQTT/TLS, Docker, Python, Linux | [Ver proyecto](./final-project/) |
+| Sentinel-IT | SOC autonomo y distribuido sobre dos nodos Raspberry Pi, con AWS IoT Core, comunicacion MQTT/mTLS, dashboard Flask y analisis con IA. | Raspberry Pi, AWS IoT Core, MQTT/mTLS, Docker, Python, Flask, SQLite | [Ver proyecto](./final-project/) |

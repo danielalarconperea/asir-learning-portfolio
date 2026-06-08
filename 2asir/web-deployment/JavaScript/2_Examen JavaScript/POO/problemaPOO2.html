@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>Problema 2 - POO</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .campo {
+            margin-bottom: 15px;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .campo input,
+        .campo select {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.85em;
+            margin-top: 3px;
+        }
+
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 4px;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>📝 Formulario de Registro - POO</h2>
+
+    <form id="Form" name="fc">
+        <div class="campo">
+            <label>Nombre de Usuario:</label>
+            <input type="text" id="nombre">
+            <div class="error" id="error-nombre"></div>
+        </div>
+
+        <div class="campo">
+            <label>Contraseña:</label>
+            <input type="password" id="contrasena">
+            <div class="error" id="error-contrasena"></div>
+        </div>
+
+        <div class="campo">
+            <label>Confirmar Contraseña:</label>
+            <input type="password" id="contra1">
+            <div class="error" id="error-contra1"></div>
+        </div>
+
+        <div class="campo">
+            <label>Edad:</label>
+            <input type="number" id="edad" min="1" max="120">
+            <div class="error" id="error-edad"></div>
+        </div>
+
+        <div class="campo">
+            <label>Correo Electrónico:</label>
+            <input type="email" id="gmail" placeholder="ejemplo@correo.com">
+            <div class="error" id="error-gmail"></div>
+        </div>
+
+        <div class="campo">
+            <label>Teléfono:</label>
+            <input type="tel" id="telefono" placeholder="612345678">
+            <div class="error" id="error-telefono"></div>
+        </div>
+
+        <div class="campo">
+            <label>Número de Integrantes:</label>
+            <select id="ni">
+                <option value="">Elige una opción</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <div class="error" id="error-ni"></div>
+        </div>
+
+        <div class="campo">
+            <label>Sexo:</label>
+            <select id="sexo">
+                <option value="">Elige una opción</option>
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+            </select>
+            <div class="error" id="error-sexo"></div>
+        </div>
+
+        <button type="button" class="btn" onclick="app.validar()">Enviar Formulario</button>
+    </form>
+
+    <script>
+        /**
+         * VERSIÓN POO - Clase ValidadorFormulario
+         * Encapsula todas las validaciones del formulario
+         */
+        class ValidadorFormulario {
+
+            constructor(formId) {
+                this.form = document.getElementById(formId);
+                this.errores = [];
+            }
+
+            /**
+             * Obtiene el valor de un campo por su ID
+             */
+            obtenerValor(id) {
+                return document.getElementById(id).value.trim();
+            }
+
+            /**
+             * Muestra un mensaje de error junto al campo
+             */
+            mostrarError(campoId, mensaje) {
+                const errorDiv = document.getElementById('error-' + campoId);
+                if (errorDiv) {
+                    errorDiv.innerHTML = mensaje;
+                }
+                if (mensaje) {
+                    this.errores.push(campoId);
+                }
+            }
+
+            /**
+             * Limpia todos los errores
+             */
+            limpiarErrores() {
+                this.errores = [];
+                const errorDivs = document.querySelectorAll('.error');
+                errorDivs.forEach(div => div.innerHTML = '');
+            }
+
+            /**
+             * Valida que un campo no esté vacío
+             */
+            validarRequerido(campoId, mensaje = 'Campo obligatorio') {
+                const valor = this.obtenerValor(campoId);
+                if (valor === '') {
+                    this.mostrarError(campoId, mensaje);
+                    return false;
+                }
+                this.mostrarError(campoId, '');
+                return true;
+            }
+
+            /**
+             * Valida longitud mínima y máxima
+             */
+            validarLongitud(campoId, min, max) {
+                const valor = this.obtenerValor(campoId);
+                if (valor.length < min || valor.length > max) {
+                    this.mostrarError(campoId, `Debe tener entre ${min} y ${max} caracteres`);
+                    return false;
+                }
+                this.mostrarError(campoId, '');
+                return true;
+            }
+
+            /**
+             * Valida que dos campos coincidan
+             */
+            validarCoincidencia(campoId1, campoId2, mensaje) {
+                const valor1 = this.obtenerValor(campoId1);
+                const valor2 = this.obtenerValor(campoId2);
+                if (valor1 !== valor2) {
+                    this.mostrarError(campoId2, mensaje);
+                    return false;
+                }
+                this.mostrarError(campoId2, '');
+                return true;
+            }
+
+            /**
+             * Valida un rango numérico
+             */
+            validarRango(campoId, min, max) {
+                const valor = parseInt(this.obtenerValor(campoId));
+                if (isNaN(valor) || valor < min || valor > max) {
+                    this.mostrarError(campoId, `Debe estar entre ${min} y ${max}`);
+                    return false;
+                }
+                this.mostrarError(campoId, '');
+                return true;
+            }
+
+            /**
+             * Valida formato de email
+             */
+            validarEmail(campoId) {
+                const valor = this.obtenerValor(campoId);
+                if (!valor.includes('@') || !valor.includes('.')) {
+                    this.mostrarError(campoId, 'Introduce un email válido');
+                    return false;
+                }
+                this.mostrarError(campoId, '');
+                return true;
+            }
+
+            /**
+             * Valida longitud exacta (para teléfono)
+             */
+            validarLongitudExacta(campoId, longitud) {
+                const valor = this.obtenerValor(campoId);
+                if (valor.length !== longitud) {
+                    this.mostrarError(campoId, `Debe tener exactamente ${longitud} dígitos`);
+                    return false;
+                }
+                this.mostrarError(campoId, '');
+                return true;
+            }
+
+            /**
+             * Valida que un select tenga valor seleccionado
+             */
+            validarSelect(campoId) {
+                const valor = this.obtenerValor(campoId);
+                if (valor === '') {
+                    this.mostrarError(campoId, 'Selecciona una opción');
+                    return false;
+                }
+                this.mostrarError(campoId, '');
+                return true;
+            }
+
+            /**
+             * Ejecuta todas las validaciones
+             */
+            validar() {
+                this.limpiarErrores();
+                let valido = true;
+
+                // Nombre: requerido, mínimo 3 caracteres
+                if (!this.validarRequerido('nombre')) valido = false;
+                else if (!this.validarLongitud('nombre', 3, 50)) valido = false;
+
+                // Contraseña: requerida, entre 5 y 30 caracteres
+                if (!this.validarRequerido('contrasena')) valido = false;
+                else if (!this.validarLongitud('contrasena', 5, 30)) valido = false;
+
+                // Confirmación: debe coincidir
+                if (!this.validarRequerido('contra1')) valido = false;
+                else if (!this.validarCoincidencia('contrasena', 'contra1', 'Las contraseñas no coinciden')) valido = false;
+
+                // Edad: entre 18 y 90
+                if (!this.validarRequerido('edad')) valido = false;
+                else if (!this.validarRango('edad', 18, 90)) valido = false;
+
+                // Email: formato válido
+                if (!this.validarRequerido('gmail')) valido = false;
+                else if (!this.validarEmail('gmail')) valido = false;
+
+                // Teléfono: 9 dígitos
+                if (!this.validarRequerido('telefono')) valido = false;
+                else if (!this.validarLongitudExacta('telefono', 9)) valido = false;
+
+                // Selects
+                if (!this.validarSelect('ni')) valido = false;
+                if (!this.validarSelect('sexo')) valido = false;
+
+                // Si todo es válido, enviar
+                if (valido) {
+                    alert('✅ Formulario enviado correctamente');
+                    this.form.submit();
+                }
+            }
+        }
+
+        // Instanciar la aplicación
+        const app = new ValidadorFormulario('Form');
+    </script>
+</body>
+
+</html>

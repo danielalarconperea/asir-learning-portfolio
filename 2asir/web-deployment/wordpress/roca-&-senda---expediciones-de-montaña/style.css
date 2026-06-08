@@ -1,0 +1,18 @@
+
+/*
+Theme Name: Roca & Senda
+Theme URI: https://rocaysenda.com
+Author: Dani & Nacho (Guías Titulados)
+Description: Tema profesional para expediciones de trekking y escalada. Desarrollado con React y Tailwind.
+Version: 1.0.0
+License: GNU General Public License v2 or later
+Text Domain: roca-senda
+*/
+
+/* Reset básico para asegurar que React ocupe todo el espacio */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+}

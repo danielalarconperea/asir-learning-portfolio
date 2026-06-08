@@ -28,16 +28,22 @@ function show_header() {
 
 function check_root() {
     if [ "$EUID" -ne 0 ]; then
-        show_header
-        echo -e "${RED}[ERROR] Este script requiere permisos de administrador para ejecutarse correctamente.${NC}"
-        echo -e "${YELLOW}Por favor, inicia la ejecución con sudo: sudo $0${NC}"
-        echo ""
-        exit 1
+        echo -e "${YELLOW}[INFO] Solicitando permisos de administrador...${NC}"
+        exec sudo "$0" "$@"
     fi
 }
 
 function verify_prerequisites() {
     local needs_restart=false
+    
+    # Actualizar pip a la última versión si está instalado
+    if command -v pip3 &> /dev/null; then
+        echo -e "${YELLOW}[INFO] Comprobando actualizaciones de pip...${NC}"
+        pip3 install --upgrade pip --quiet || sudo pip3 install --upgrade pip --quiet || true
+    elif command -v pip &> /dev/null; then
+        echo -e "${YELLOW}[INFO] Comprobando actualizaciones de pip...${NC}"
+        pip install --upgrade pip --quiet || sudo pip install --upgrade pip --quiet || true
+    fi
     
     if ! command -v git &> /dev/null; then
         echo -e "${YELLOW}[INFO] Git no encontrado. Instalando...${NC}"
@@ -143,12 +149,12 @@ function prepare_environment() {
             AI_MODE="api"
             echo ""
             echo -e "${YELLOW}   ¿Qué modelo de Gemini vas a utilizar?${NC}"
-            echo "   1) gemini-flash-latest (Por defecto, rápido y equilibrado)"
+            echo "   1) gemini-3-flash-preview (Por defecto, Gemini 3 Flash)"
             echo "   2) gemini-pro-latest (Avanzado)"
             read -rp "   Selecciona (1-2) o escribe su nombre [1]: " model_choice
 
             case $model_choice in
-                1|"") AI_MODEL="gemini-flash-latest" ;;
+                1|"") AI_MODEL="gemini-3-flash-preview" ;;
                 2) AI_MODEL="gemini-pro-latest" ;;
                 *) AI_MODEL="${model_choice}" ;;
             esac
@@ -195,7 +201,7 @@ function start_soc() {
         echo -e "${BLUE}[INFO] Modo de directorio local detectado.${NC}"
         
         # Sincronización automática de código en despliegue continuo (GitOps) si hay un repo activo
-        if [ -d ".git" ]; then
+        if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
             echo -e "${BLUE}[INFO] Repositorio Git local detectado. Sincronizando últimos cambios de GitHub...${NC}"
             # Se aplica git pull, mostrando aviso si hay conflicto con cambios por SCP locales
             git pull || echo -e "${YELLOW}[WARN] Hubo un error haciendo 'git pull'. Si has modificado archivos locales directamente (por ejemplo, con SCP), resuelve los conflictos para que Git aplique la versión de la nube.${NC}"
@@ -240,10 +246,12 @@ function start_soc() {
 
 function stop_soc() {
     echo -e "${GREEN}[*] Opción 3: Detener SOC${NC}"
+    # --profile local-ai: incluye el contenedor Ollama aunque no esté activo el perfil en esta shell
+    # --remove-orphans: elimina contenedores de servicios que ya no existen en el compose
     if [ -f "./docker-compose.yml" ]; then
-        docker compose down
+        docker compose --profile local-ai down --remove-orphans
     elif [ -d "$CLONE_DIR/PI-5" ]; then
-        cd "$CLONE_DIR/PI-5" && docker compose down && cd - > /dev/null
+        cd "$CLONE_DIR/PI-5" && docker compose --profile local-ai down --remove-orphans && cd - > /dev/null
     fi
     echo -e "${GREEN}[SUCCESS] Servicios detenidos.${NC}"
     read -n 1 -s -r -p "Presiona cualquier tecla para volver al menú..."
@@ -263,13 +271,78 @@ function view_logs() {
     fi
 }
 
+function purge_logs_and_records() {
+    echo -e "${YELLOW}[!] Borrando logs y registros (no se tocan contenedores, certificados ni '.env')...${NC}"
+
+    # Detectar ruta base (modo local vs. GitOps clonado)
+    local base_dir=""
+    if [ -f "./docker-compose.yml" ]; then
+        base_dir="."
+    elif [ -d "$CLONE_DIR/PI-5" ]; then
+        base_dir="$CLONE_DIR/PI-5"
+    fi
+
+    if [ -z "$base_dir" ]; then
+        echo -e "${RED}[ERROR] No se encuentra el despliegue (docker-compose.yml).${NC}"
+        read -n 1 -s -r -p "Presiona cualquier tecla para volver al menú..."
+        return
+    fi
+
+    if docker ps --format '{{.Names}}' | grep -q '^soc-coordinator-pi5$'; then
+        # Vaciar la tabla 'logs' in-place vía exec — sin parar el contenedor,
+        # sin tocar el volumen (que `volume rm` no podría borrar mientras el
+        # contenedor exista, aunque esté parado).
+        echo -e "${BLUE}[INFO] Vaciando tabla 'logs' en la BD del contenedor...${NC}"
+        if docker exec soc-coordinator-pi5 python3 -c "
+import sqlite3, sys
+conn = sqlite3.connect('/app/data/soc_data.db')
+deleted = conn.execute('DELETE FROM logs').rowcount
+try:
+    pending_deleted = conn.execute('DELETE FROM pending_ai_events').rowcount
+except sqlite3.OperationalError:
+    pending_deleted = 0
+conn.commit()
+conn.execute('VACUUM')
+conn.close()
+print(f'[OK] {deleted} logs eliminados; {pending_deleted} eventos IA pendientes eliminados')
+" ; then
+            :
+        else
+            echo -e "${RED}[WARN] No se pudo vaciar la BD vía exec — quizá el esquema aún no existe. Se reiniciará el contenedor.${NC}"
+            (cd "$base_dir" && docker compose restart soc-coordinator-pi5 >/dev/null 2>&1)
+        fi
+    else
+        # Contenedor no arrancado: podemos eliminar el volumen sin problema
+        echo -e "${YELLOW}[INFO] Contenedor parado; eliminando volumen Docker de la BD...${NC}"
+        docker volume rm soc_pi5_database_persistent >/dev/null 2>&1 || true
+    fi
+
+    # Vaciar ficheros de log del host. Si el bind-mount los creó como directorios
+    # (porque las rutas origen no existían como ficheros), borrar su contenido.
+    echo -e "${BLUE}[INFO] Vaciando ficheros de log del host...${NC}"
+    for f in "$base_dir/coordinator_soc.log" "$base_dir/dashboard_soc.log"; do
+        if [ -d "$f" ]; then
+            find "$f" -mindepth 1 -delete 2>/dev/null || sudo find "$f" -mindepth 1 -delete 2>/dev/null || true
+        elif [ -f "$f" ]; then
+            : > "$f" 2>/dev/null || sudo sh -c ": > '$f'" 2>/dev/null || true
+        fi
+    done
+
+    # Limpiar BDs legacy que pudieran existir fuera del volumen
+    rm -f "$base_dir/soc_alerts.db" "$base_dir/data/soc_data.db" 2>/dev/null || true
+
+    echo -e "${GREEN}[SUCCESS] Logs y registros eliminados.${NC}"
+    read -n 1 -s -r -p "Presiona cualquier tecla para volver al menú..."
+}
+
 function uninstall_soc() {
     echo -e "${GREEN}[*] Opción 5: Desinstalar SOC${NC}"
     echo -e "${YELLOW}ADVERTENCIA: Estás a punto de desinstalar el sistema.${NC}"
     echo "1) Desinstalación completa (Borrará contenedores, imágenes, volúmenes, '.env' y certificados)"
     echo "2) Desinstalación parcial (Borrará contenedores e imágenes, mantendrá logs, '.env' y certificados)"
-    echo "3) Cancelar"
-    read -rp "Selecciona una opción (1-3): " uninst_opt
+    echo "3) Borrar solo logs y registros (mantendrá contenedores, '.env' y certificados)"
+    echo "4) Cancelar"
+    read -rp "Selecciona una opción (1-4): " uninst_opt
 
     case $uninst_opt in
         1)
@@ -298,7 +371,10 @@ function uninstall_soc() {
             echo -e "${GREEN}[SUCCESS] Desinstalación parcial finalizada.${NC}"
             read -n 1 -s -r -p "Presiona cualquier tecla para volver al menú..."
             ;;
-        3|*)
+        3)
+            purge_logs_and_records
+            ;;
+        4|*)
             echo -e "${BLUE}Operación cancelada.${NC}"
             sleep 1
             ;;

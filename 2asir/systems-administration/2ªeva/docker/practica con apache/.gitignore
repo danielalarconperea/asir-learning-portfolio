@@ -1,0 +1,47 @@
+# ============================================================================
+# .GITIGNORE - Práctica Apache Docker
+# ============================================================================
+
+# Logs de Apache
+*.log
+logs/
+
+# Archivos temporales
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Caché de Python (si se usa Ansible con Python)
+__pycache__/
+*.pyc
+
+# Variables de entorno
+.env
+.env.local
+
+# Directorios de IDE
+.vscode/
+.idea/
+
+# Binarios y ejecutables
+*.exe
+*.out
+*.bin
+
+# Archivos de backup
+*.bak
+*.backup
+
+# NO ignorar estos archivos importantes:
+!Dockerfile
+!*.yml
+!*.yaml
+!*.sh
+!*.conf
+!*.md

@@ -16,4 +16,4 @@ Practicas, apuntes y proyectos de segundo curso.
 
 El proyecto final lo tengo destacado aparte para que se vea mejor:
 
-[Final Project - Distributed IoT Security Architecture](../projects/final-project/)
+[Sentinel-IT](../projects/final-project/)

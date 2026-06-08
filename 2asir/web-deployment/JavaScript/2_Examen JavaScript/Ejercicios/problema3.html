@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>Problema 3 - Configurador de Tarjeta</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            gap: 40px;
+            padding: 30px;
+        }
+
+        .panel {
+            width: 320px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel h2 {
+            margin-top: 0;
+            font-size: 1.1em;
+            border-bottom: 2px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .grupo {
+            margin-bottom: 15px;
+        }
+
+        .grupo label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .grupo input[type="text"] {
+            width: 100%;
+            padding: 6px;
+            box-sizing: border-box;
+        }
+
+        .grupo select {
+            width: 100%;
+            padding: 6px;
+        }
+
+        .opciones label {
+            font-weight: normal;
+            display: block;
+            margin: 4px 0;
+        }
+
+        /* --- TARJETA PREVIEW --- */
+        .tarjeta {
+            width: 350px;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+            padding: 30px;
+            box-sizing: border-box;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.4s ease;
+            align-self: center;
+        }
+
+        .tarjeta .nombre {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .tarjeta .cargo {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .tarjeta .linea {
+            width: 40px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.6);
+            margin-bottom: 15px;
+        }
+
+        .tarjeta .contacto {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PANEL DE CONTROLES -->
+    <div class="panel">
+        <h2>⚙️ Configurador de Tarjeta</h2>
+
+        <form name="fc">
+            <div class="grupo">
+                <label>Nombre:</label>
+                <input type="text" name="nombre" id="txtNombre" placeholder="Tu nombre" onkeyup="actualizar()">
+            </div>
+
+            <div class="grupo">
+                <label>Cargo:</label>
+                <input type="text" name="cargo" id="txtCargo" placeholder="Tu cargo" onkeyup="actualizar()">
+            </div>
+
+            <div class="grupo">
+                <label>Email:</label>
+                <input type="text" name="email" id="txtEmail" placeholder="correo@empresa.com" onkeyup="actualizar()">
+            </div>
+
+            <div class="grupo">
+                <label>Tipografía:</label>
+                <select name="fuente" id="selFuente" onchange="actualizar()">
+                    <option value="Arial">Arial</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Trebuchet MS">Trebuchet MS</option>
+                </select>
+            </div>
+
+            <div class="grupo">
+                <label>Tamaño del nombre:</label>
+                <select name="tamano" id="selTamano" onchange="actualizar()">
+                    <option value="20">Pequeño</option>
+                    <option value="24" selected>Normal</option>
+                    <option value="30">Grande</option>
+                    <option value="36">Muy Grande</option>
+                </select>
+            </div>
+
+            <div class="grupo">
+                <label>Esquema de Color:</label>
+                <div class="opciones">
+                    <label><input type="radio" name="color" value="morado" checked onchange="actualizar()">
+                        Morado</label>
+                    <label><input type="radio" name="color" value="oceano" onchange="actualizar()"> Océano</label>
+                    <label><input type="radio" name="color" value="atardecer" onchange="actualizar()"> Atardecer</label>
+                    <label><input type="radio" name="color" value="bosque" onchange="actualizar()"> Bosque</label>
+                    <label><input type="radio" name="color" value="oscuro" onchange="actualizar()"> Oscuro</label>
+                </div>
+            </div>
+
+            <div class="grupo">
+                <label>Efectos:</label>
+                <div class="opciones">
+                    <label><input type="checkbox" name="redondeado" id="chkRedondeado" onchange="actualizar()"> Bordes
+                        redondeados</label>
+                    <label><input type="checkbox" name="sombra" id="chkSombra" onchange="actualizar()"> Sombra
+                        intensa</label>
+                    <label><input type="checkbox" name="mayusculas" id="chkMayusculas" onchange="actualizar()"> Nombre
+                        en MAYÚSCULAS</label>
+                    <label><input type="checkbox" name="centrado" id="chkCentrado" onchange="actualizar()"> Texto
+                        centrado</label>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- PREVIEW DE LA TARJETA -->
+    <div style="display:flex; align-items:center;">
+        <div class="tarjeta" id="tarjeta">
+            <div class="nombre" id="prevNombre">Tu Nombre</div>
+            <div class="cargo" id="prevCargo">Tu Cargo</div>
+            <div class="linea"></div>
+            <div class="contacto" id="prevContacto">correo@empresa.com</div>
+        </div>
+    </div>
+
+    <script>
+        var tarjeta = document.getElementById('tarjeta');
+        var prevNombre = document.getElementById('prevNombre');
+        var prevCargo = document.getElementById('prevCargo');
+        var prevContacto = document.getElementById('prevContacto');
+
+        // Mapa de colores (degradados)
+        var colores = {
+            'morado': 'linear-gradient(135deg, #667eea, #764ba2)',
+            'oceano': 'linear-gradient(135deg, #2193b0, #6dd5ed)',
+            'atardecer': 'linear-gradient(135deg, #f12711, #f5af19)',
+            'bosque': 'linear-gradient(135deg, #11998e, #38ef7d)',
+            'oscuro': 'linear-gradient(135deg, #232526, #414345)'
+        };
+
+        function actualizar() {
+            // --- TEXTOS (Usando getElementById) ---
+            // Antes: form.nombre.value
+            var nombre = document.getElementById('txtNombre').value || 'Tu Nombre';
+            var cargo = document.getElementById('txtCargo').value || 'Tu Cargo';
+            var email = document.getElementById('txtEmail').value || 'correo@empresa.com';
+
+            // --- FUENTE (Usando getElementById para el select) ---
+            // Antes: form.fuente.value
+            var fuente = document.getElementById('selFuente').value;
+            tarjeta.style.fontFamily = fuente;
+
+            // --- TAMAÑO (Usando getElementById para el select) ---
+            // Antes: form.tamano.value
+            var tamano = document.getElementById('selTamano').value;
+            prevNombre.style.fontSize = tamano + 'px';
+
+            // --- COLOR (Nota: Para Radio Buttons se suele usar getElementsByName porque hay varios) ---
+            var radios = document.getElementsByName('color');
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    tarjeta.style.background = colores[radios[i].value];
+                    break;
+                }
+            }
+
+            // --- CHECKBOXES (Usando getElementById) ---
+            // Borde redondeado (Antes: form.redondeado.checked)
+            if (document.getElementById('chkRedondeado').checked) {
+                tarjeta.style.borderRadius = '20px';
+            } else {
+                tarjeta.style.borderRadius = '4px';
+            }
+
+            // Sombra (Antes: form.sombra.checked)
+            if (document.getElementById('chkSombra').checked) {
+                tarjeta.style.boxShadow = '0 15px 40px rgba(0,0,0,0.4)';
+            } else {
+                tarjeta.style.boxShadow = 'none';
+            }
+
+            // Mayúsculas (Antes: form.mayusculas.checked)
+            if (document.getElementById('chkMayusculas').checked) {
+                prevNombre.style.textTransform = 'uppercase';
+                prevNombre.style.letterSpacing = '3px';
+            } else {
+                prevNombre.style.textTransform = 'none';
+                prevNombre.style.letterSpacing = '0px';
+            }
+
+            // Centrado (Antes: form.centrado.checked)
+            if (document.getElementById('chkCentrado').checked) {
+                tarjeta.style.textAlign = 'center';
+                tarjeta.style.alignItems = 'center';
+            } else {
+                tarjeta.style.textAlign = 'left';
+                tarjeta.style.alignItems = 'flex-start';
+            }
+
+            // --- ACTUALIZAR TEXTOS ---
+            prevNombre.innerHTML = nombre;
+            prevCargo.innerHTML = cargo;
+            prevContacto.innerHTML = email;
+        }
+    </script>
+</body>
+
+</html>

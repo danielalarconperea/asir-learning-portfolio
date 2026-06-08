@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>Problema 4 - Diseñador de Habitación</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e8e8e8;
+            padding: 20px;
+            display: flex;
+            gap: 30px;
+        }
+
+        /* --- PANEL CONTROLES --- */
+        .panel {
+            width: 300px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+
+        .panel h2 {
+            margin-top: 0;
+            font-size: 1.1em;
+            border-bottom: 2px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .grupo {
+            margin-bottom: 15px;
+        }
+
+        .grupo label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .grupo select,
+        .grupo input[type="number"] {
+            width: 100%;
+            padding: 6px;
+            box-sizing: border-box;
+        }
+
+        .opciones label {
+            font-weight: normal;
+            display: block;
+            margin: 4px 0;
+        }
+
+        .btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            width: 100%;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #c0392b;
+        }
+
+        .precio-total {
+            text-align: center;
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 10px;
+            padding: 10px;
+            border: 2px dashed #e74c3c;
+            border-radius: 8px;
+        }
+
+        .confirmacion {
+            display: none;
+            text-align: center;
+            padding: 15px;
+            background: #27ae60;
+            color: white;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* --- HABITACIÓN PREVIEW --- */
+        .preview-zona {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .preview-zona h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .habitacion {
+            width: 300px;
+            height: 250px;
+            background-color: #ffeaa7;
+            border: 3px solid #b2bec3;
+            border-radius: 6px;
+            position: relative;
+            transition: all 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Elementos dentro de la habitación */
+        .cama {
+            width: 80px;
+            height: 50px;
+            background: #dfe6e9;
+            border: 2px solid #636e72;
+            border-radius: 6px;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #636e72;
+        }
+
+        .cama-doble {
+            width: 60px;
+            height: 50px;
+            background: #dfe6e9;
+            border: 2px solid #636e72;
+            border-radius: 6px;
+            position: absolute;
+            bottom: 20px;
+            left: 120px;
+            display: none;
+            transition: all 0.4s ease;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #636e72;
+        }
+
+        .ventana {
+            width: 60px;
+            height: 40px;
+            background: #74b9ff;
+            border: 3px solid #b2bec3;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            border-radius: 4px;
+            transition: all 0.4s ease;
+        }
+
+        .balcon {
+            width: 100%;
+            height: 25px;
+            background: #a29bfe;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.4s ease;
+        }
+
+        .lampara {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .etiqueta-hab {
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PANEL DE CONTROLES -->
+    <div class="panel">
+        <h2>🏨 Diseñador de Habitación</h2>
+
+        <form name="fc">
+            <div class="grupo">
+                <label>Tipo de habitación:</label>
+                <div class="opciones">
+                    <label><input type="radio" name="tipo" value="individual" checked onchange="actualizar()">
+                        Individual (20m²)</label>
+                    <label><input type="radio" name="tipo" value="doble" onchange="actualizar()"> Doble (30m²)</label>
+                    <label><input type="radio" name="tipo" value="suite" onchange="actualizar()"> Suite (45m²)</label>
+                </div>
+            </div>
+
+            <div class="grupo">
+                <label>Color de paredes:</label>
+                <select name="paredes" id="paredes" onchange="actualizar()">
+                    <option value="#ffeaa7">Crema</option>
+                    <option value="#dfe6e9">Gris Claro</option>
+                    <option value="#fab1a0">Salmón</option>
+                    <option value="#81ecec">Turquesa</option>
+                    <option value="#a29bfe">Lavanda</option>
+                    <option value="#fdcb6e">Dorado</option>
+                </select>
+            </div>
+
+            <div class="grupo">
+                <label>Iluminación:</label>
+                <select name="luz" id="luz" onchange="actualizar()">
+                    <option value="1.0">Día ☀️</option>
+                    <option value="0.85">Tarde 🌤️</option>
+                    <option value="0.65">Noche 🌙</option>
+                    <option value="0.45">Romántica 🕯️</option>
+                </select>
+            </div>
+
+            <div class="grupo">
+                <label>Extras:</label>
+                <div class="opciones">
+                    <label><input type="checkbox" name="camaExtra" id="camaExtra" value="40" onchange="actualizar()">
+                        Cama extra
+                        (+40€)</label>
+                    <label><input type="checkbox" name="balcon" id="balcon" value="25" onchange="actualizar()"> Balcón
+                        (+25€)</label>
+                    <label><input type="checkbox" name="premium" id="premium" value="50" onchange="actualizar()">
+                        Decoración premium
+                        (+50€)</label>
+                </div>
+            </div>
+
+            <div class="grupo">
+                <label>Nº de noches:</label>
+                <input type="number" name="noches" id="noches" value="1" min="1" max="30" onchange="actualizar()"
+                    onkeyup="actualizar()">
+            </div>
+
+            <div class="precio-total">
+                Total: <span id="precioTotal">80€</span>
+            </div>
+
+            <button type="button" class="btn" onclick="reservar()">🔒 Reservar</button>
+
+            <div class="confirmacion" id="confirmacion">
+                ✅ ¡Reserva confirmada!
+            </div>
+        </form>
+    </div>
+
+    <!-- PREVIEW HABITACIÓN -->
+    <div class="preview-zona">
+        <h2>Vista previa de tu habitación</h2>
+        <div class="habitacion" id="habitacion">
+            <span class="etiqueta-hab" id="etiquetaHab">Individual</span>
+            <span class="lampara" id="lampara">💡</span>
+            <div class="ventana" id="ventana"></div>
+            <div class="cama" id="cama">🛏️ Cama</div>
+            <div class="cama-doble" id="camaDoble">🛏️ Extra</div>
+            <div class="balcon" id="prevBalcon">🌿 BALCÓN</div>
+        </div>
+    </div>
+
+    <script>
+        var form = document.fc;
+        var habitacion = document.getElementById('habitacion');
+        var cama = document.getElementById('cama');
+        var camaDoble = document.getElementById('camaDoble');
+        var balconDiv = document.getElementById('prevBalcon');
+        var lampara = document.getElementById('lampara');
+        var ventana = document.getElementById('ventana');
+        var etiquetaHab = document.getElementById('etiquetaHab');
+        var precioTotal = document.getElementById('precioTotal');
+        var confirmacion = document.getElementById('confirmacion');
+
+        // Precios base por tipo
+        var precios = {
+            'individual': 80,
+            'doble': 120,
+            'suite': 200
+        };
+
+        // Tamaños por tipo
+        var tamanos = {
+            'individual': { w: 250, h: 200 },
+            'doble': { w: 350, h: 260 },
+            'suite': { w: 450, h: 320 }
+        };
+
+        function actualizar() {
+            // Ocultar confirmación al cambiar algo
+            confirmacion.style.display = 'none';
+
+            // --- TIPO DE HABITACIÓN (radio) ---
+            var tipoRadios = document.getElementsByName('tipo');
+            var tipo = 'individual';
+            for (var i = 0; i < tipoRadios.length; i++) {
+                if (tipoRadios[i].checked) {
+                    tipo = tipoRadios[i].value;
+                    break;
+                }
+            }
+
+            habitacion.style.width = tamanos[tipo].w + 'px';
+            habitacion.style.height = tamanos[tipo].h + 'px';
+            etiquetaHab.innerHTML = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+
+            // --- COLOR DE PAREDES (Usando getElementById para el select) ---
+            // Antes: form.paredes.value
+            habitacion.style.backgroundColor = document.getElementById('paredes').value;
+
+            // --- ILUMINACIÓN (Usando getElementById para el select) ---
+            // Antes: form.luz.value
+            var brillo = document.getElementById('luz').value;
+            habitacion.style.filter = 'brightness(' + brillo + ')';
+
+            // Cambiar emoji de lámpara según luz
+            if (parseFloat(brillo) >= 1.0) {
+                lampara.innerHTML = '☀️';
+            } else if (parseFloat(brillo) >= 0.85) {
+                lampara.innerHTML = '🌤️';
+            } else if (parseFloat(brillo) >= 0.65) {
+                lampara.innerHTML = '🌙';
+            } else {
+                lampara.innerHTML = '🕯️';
+            }
+
+            // --- CHECKBOXES (Usando getElementById) ---
+            // Cama extra (Antes: form.camaExtra.checked)
+            if (document.getElementById('camaExtra').checked) {
+                camaDoble.style.display = 'flex';
+            } else {
+                camaDoble.style.display = 'none';
+            }
+
+            // Balcón (Antes: form.balcon.checked)
+            if (document.getElementById('balcon').checked) {
+                balconDiv.style.display = 'flex';
+                habitacion.style.borderBottom = '5px solid #6c5ce7';
+            } else {
+                balconDiv.style.display = 'none';
+                habitacion.style.borderBottom = '3px solid #b2bec3';
+            }
+
+            // Decoración premium (Antes: form.premium.checked)
+            if (document.getElementById('premium').checked) {
+                habitacion.style.border = '3px solid #fdcb6e';
+                habitacion.style.boxShadow = '0 0 20px rgba(253, 203, 110, 0.5)';
+                ventana.style.background = 'linear-gradient(135deg, #a29bfe, #fd79a8)';
+            } else {
+                habitacion.style.border = '3px solid #b2bec3';
+                habitacion.style.boxShadow = 'none';
+                ventana.style.background = '#74b9ff';
+            }
+
+            // --- CALCULAR PRECIO ---
+            var precioBase = precios[tipo];
+            var extras = 0;
+
+            if (document.getElementById('camaExtra').checked) extras += parseInt(document.getElementById('camaExtra').value);
+            if (document.getElementById('balcon').checked) extras += parseInt(document.getElementById('balcon').value);
+            if (document.getElementById('premium').checked) extras += parseInt(document.getElementById('premium').value);
+
+            var noches = parseInt(document.getElementById('noches').value) || 1;
+            if (noches < 1) noches = 1;
+
+            var total = (precioBase + extras) * noches;
+            precioTotal.innerHTML = total + '€';
+        }
+
+        function reservar() {
+            // Validar tipo seleccionado
+            var tipoRadios = document.getElementsByName('tipo');
+            var tipoSeleccionado = false;
+            for (var i = 0; i < tipoRadios.length; i++) {
+                if (tipoRadios[i].checked) {
+                    tipoSeleccionado = true;
+                    break;
+                }
+            }
+
+            if (!tipoSeleccionado) {
+                alert('Selecciona un tipo de habitación');
+                return;
+            }
+
+            var noches = parseInt(form.noches.value);
+            if (isNaN(noches) || noches < 1) {
+                alert('Introduce un número de noches válido');
+                return;
+            }
+
+            // Mostrar confirmación con animación
+            confirmacion.style.display = 'block';
+
+            // Efecto visual en la habitación
+            habitacion.style.transform = 'scale(1.05)';
+            setTimeout(function () {
+                habitacion.style.transform = 'scale(1)';
+            }, 300);
+        }
+    </script>
+</body>
+
+</html>

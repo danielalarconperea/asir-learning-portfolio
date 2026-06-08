@@ -38,21 +38,86 @@ class AWSMqttClient:
         self.connection = mqtt_connection
         print(f"[SUCCESS] Cliente [{self.client_id}] conectado con exito.")
 
-    def publish(self, topic, payload_dict):
+    def is_alive(self):
+        """
+        Comprueba si la conexion MQTT subyacente sigue viva.
+        Devuelve False si no existe conexion o si el socket interno
+        ya no esta operativo (zombie state tras caida de red/DNS).
+        """
+        if self.connection is None:
+            return False
+        try:
+            # El SDK de awscrt expone _binding como handle nativo.
+            # Si el handle es None la conexion ya fue liberada.
+            binding = getattr(self.connection, '_binding', None)
+            if binding is None:
+                return False
+            return True
+        except Exception:
+            return False
+
+    def disconnect(self):
+        """
+        Desconecta limpiamente el cliente MQTT para permitir reconexion.
+        """
+        if self.connection is not None:
+            try:
+                disconnect_future = self.connection.disconnect()
+                disconnect_future.result(timeout=3.0)
+            except Exception:
+                pass  # Best-effort: la conexion puede ya estar muerta
+            finally:
+                self.connection = None
+        print(f"[INFO] Cliente [{self.client_id}] desconectado.")
+
+    def publish(self, topic, payload_dict, wait_for_ack=False, ack_timeout=5.0):
         """
         Publica un mensaje en formato JSON al topic especificado.
+
+        Por defecto el envio es asincrono (fire-and-forget): la llamada encola
+        el publish en el event loop de awscrt y retorna inmediatamente. Esto
+        es suficiente para el agente, que tolera un retraso de unos milisegundos.
+
+        El dashboard HITL necesita la garantia opuesta: cuando el operador
+        aprueba un comando, queremos confirmar antes de devolver el 200 al
+        navegador que el broker ya tiene el PUBACK. Para ese caso se llama con
+        wait_for_ack=True; el metodo bloquea hasta `ack_timeout` segundos
+        esperando el resultado del future y propaga la excepcion si el broker
+        rechaza el publish o si la conexion esta caida. Asi el endpoint puede
+        devolver un error real al frontend en vez de un falso exito.
         """
         if not self.connection:
             print("[ERROR] No hay conexion activa.")
+            if wait_for_ack:
+                raise RuntimeError("MQTT connection not established")
             return
-        
+
+        if not self.is_alive():
+            print("[ERROR] Conexion MQTT zombie detectada en publish.")
+            self.connection = None
+            if wait_for_ack:
+                raise RuntimeError("MQTT connection is dead (zombie state)")
+            return
+
         message_json = json.dumps(payload_dict)
-        self.connection.publish(
+        publish_future, _packet_id = self.connection.publish(
             topic=topic,
             payload=message_json,
             qos=mqtt.QoS.AT_LEAST_ONCE
         )
-        print(f"[INFO] Mensaje publicado en {topic}")
+
+        if wait_for_ack:
+            try:
+                publish_future.result(timeout=ack_timeout)
+            except Exception as e:
+                # Si el future falla, la conexion probablemente murio.
+                # Limpiamos para que get_mqtt_client() fuerce reconexion.
+                self.connection = None
+                error_msg = str(e) if str(e).strip() else "PUBACK timeout or connection lost"
+                raise RuntimeError(f"MQTT publish failed: {error_msg}") from e
+            print(f"[INFO] Mensaje publicado y confirmado (PUBACK) en {topic}")
+        else:
+            print(f"[INFO] Mensaje publicado en {topic}")
 
     def subscribe(self, topic, callback_function):
         """

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>Problema 1 - POO</title>
+    <meta charset="utf-8">
+    <style>
+        .container {
+            border: 1px black solid;
+            width: 350px;
+            padding: 15px;
+            margin: 20px auto;
+            background-color: rgb(0, 132, 255);
+            border-radius: 8px;
+        }
+
+        .titulo {
+            border: 1px black solid;
+            text-align: center;
+            padding: 10px;
+            background-color: rgb(15, 15, 134);
+            color: aliceblue;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .columnas {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .columna {
+            width: 45%;
+        }
+
+        .columna label {
+            display: block;
+            color: white;
+            margin: 5px 0;
+        }
+
+        .controles {
+            text-align: center;
+            color: white;
+        }
+
+        #total {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form name="fc">
+        <div class="container">
+            <div class="titulo">
+                ✈️ Vuelos Monroy - POO
+            </div>
+            <div class="columnas">
+                <div class="columna">
+                    <strong style="color:white">Origen</strong><br>
+                    <label><input type="radio" name="origen" value="madrid"> Madrid</label>
+                    <label><input type="radio" name="origen" value="malaga"> Málaga</label>
+                    <label><input type="radio" name="origen" value="valencia"> Valencia</label>
+                </div>
+                <div class="columna">
+                    <strong style="color:white">Destino</strong><br>
+                    <label><input type="radio" name="destino" value="frankfurt"> Frankfurt</label>
+                    <label><input type="radio" name="destino" value="milan"> Milán</label>
+                    <label><input type="radio" name="destino" value="londres"> Londres</label>
+                </div>
+            </div>
+            <div class="controles">
+                Nº de personas:
+                <select name="num" id="num">
+                    <option value="2">2</option>
+                    <option value="4">4</option>
+                    <option value="6">6</option>
+                </select>
+                <button type="button" onclick="app.calcular()">Calcular</button>
+                <br><br>
+                Total: <input type="text" id="total" placeholder="0€" readonly>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        /**
+         * VERSIÓN POO - Clase CalculadoraVuelos
+         * Encapsula toda la lógica de cálculo de vuelos
+         */
+        class CalculadoraVuelos {
+
+            // Precios por ruta (origen-destino)
+            static PRECIOS = {
+                'madrid-londres': 60,
+                'malaga-londres': 60,
+                'valencia-frankfurt': 60,
+                'default': 90
+            };
+
+            constructor(formName) {
+                this.form = document[formName];
+                this.origenes = document.getElementsByName('origen');
+                this.destinos = document.getElementsByName('destino');
+                this.selectNum = document.getElementById('num');
+                this.totalInput = document.getElementById('total');
+            }
+
+            /**
+             * Obtiene el valor del radio button seleccionado
+             * @param {NodeList} radios - Lista de radio buttons
+             * @returns {string|null} - Valor seleccionado o null
+             */
+            obtenerRadioSeleccionado(radios) {
+                for (let i = 0; i < radios.length; i++) {
+                    if (radios[i].checked) {
+                        return radios[i].value;
+                    }
+                }
+                return null;
+            }
+
+            /**
+             * Calcula el coste según origen y destino
+             * @returns {number} - Coste por persona
+             */
+            calcularCostePorPersona() {
+                const origen = this.obtenerRadioSeleccionado(this.origenes);
+                const destino = this.obtenerRadioSeleccionado(this.destinos);
+
+                if (!origen || !destino) {
+                    return null;
+                }
+
+                const ruta = `${origen}-${destino}`;
+                return CalculadoraVuelos.PRECIOS[ruta] || CalculadoraVuelos.PRECIOS['default'];
+            }
+
+            /**
+             * Obtiene el número de personas del select
+             * @returns {number}
+             */
+            obtenerNumeroPersonas() {
+                return parseInt(this.selectNum.value);
+            }
+
+            /**
+             * Muestra el total en el input
+             * @param {number} total
+             */
+            mostrarTotal(total) {
+                this.totalInput.value = total + '€';
+            }
+
+            /**
+             * Método principal: calcula y muestra el total
+             */
+            calcular() {
+                const costePorPersona = this.calcularCostePorPersona();
+
+                if (costePorPersona === null) {
+                    alert('Es obligatorio seleccionar el origen y destino del vuelo');
+                    return;
+                }
+
+                const numPersonas = this.obtenerNumeroPersonas();
+                const total = costePorPersona * numPersonas;
+
+                this.mostrarTotal(total);
+            }
+        }
+
+        // Instanciar la aplicación
+        const app = new CalculadoraVuelos('fc');
+    </script>
+</body>
+
+</html>

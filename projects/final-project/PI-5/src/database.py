@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import yaml
+from tools.pending_ai_events import init_pending_ai_events_schema
 
 # Rutas base y configuracion
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -30,19 +31,70 @@ cursor.execute('''
         veredicto_ia TEXT,
         accion_tomada TEXT,
         estado_mitigacion TEXT,
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        status TEXT DEFAULT 'LOGGED',
+        pending_command TEXT,
+        rationale TEXT,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        revert_command TEXT
     )
 ''')
 
-# Migración para bases de datos existentes: intentar añadir la nueva columna
+# Migración para bases de datos existentes: intentar añadir las nuevas columnas
 try:
     cursor.execute('ALTER TABLE logs ADD COLUMN estado_mitigacion TEXT')
 except sqlite3.OperationalError:
-    # La columna ya existe
     pass
+
+try:
+    cursor.execute("ALTER TABLE logs ADD COLUMN status TEXT DEFAULT 'LOGGED'")
+    cursor.execute("ALTER TABLE logs ADD COLUMN pending_command TEXT")
+    cursor.execute("ALTER TABLE logs ADD COLUMN rationale TEXT")
+except sqlite3.OperationalError:
+    pass
+
+try:
+    cursor.execute("ALTER TABLE logs ADD COLUMN revert_command TEXT")
+except sqlite3.OperationalError:
+    pass
+
+# Tabla de auditoria append-only para el Policy Engine.
+# Cierra el hueco "sin trazabilidad ordenada" del doc futuras_mejoras.md
+# (mapeo con NIST SP 800-53 AU-2 e ISO 27001 A.12.4).
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS audit_log (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ts DATETIME DEFAULT CURRENT_TIMESTAMP,
+        event_type TEXT,
+        device TEXT,
+        command TEXT,
+        classification TEXT,
+        decision_reason TEXT,
+        related_log_id INTEGER,
+        FOREIGN KEY (related_log_id) REFERENCES logs(id)
+    )
+''')
+
+# Triggers anti-modificacion: la integridad del log de auditoria depende de
+# que nadie pueda editarlo a posteriori desde la aplicacion.
+cursor.execute('''
+    CREATE TRIGGER IF NOT EXISTS audit_log_no_update
+    BEFORE UPDATE ON audit_log
+    BEGIN
+        SELECT RAISE(ABORT, 'audit_log is append-only');
+    END
+''')
+cursor.execute('''
+    CREATE TRIGGER IF NOT EXISTS audit_log_no_delete
+    BEFORE DELETE ON audit_log
+    BEGIN
+        SELECT RAISE(ABORT, 'audit_log is append-only');
+    END
+''')
 
 conn.commit()
 conn.close()
+
+init_pending_ai_events_schema(DB_PATH)
 
 print(f"[INFO] Base de datos preparada en: {DB_PATH}")
 

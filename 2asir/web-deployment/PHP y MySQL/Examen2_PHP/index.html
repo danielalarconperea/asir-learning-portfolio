@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Social - Gestión de Usuarios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 40px;
+        }
+        
+        .menu-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .menu-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border-color: #667eea;
+            background: white;
+        }
+        
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .card-desc {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .insertar { background-color: #e8f5e9; }
+        .buscar { background-color: #e3f2fd; }
+        .modificar { background-color: #fff3e0; }
+        .eliminar { background-color: #ffebee; }
+        
+        .insertar:hover .card-icon { color: #4caf50; }
+        .buscar:hover .card-icon { color: #2196f3; }
+        .modificar:hover .card-icon { color: #ff9800; }
+        .eliminar:hover .card-icon { color: #f44336; }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌐 Red Social Connect</h1>
+            <p class="subtitle">Sistema de gestión de usuarios y publicaciones</p>
+        </header>
+        
+        <div class="menu-grid">
+            <a href="insertar.php" class="menu-card insertar">
+                <span class="card-icon">👤</span>
+                <h3 class="card-title">Registrar Usuario</h3>
+                <p class="card-desc">Añadir nuevos usuarios a la red social</p>
+            </a>
+            
+            <a href="buscar.php" class="menu-card buscar">
+                <span class="card-icon">🔍</span>
+                <h3 class="card-title">Buscar Usuarios</h3>
+                <p class="card-desc">Encontrar usuarios y sus publicaciones</p>
+            </a>
+            
+            <a href="modificar.php" class="menu-card modificar">
+                <span class="card-icon">✏️</span>
+                <h3 class="card-title">Modificar Usuario</h3>
+                <p class="card-desc">Actualizar información de usuarios</p>
+            </a>
+            
+            <a href="eliminar.php" class="menu-card eliminar">
+                <span class="card-icon">🗑️</span>
+                <h3 class="card-title">Eliminar Usuario</h3>
+                <p class="card-desc">Remover usuarios del sistema</p>
+            </a>
+        </div>
+        
+        
+    </div>
+</body>
+</html>

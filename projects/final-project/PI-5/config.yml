@@ -7,8 +7,18 @@ aws:
   root_ca: "./certificados/root-CA.crt"
 
 mqtt:
-  topic_subscribe_logs: "seguridad/#"
-  topic_actions_base: "seguridad/acciones/"
+  # Suscripciones del coordinador (mensajes que llegan de los sensores)
+  topic_subscribe_telemetria: "seguridad/+/telemetria"
+  topic_subscribe_eventos:    "seguridad/+/evento"
+  topic_subscribe_respuestas: "seguridad/+/respuesta"
+  # Plantilla para publicar comandos al sensor objetivo ({device} se sustituye en runtime)
+  topic_publish_comando:      "seguridad/{device}/comando"
+
+signing:
+  # Clave privada Ed25519 para firmar comandos enviados a los sensores.
+  # Generar con: python scripts/generate_signing_keys.py
+  private_key_path: "./certificados/sentinel_pi5_signing.key"
+  ttl_seconds: 60  # Ventana de validez de cada comando firmado
 
 database:
   db_path: "data/soc_data.db"
@@ -18,7 +28,7 @@ web:
   port: 5000
 
 agent:
-  model_name: "gemini-2.5-flash"
+  model_name: "gemini-3-flash-preview"
 
 logging:
   file_path: "/tmp/coordinator_soc.log"
@@ -30,6 +40,5 @@ retention:
   max_days: 30          
   purge_on_insert: true 
 
-batch:
-  max_size: 10          # Flush when this many logs accumulate
-  flush_interval: 15    # Flush every N seconds regardless of queue size
+queue:
+  max_size: 100         # Backpressure limit per agent queue (triage, feedback)

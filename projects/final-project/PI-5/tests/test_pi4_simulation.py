@@ -21,11 +21,11 @@ KEY_PATH  = os.path.join(os.path.dirname(__file__), '..', config['aws']['key_pat
 ROOT_CA   = os.path.join(os.path.dirname(__file__), '..', config['aws']['root_ca'])
 
 TOPIC_LOGS_OUT = "seguridad/Pi4-Sensor-01/logs"
-TOPIC_CMD_IN   = "comandos/Pi4-Sensor-01/in"
-TOPIC_FB_OUT   = "comandos/Pi4-Sensor-01/out"
+TOPIC_CMD_IN   = "seguridad/acciones/Pi4-Sensor-01"
+TOPIC_FB_OUT   = "seguridad/acciones/Pi4-Sensor-01/out"
 
 # Callback cuando la Pi 5 (el Coordinator) nos manda un comando por MQTT
-def on_command_received(topic, payload, **kwargs):
+def on_command_received(topic, payload, dup=None, qos=None, retain=None, **kwargs):
     print(f"\n[📥 RECIBIDO DE LA PI 5] Topic: {topic}")
     try:
         data = json.loads(payload.decode('utf-8')) if isinstance(payload, bytes) else json.loads(payload)

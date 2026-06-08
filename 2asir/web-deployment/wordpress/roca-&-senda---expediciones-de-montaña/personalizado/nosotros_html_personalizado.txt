@@ -1,0 +1,344 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap');
+
+    :root {
+        --color-primary: #F97316;
+        --color-primary-light: #FFEDD5;
+        --color-secondary: #374151;
+        --color-dark: #1F2937;
+        --color-text: #4B5563;
+        --font-main: 'Inter', sans-serif;
+        --font-headings: 'Montserrat', sans-serif;
+    }
+
+    #rs-nosotros-container {
+        font-family: var(--font-main);
+        color: var(--color-text);
+        line-height: 1.6;
+    }
+
+    #rs-nosotros-container h1, 
+    #rs-nosotros-container h2, 
+    #rs-nosotros-container h3,
+    #rs-nosotros-container h4 {
+        font-family: var(--font-headings);
+        color: var(--color-secondary);
+    }
+
+    /* Header Section */
+    .rs-page-header {
+        background-color: var(--color-dark);
+        padding: 6rem 1rem;
+        text-align: center;
+        color: white;
+    }
+
+    .rs-page-header h1 {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        color: white;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+    }
+
+    .rs-page-header p {
+        color: #9CA3AF; /* gray-400 */
+        max-width: 600px;
+        margin: 0 auto;
+        font-size: 1.25rem;
+    }
+
+    /* Founder Section */
+    .rs-section {
+        max-width: 1200px;
+        margin: 6rem auto;
+        padding: 0 2rem;
+    }
+
+    .rs-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 4rem;
+        align-items: center;
+    }
+
+    .rs-image-block {
+        position: relative;
+    }
+
+    .rs-main-img {
+        width: 100%;
+        border-radius: 2rem;
+        filter: grayscale(100%);
+        transition: all 0.7s ease;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .rs-image-block:hover .rs-main-img {
+        filter: grayscale(0%);
+    }
+
+    .rs-badge {
+        position: absolute;
+        top: -1rem;
+        left: -1rem;
+        background: var(--color-primary);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+    .rs-badge span {
+        display: block;
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .rs-badge p {
+        margin: 0;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+    }
+
+    .rs-mini-features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .rs-mini-item {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .rs-mini-icon {
+        background: var(--color-primary-light);
+        color: var(--color-primary);
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+    }
+
+    /* Gallery Grid */
+    .rs-gallery {
+        margin-top: 8rem;
+    }
+
+    .rs-tag {
+        display: inline-flex;
+        align-items: center;
+        background: #FFF7ED;
+        color: var(--color-primary);
+        padding: 0.5rem 1.5rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 1rem;
+    }
+
+    .rs-gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: 280px;
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+
+    .rs-gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 2.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .rs-gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.7s ease;
+    }
+
+    .rs-gallery-item:hover img {
+        transform: scale(1.1);
+    }
+
+    .rs-gallery-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(31, 41, 55, 0.9), transparent);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 2rem;
+        color: white;
+    }
+
+    .rs-gallery-item:hover .rs-gallery-overlay {
+        opacity: 1;
+    }
+
+    .rs-col-span-2 { grid-column: span 2; }
+    .rs-row-span-2 { grid-row: span 2; }
+
+    /* Values Section */
+    .rs-values {
+        background: var(--color-primary);
+        margin-top: 8rem;
+        padding: 6rem 2rem;
+        color: white;
+        text-align: center;
+    }
+
+    .rs-values h2 {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 4rem;
+    }
+
+    .rs-values-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 3rem;
+    }
+
+    .rs-value-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 3rem;
+        border-radius: 2rem;
+        transition: transform 0.3s ease;
+    }
+
+    .rs-value-card:hover { transform: translateY(-10px); }
+
+    .rs-value-card svg {
+        margin-bottom: 1.5rem;
+        width: 40px;
+        height: 40px;
+    }
+
+    .rs-value-card h3 { color: white; margin-bottom: 1rem; }
+    .rs-value-card p { color: #fed7aa; margin: 0; }
+
+    @media (max-width: 768px) {
+        .rs-gallery-grid { grid-template-columns: 1fr; grid-auto-rows: 300px; }
+        .rs-col-span-2, .rs-row-span-2 { grid-column: span 1; grid-row: span 1; }
+        .rs-mini-features { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div id="rs-nosotros-container">
+    <header class="rs-page-header">
+        <h1>Nuestra Historia</h1>
+        <p>Más de 15 años guiando aventuras y formando escaladores.</p>
+    </header>
+
+    <section class="rs-section">
+        <div class="rs-grid-2">
+            <div class="rs-image-block">
+                <img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&q=80&w=800" alt="Dani y Nacho" class="rs-main-img">
+                <div class="rs-badge">
+                    <span>18+</span>
+                    <p>Años de Exp.</p>
+                </div>
+            </div>
+            <div>
+                <h2>Guías por vocación, aventureros por pasión</h2>
+                <p>Roca & Senda nació en 2006 de la mano de Dani y Nacho, dos guías titulados TD2 de Alta Montaña y Escalada que compartían un sueño: acercar la majestuosidad de las cumbres a todo aquel con ganas de aprender.</p>
+                <p>Lo que empezó como pequeñas salidas de fin de semana en la Sierra de Guadarrama se ha convertido en una agencia de referencia con expediciones internacionales y cursos técnicos de alto rendimiento.</p>
+                
+                <div class="rs-mini-features">
+                    <div class="rs-mini-item">
+                        <div class="rs-mini-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                        </div>
+                        <div>
+                            <h4>Titulados</h4>
+                            <p style="font-size: 0.75rem;">Formación oficial AEGM</p>
+                        </div>
+                    </div>
+                    <div class="rs-mini-item">
+                        <div class="rs-mini-icon" style="background: #F3F4F6; color: #1F2937;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                        </div>
+                        <div>
+                            <h4>Sostenibles</h4>
+                            <p style="font-size: 0.75rem;">Compromiso ambiental</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rs-gallery">
+            <div style="text-align: center;">
+                <div class="rs-tag">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 0.5rem;"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                    Nuestro Día a Día
+                </div>
+                <h2 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 1rem;">Momentos en la Cumbre</h2>
+                <p style="max-width: 500px; margin: 0 auto;">Una mirada real a nuestras expediciones. Sin filtros, solo montaña y superación.</p>
+            </div>
+
+            <div class="rs-gallery-grid">
+                <div class="rs-gallery-item rs-col-span-2 rs-row-span-2">
+                    <img src="https://images.unsplash.com/photo-1533224860662-358d5c62b647?auto=format&fit=crop&q=80&w=800" alt="Expedición">
+                    <div class="rs-gallery-overlay">
+                        <h4>Amanecer en el Refugio</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.8;">Dani preparando la ruta del día en el Pirineo.</p>
+                    </div>
+                </div>
+                <div class="rs-gallery-item rs-col-span-2">
+                    <img src="https://images.unsplash.com/photo-1522163182402-834f871fd851?auto=format&fit=crop&q=80&w=800" alt="Escalada">
+                    <div class="rs-gallery-overlay" style="background: linear-gradient(to top, rgba(249, 115, 22, 0.9), transparent);">
+                        <h4>Cursos de Iniciación</h4>
+                        <p style="font-size: 0.9rem; opacity: 0.8;">Nacho asegurando a alumnos en granito.</p>
+                    </div>
+                </div>
+                <div class="rs-gallery-item">
+                    <img src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&q=80&w=800" alt="Cima">
+                    <div class="rs-gallery-overlay" style="background: rgba(0,0,0,0.5); align-items: center; justify-content: center; text-align: center;">
+                        <span style="border: 1px solid white; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.6rem; font-weight: bold; text-transform: uppercase;">Cima Mulhacén</span>
+                    </div>
+                </div>
+                <div class="rs-gallery-item">
+                    <img src="https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?auto=format&fit=crop&q=80&w=800" alt="Valles">
+                    <div class="rs-gallery-overlay" style="background: rgba(0,0,0,0.5); align-items: center; justify-content: center; text-align: center;">
+                        <span style="border: 1px solid white; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.6rem; font-weight: bold; text-transform: uppercase;">Valles Glaciares</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="rs-values">
+        <div class="rs-values-grid">
+            <div class="rs-value-card">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <h3>Cercanía</h3>
+                <p>Grupos reducidos para garantizar una atención personalizada y un aprendizaje real.</p>
+            </div>
+            <div class="rs-value-card">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <h3>Seguridad</h3>
+                <p>Protocolos de gestión de riesgos actualizados y supervisión constante en cada paso.</p>
+            </div>
+            <div class="rs-value-card">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 13V2l8 4-8 4Z"/><path d="m20.5 10.3 1.5 1.5c1.1 1.1 1.1 2.9 0 4l-8 8c-1.1 1.1-2.9 1.1-4 0l-8-8c-1.1-1.1-1.1-2.9 0-4l1.5-1.5"/></svg>
+                <h3>Respeto</h3>
+                <p>No solo guiamos, enseñamos a amar y proteger las montañas que nos acogen.</p>
+            </div>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,106 @@
+# ============================================================================
+# ANSIBLE PLAYBOOK - Instalación de Apache en Local
+# Práctica Docker - 2º ASIR
+# ============================================================================
+#
+# Este playbook instala y configura Apache2 en la máquina local.
+# Es idempotente: se puede ejecutar múltiples veces sin efectos adversos.
+#
+# Uso:
+#   ansible-playbook install_apache.yml --ask-become-pass
+#
+# ============================================================================
+
+---
+- name: Instalación y Configuración de Apache Local
+  hosts: localhost
+  become: yes
+  connection: local
+  
+  vars:
+    apache_port: 80
+    document_root: /var/www/html
+    
+  tasks:
+    # -------------------------------------------------------------------
+    # TAREA 1: Actualización del sistema
+    # -------------------------------------------------------------------
+    - name: Actualizar caché de paquetes apt
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600  # No actualizar si se hizo hace menos de 1 hora
+      tags:
+        - setup
+        - update
+
+    # -------------------------------------------------------------------
+    # TAREA 2: Instalación de Apache
+    # -------------------------------------------------------------------
+    - name: Asegurar que Apache2 esté instalado
+      apt:
+        name: apache2
+        state: present
+      tags:
+        - install
+        - apache
+
+    # -------------------------------------------------------------------
+    # TAREA 3: Habilitar módulos necesarios
+    # -------------------------------------------------------------------
+    - name: Habilitar módulo rewrite
+      apache2_module:
+        name: rewrite
+        state: present
+      notify: Reiniciar Apache
+      tags:
+        - configure
+        - modules
+
+    - name: Habilitar módulo headers
+      apache2_module:
+        name: headers
+        state: present
+      notify: Reiniciar Apache
+      tags:
+        - configure
+        - modules
+
+    # -------------------------------------------------------------------
+    # TAREA 4: Asegurar que el servicio esté activo
+    # -------------------------------------------------------------------
+    - name: Iniciar y habilitar servicio Apache
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+      tags:
+        - service
+        - apache
+
+    # -------------------------------------------------------------------
+    # TAREA 5: Verificación básica
+    # -------------------------------------------------------------------
+    - name: Verificar que Apache responde en el puerto {{ apache_port }}
+      uri:
+        url: "http://localhost:{{ apache_port }}"
+        status_code: 200
+      register: apache_check
+      ignore_errors: yes
+      tags:
+        - verify
+
+    - name: Mostrar estado de la verificación
+      debug:
+        msg: "Apache está funcionando correctamente en el puerto {{ apache_port }}"
+      when: apache_check is succeeded
+      tags:
+        - verify
+
+  # -----------------------------------------------------------------------
+  # HANDLERS - Acciones que se ejecutan cuando son notificadas
+  # -----------------------------------------------------------------------
+  handlers:
+    - name: Reiniciar Apache
+      service:
+        name: apache2
+        state: restarted

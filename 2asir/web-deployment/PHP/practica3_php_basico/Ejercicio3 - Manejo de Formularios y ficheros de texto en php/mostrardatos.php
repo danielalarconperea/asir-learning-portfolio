@@ -26,14 +26,9 @@
         
         if ($file) {
             echo "<pre>";
-            // Leer línea por línea hasta el final del archivo
-            // while (($linea = fgets($file)) !== false) {
-            //     // Usamos htmlspecialchars para evitar problemas si hay HTML en el texto
-            //     echo htmlspecialchars($linea);
-            // }
             while (!feof($file)) {
-            $linea = fgets($file);
-            echo "$linea";
+                $linea = fgets($file);
+                echo "$linea";
             }
             fclose($file);
             echo "</pre>";

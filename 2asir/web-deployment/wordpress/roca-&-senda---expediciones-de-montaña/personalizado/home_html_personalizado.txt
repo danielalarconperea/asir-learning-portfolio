@@ -1,0 +1,302 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap');
+
+    :root {
+        --color-primary: #F97316;
+        --color-primary-dark: #EA580C;
+        --color-secondary: #374151;
+        --color-text: #4B5563;
+        --font-main: 'Inter', sans-serif;
+        --font-headings: 'Montserrat', sans-serif;
+    }
+
+    #rs-homepage-container {
+        font-family: var(--font-main);
+        color: var(--color-text);
+        line-height: 1.6;
+        /* Fondo removido para mezclar con el fondo blanco de WordPress */
+    }
+
+    #rs-homepage-container h1, 
+    #rs-homepage-container h2, 
+    #rs-homepage-container h3 {
+        font-family: var(--font-headings);
+        color: var(--color-secondary);
+    }
+
+    /* Hero Section */
+    .rs-hero {
+        position: relative;
+        height: 70vh;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        background-image: linear-gradient(rgba(31, 41, 55, 0.4), rgba(31, 41, 55, 0.4)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1920');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        border-radius: 2.5rem;
+        margin: 0 0 4rem 0; /* Ajustado margen para integración */
+        overflow: hidden;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .rs-hero-content {
+        max-width: 800px;
+        margin-left: 10%;
+        padding: 2rem;
+    }
+
+    .rs-hero h1 {
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        color: white;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+    }
+
+    .rs-hero h1 span {
+        color: var(--color-primary);
+    }
+
+    .rs-hero p {
+        font-size: 1.25rem;
+        margin-bottom: 2.5rem;
+        font-weight: 300;
+        opacity: 0.9;
+    }
+
+    .rs-btn-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .rs-btn {
+        padding: 1rem 2.5rem;
+        border-radius: 9999px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .rs-btn-primary {
+        background-color: var(--color-primary);
+        color: white;
+        box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.3);
+    }
+
+    .rs-btn-primary:hover {
+        background-color: white;
+        color: var(--color-primary);
+        transform: translateY(-2px);
+    }
+
+    .rs-btn-outline {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .rs-btn-outline:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+
+    /* Features Section */
+    .rs-features {
+        padding: 6rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .rs-card {
+        padding: 3rem 2rem;
+        border-radius: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+
+    .rs-card:hover {
+        background-color: #FFF7ED; /* orange-50 */
+        transform: translateY(-5px);
+    }
+
+    .rs-icon-box {
+        width: 64px;
+        height: 64px;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .rs-card:nth-child(odd) .rs-icon-box { background: #FFEDD5; color: var(--color-primary); }
+    .rs-card:nth-child(even) .rs-icon-box { background: #F3F4F6; color: var(--color-secondary); }
+
+    .rs-card:hover .rs-icon-box {
+        background: var(--color-primary);
+        color: white;
+    }
+
+    .rs-card:nth-child(even):hover .rs-icon-box {
+        background: var(--color-secondary);
+    }
+
+    .rs-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Featured Promo */
+    .rs-promo {
+        background-color: #F9FAFB; /* Gris muy suave que resalta sobre blanco */
+        padding: 6rem 2rem;
+        border-radius: 3.5rem;
+        margin: 2rem 0;
+        border: 1px solid #F3F4F6;
+    }
+
+    .rs-promo-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 4rem;
+        align-items: center;
+    }
+
+    .rs-promo-tag {
+        color: var(--color-primary);
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+    }
+
+    .rs-promo h2 {
+        font-size: 3rem;
+        margin: 1rem 0 1.5rem;
+    }
+
+    .rs-promo p {
+        font-size: 1.125rem;
+        margin-bottom: 2rem;
+    }
+
+    .rs-checklist {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+
+    .rs-checklist li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        font-weight: 500;
+        color: var(--color-secondary);
+    }
+
+    .rs-check-icon {
+        width: 20px;
+        height: 20px;
+        background: #FFEDD5;
+        color: var(--color-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .rs-promo-img {
+        width: 100%;
+        border-radius: 2.5rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    }
+
+    @media (max-width: 768px) {
+        .rs-hero { height: auto; padding: 4rem 0; margin: 0; border-radius: 0; }
+        .rs-hero-content { margin-left: 0; text-align: center; }
+        .rs-btn-group { justify-content: center; }
+        .rs-promo { margin: 0; border-radius: 0; }
+    }
+</style>
+
+<div id="rs-homepage-container">
+    <!-- Hero Section -->
+    <section class="rs-hero">
+        <div class="rs-hero-content">
+            <h1>Tu próxima aventura comienza en la <span>cima</span>.</h1>
+            <p>Expediciones guiadas de trekking y cursos de escalada técnica. Vive la montaña con seguridad.</p>
+            <div class="rs-btn-group">
+                <a href="/servicios" class="rs-btn rs-btn-primary">Ver Rutas</a>
+                <a href="/contacto" class="rs-btn rs-btn-outline">Contactar Ahora</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="rs-features">
+        <div class="rs-card">
+            <div class="rs-icon-box">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+            <h3>Seguridad Total</h3>
+            <p>Guías de alta montaña titulados y material homologado para todas nuestras actividades.</p>
+        </div>
+
+        <div class="rs-card">
+            <div class="rs-icon-box">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"></path></svg>
+            </div>
+            <h3>Todos los Niveles</h3>
+            <p>Desde rutas familiares de senderismo hasta ascensiones técnicas y cursos de escalada.</p>
+        </div>
+
+        <div class="rs-card">
+            <div class="rs-icon-box">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z"></path><path d="M12 18v-3"></path><path d="M16 14v1"></path><path d="M8 14v1"></path></svg>
+            </div>
+            <h3>Ecoturismo</h3>
+            <p>Respetamos el entorno natural aplicando políticas de "no dejar rastro" en cada expedición.</p>
+        </div>
+    </section>
+
+    <!-- Featured Promo -->
+    <section class="rs-promo">
+        <div class="rs-promo-grid">
+            <div>
+                <span class="rs-promo-tag">Destacado</span>
+                <h2>Travesía de los Pirineos</h2>
+                <p>Nuestra expedición más popular. 5 días cruzando los paisajes más salvajes del Pirineo Aragonés. Refugios de montaña, lagos glaciares y la mejor compañía.</p>
+                <ul class="rs-checklist">
+                    <li><span class="rs-check-icon">✓</span> Guías locales expertos</li>
+                    <li><span class="rs-check-icon">✓</span> Material colectivo incluido</li>
+                    <li><span class="rs-check-icon">✓</span> Seguro de accidentes</li>
+                </ul>
+                <a href="/servicios" style="color: var(--color-primary); font-weight: bold; text-decoration: none; display: flex; align-items: center;">
+                    Ver detalles del catálogo <span style="margin-left: 0.5rem">→</span>
+                </a>
+            </div>
+            <div>
+                <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=800" alt="Trekking en Pirineos" class="rs-promo-img">
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+<h3 style="color: white">Expediciones guiadas de trekking y cursos de escalada técnica. Vive la montaña con seguridad.</h3>

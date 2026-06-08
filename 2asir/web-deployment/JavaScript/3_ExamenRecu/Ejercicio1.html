@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>Problema1</title>
+    <meta charset="utf-8">
+    <style>
+
+
+    </style>
+</head>
+
+<body>
+
+    <form name="fc">
+        <div id="a">
+            <div id="b">
+                <h1>Mini Concurso Cuestionario</h1>
+                <h2>Responde las Preguntas</h2>
+            </div>
+            <div id="c">
+                <span>Pregunta 1:¿Cuál es el mayor número?</span>
+                <input type="number" name="num" max="100" min="1">
+                <input type="number" name="num" max="100" min="1">
+                <input type="number" name="num" max="100" min="1">
+                <input type="number" name="num" max="100" min="1">
+            </div><br>
+            <input type="button" value="Calcular" onclick="calcular()">
+            <div id="d">
+                <p id="resultado"></p>
+            </div>
+        </div>
+    </form>
+    <script>
+        var form = document.getElementById('a');
+        var num = document.getElementsByName('num');
+        var resultado = document.getElementById('resultado');
+        for(i=0; i<3;i++){
+            var numeroRandom = Math.floor(Math.random() * 100) + 1;
+            num[i].value = numeroRandom
+        }
+
+        function calcular() {
+            var v0 = Number(num[0].value);
+            var v1 = Number(num[1].value);
+            var v2 = Number(num[2].value);
+            var respuesta = Number(num[3].value);
+
+            var numeroMayor = 0;
+            if (v0 >= v1 && v0 >= v2) {
+                numeroMayor = v0;
+            } else if (v1 >= v2 && v1 >= v0) {
+                numeroMayor = v1;
+            } else {
+                numeroMayor = v2;
+            }
+
+            if (numeroMayor === respuesta) {
+                resultado.innerHTML = "¡Has acertado! El mayor es " + numeroMayor;
+            } else {
+                resultado.innerHTML = "Has fallado, inténtalo de nuevo. El mayor era " + numeroMayor;
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>Problema 2 - CORREGIDO</title>
+    <meta charset="utf-8">
+    <style>
+        .error {
+            color: red;
+            margin-left: 5px;
+            font-size: 0.9em;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 20px auto;
+            color: white;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        select {
+            padding: 5px;
+            margin: 5px 0;
+            width: 50%;
+        }
+        #Form{
+            background-color: #39823c;
+            padding: 50px;            
+        }
+        #botonB {
+            background-color: #ffffff;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form id="Form" name="fc">
+        <h1>Datos del comprador</h1>
+        Nombre: <input type="text" name="nombre" id="nombre" placeholder="Escribe tu nombre completo">
+        <span class="error" id="nombre1"></span>
+        <br><br>
+
+        Email: <input type="email" name="gmail" id="gmail" placeholder="ejemplo@um.es">
+        <span class="error" id="gmail1"></span>
+        <br><br>
+
+        Teléfono: <input type="text" name="telefono" id="telefono" placeholder="Ej: +34612345678">
+        <span class="error" id="telefono1"></span>
+        <br><br>
+
+        País: <input type="text" name="pais" id="pais">
+        <span class="error" id="pais1"></span>
+        <br><br>
+
+
+        <h1>Datos de tarjeta de crédito o débito</h1>
+
+        Número: <input type="text" name="numTarjeta" id="numTarjeta" placeholder="Ej: 5555-4444-3333-2222">
+        <span class="error" id="numTarjeta1"></span>
+        <br><br>
+
+        Nombre: <input type="text" name="nomTarjeta" id="nomTarjeta" placeholder="Nombre que figura en la tarjeta">
+        <span class="error" id="nomTarjeta1"></span>
+        <br><br>
+
+        <hr>
+
+
+        <input type="button" id="botonB" value="Aceptar" onclick="enviar()">
+    </form>
+
+    <script>
+        var errorNombre = document.getElementById('nombre1');
+        var errorGmail = document.getElementById('gmail1');
+        var errorTelefono = document.getElementById('telefono1');
+        var errorPais = document.getElementById('pais1');
+        var errorNumTarjeta = document.getElementById('numTarjeta1');
+        var errorNomTarjeta = document.getElementById('nomTarjeta1');
+
+        function enviar() {
+            var nombre = document.getElementById('nombre').value.trim();
+            var gmail = document.getElementById('gmail').value.trim();
+            var telefono = document.getElementById('telefono').value.trim();
+            var pais = document.getElementById('pais').value.trim();
+            var numTarjeta = document.getElementById('numTarjeta').value.trim();
+            var nomTarjeta = document.getElementById('nomTarjeta').value.trim();
+
+            var formularioValido = true;
+
+            if (nombre === '') {
+                errorNombre.innerHTML = 'Campo Obligatorio';
+                formularioValido = false;
+            } else {
+                errorNombre.innerHTML = '';
+            }
+
+            if (gmail === '') {
+                errorGmail.innerHTML = 'Campo Obligatorio';
+                formularioValido = false;
+            } else if (!gmail.includes('@') || !gmail.includes('.') || gmail.length < 6) {
+                errorGmail.innerHTML = 'Introduce una dirección válida';
+                formularioValido = false;
+            } else {
+                errorGmail.innerHTML = '';
+            }
+
+            if (telefono === '') {
+                errorTelefono.innerHTML = 'Campo Obligatorio';
+                formularioValido = false;
+            } else if (telefono.length < 11 || telefono.length > 13) {
+                errorTelefono.innerHTML = 'Debe tener 9 dígitos más el código de país ej: +34612345678';
+                formularioValido = false;
+            } else {
+                errorTelefono.innerHTML = '';
+            }
+
+            if (pais === '') {
+                errorPais.innerHTML = 'Campo Obligatorio';
+                formularioValido = false;
+            } else {
+                errorPais.innerHTML = '';
+            }
+
+            if (numTarjeta === '') {
+                errorNumTarjeta.innerHTML = 'Campo Obligatorio';
+                formularioValido = false;
+            } else if (!/^\d{4}-\d{4}-\d{4}-\d{4}$/.test(numTarjeta)) {
+                errorNumTarjeta.innerHTML = 'Formato: XXXX-XXXX-XXXX-XXXX';
+                formularioValido = false;
+            } else {
+                errorNumTarjeta.innerHTML = '';
+            }
+
+            if (nomTarjeta === '') {
+                errorNomTarjeta.innerHTML = 'Campo Obligatorio';
+                formularioValido = false;
+            } else {
+                errorNomTarjeta.innerHTML = '';
+            }
+
+            if (formularioValido) {
+                alert('Formulario enviado correctamente');
+                document.getElementById('Form').submit();
+            }
+        }
+    </script>
+</body>
+
+</html>

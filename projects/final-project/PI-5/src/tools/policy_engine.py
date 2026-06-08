@@ -1,0 +1,518 @@
+"""
+Policy Engine — Sentinel-IT (PI-5)
+
+Sustituye la blacklist por substring de iot_tools.py por una clasificacion de
+comandos en cuatro niveles de riesgo (SAFE_READ / LOW / HIGH / CRITICAL).
+
+Filosofia:
+    * Lectura pura se ejecuta sin friccion (incluso `sudo cat /var/log/...`).
+    * Escritura acotada pasa por HITL con etiqueta de nivel.
+    * Solo lo destructivo no reversible exige doble confirmacion explicita
+      desde el dashboard (CRITICAL).
+    * Lo desconocido NO se deniega automaticamente: cae a LOW y llega al
+      humano. Esto es deliberado para no entorpecer al agente IA.
+
+Capas adicionales:
+    * Firma Ed25519 en el envio y verificacion preventiva en PI-4.
+    * audit(...)  -> escritura inmutable en la tabla `audit_log`.
+"""
+
+from __future__ import annotations
+
+import logging
+import os
+import re
+import shlex
+import sqlite3
+import time
+from dataclasses import dataclass, field
+from enum import IntEnum
+from typing import Optional
+
+import yaml
+
+logger = logging.getLogger("CoordinatorSOC")
+
+# ---------------------------------------------------------------------------
+# Configuracion (ruta a la BD)
+# ---------------------------------------------------------------------------
+_BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+_CONFIG_PATH = os.path.join(_BASE_DIR, 'config.yml')
+try:
+    with open(_CONFIG_PATH, "r") as _f:
+        _config = yaml.safe_load(_f)
+    DB_PATH = os.path.join(_BASE_DIR, _config['database']['db_path'])
+except Exception:
+    DB_PATH = os.path.join(_BASE_DIR, "soc_data.db")
+
+
+# ---------------------------------------------------------------------------
+# Niveles
+# ---------------------------------------------------------------------------
+class RiskLevel(IntEnum):
+    SAFE_READ = 0
+    LOW = 1
+    HIGH = 2
+    CRITICAL = 3
+
+    def label(self) -> str:
+        return self.name
+
+
+@dataclass
+class Classification:
+    level: RiskLevel
+    parsed_verb: str
+    reasons: list = field(default_factory=list)
+    is_executable_via_interpreter: bool = False
+
+    def to_dict(self) -> dict:
+        return {
+            "level": self.level.label(),
+            "verb": self.parsed_verb,
+            "reasons": list(self.reasons),
+            "interpreter": self.is_executable_via_interpreter,
+        }
+
+
+@dataclass
+class Decision:
+    allow_direct: bool          # True solo para SAFE_READ
+    classification: Classification
+
+    @property
+    def level(self) -> RiskLevel:
+        return self.classification.level
+
+
+# ---------------------------------------------------------------------------
+# Catalogos de verbos (heuristica, no whitelist cerrada)
+# ---------------------------------------------------------------------------
+_READ_VERBS = {
+    "cat", "ls", "ll", "grep", "egrep", "fgrep", "ss", "netstat", "ps",
+    "journalctl", "tail", "head", "less", "more", "id", "whoami", "uname",
+    "df", "du", "free", "uptime", "who", "w", "last", "stat", "file", "wc",
+    "hostname", "dig", "host", "nslookup", "ping", "traceroute", "tracepath",
+    "awk", "cut", "sort", "uniq", "tr", "env", "printenv", "true", "echo",
+    "date", "lsblk", "lsof", "lspci", "lsusb", "iostat", "vmstat", "mpstat",
+    "tcpdump", "find",  # solo lectura aunque sea sudo, salvo flags mutantes
+}
+
+_BOUNDED_WRITE_VERBS = {
+    "iptables", "ip6tables", "ufw",
+}
+
+_BROAD_WRITE_VERBS = {
+    "systemctl", "service", "kill", "pkill", "mount", "umount",
+    "chmod", "chown", "useradd", "usermod", "passwd", "iptables-restore",
+    "ip", "tc", "sysctl", "modprobe", "rmmod",
+}
+
+_DESTRUCTIVE_VERBS = {
+    "rm", "dd", "mkfs", "shutdown", "reboot", "halt", "poweroff",
+    "userdel", "fdisk", "parted", "wipefs", "shred", "init",
+}
+
+_INTERPRETER_VERBS = {"bash", "sh", "zsh", "dash", "ash", "php", "python",
+                     "python3", "perl", "ruby", "node", "lua", "eval", "exec"}
+_INTERPRETER_EXEC_FLAGS = {"-c", "-e", "-r", "--command", "-x"}  # ejecucion en linea
+
+_SHELL_METACHARS = (";", "&&", "||", "`", "$(", ">", "|")  # presencia cruda en str
+# (las pipes legitimas dentro de un solo verbo de lectura son frecuentes y se
+#  tratan especial en la deteccion)
+
+_SENSITIVE_WILDCARD_PATHS = ("/etc/", "/boot/", "/sys/", "/proc/", "/var/lib/",
+                            "/dev/sd", "/dev/nvme", "/dev/disk", "/root/")
+
+_IP_REGEX = re.compile(r"^\d{1,3}(\.\d{1,3}){3}$")
+
+
+# ---------------------------------------------------------------------------
+# Clasificador
+# ---------------------------------------------------------------------------
+def classify(cmd: str) -> Classification:
+    """
+    Devuelve una Classification con el nivel inferido del comando.
+
+    No lanza excepciones: cualquier fallo de parseo se traduce a HIGH con la
+    razon documentada. La idea es que el humano siempre pueda decidir.
+    """
+    raw = (cmd or "").strip()
+    if not raw:
+        return Classification(
+            level=RiskLevel.HIGH,
+            parsed_verb="",
+            reasons=["comando vacio: tratado como HIGH para forzar revision"],
+        )
+
+    reasons: list = []
+
+    pipe_segments = _split_unquoted_pipe(raw)
+    if len(pipe_segments) > 1:
+        segment_classes = [classify(segment) for segment in pipe_segments]
+        if all(seg.level == RiskLevel.SAFE_READ for seg in segment_classes):
+            joined_verbs = " | ".join(seg.parsed_verb for seg in segment_classes)
+            return Classification(
+                level=RiskLevel.SAFE_READ,
+                parsed_verb=joined_verbs,
+                reasons=[
+                    "pipeline compuesto solo por comandos de lectura",
+                    *[reason for seg in segment_classes for reason in seg.reasons],
+                ],
+            )
+        highest = max(seg.level for seg in segment_classes)
+        return Classification(
+            level=max(RiskLevel.HIGH, highest),
+            parsed_verb=segment_classes[0].parsed_verb if segment_classes else "",
+            reasons=[
+                "pipeline contiene tramo no clasificado como lectura pura",
+                *[reason for seg in segment_classes for reason in seg.reasons],
+            ],
+        )
+
+    # --- 1) Tokenizacion con shlex (modo POSIX) ---
+    try:
+        tokens = shlex.split(raw, posix=True)
+    except ValueError as exc:
+        # Comillas mal cerradas, escapes raros... Mejor llega al humano.
+        return Classification(
+            level=RiskLevel.HIGH,
+            parsed_verb=raw.split()[0] if raw else "",
+            reasons=[f"shlex no pudo parsear: {exc}"],
+        )
+
+    if not tokens:
+        return Classification(
+            level=RiskLevel.HIGH,
+            parsed_verb="",
+            reasons=["sin tokens tras parseo"],
+        )
+
+    # --- 2) Saltar sudo y env ---
+    sudo_present = False
+    while tokens and tokens[0] in ("sudo", "env"):
+        if tokens[0] == "sudo":
+            sudo_present = True
+        tokens.pop(0)
+    if not tokens:
+        return Classification(
+            level=RiskLevel.HIGH,
+            parsed_verb="sudo" if sudo_present else "",
+            reasons=["sudo/env aislado, sin verbo siguiente"],
+        )
+
+    verb_full = tokens[0]
+    verb = os.path.basename(verb_full)  # admite /usr/bin/php o php
+    args = tokens[1:]
+
+    # --- 3) Nivel base por verbo ---
+    if verb in _READ_VERBS:
+        level = RiskLevel.SAFE_READ
+        reasons.append(f"verbo de lectura: {verb}")
+    elif verb in _DESTRUCTIVE_VERBS:
+        level = RiskLevel.CRITICAL
+        reasons.append(f"verbo destructivo: {verb}")
+    elif verb in _BROAD_WRITE_VERBS:
+        level, sub_reasons = _classify_broad_write(verb, args)
+        reasons.extend(sub_reasons)
+    elif verb in _BOUNDED_WRITE_VERBS:
+        level, sub_reasons = _classify_bounded_write(verb, args)
+        reasons.extend(sub_reasons)
+    elif verb in _INTERPRETER_VERBS:
+        level = RiskLevel.LOW
+        reasons.append(f"interprete: {verb}")
+    else:
+        # Desconocido: NUNCA DENY automatico. Cae a LOW. (Respuesta a L63
+        # del doc futuras_mejoras.md.)
+        level = RiskLevel.LOW
+        reasons.append(f"verbo desconocido '{verb}': tratado como LOW")
+
+    if sudo_present:
+        reasons.append("ejecucion con sudo")
+
+    # --- 4) Modificadores (escalan nivel) ---
+    is_interp = False
+    if verb in _INTERPRETER_VERBS:
+        # interprete con flag de ejecucion -c / -e / -r -> +2
+        if any(a in _INTERPRETER_EXEC_FLAGS for a in args):
+            is_interp = True
+            level = _bump(level, 2)
+            reasons.append("interprete con ejecucion en linea (-c/-e/-r): +2")
+
+    # Metacaracteres en la cadena original (no en tokens, porque shlex los
+    # consume). Un `|` o `>` cruzando un solo comando ya es senal de algo
+    # mas complejo que conviene escalar.
+    extra = _detect_shell_metachars(raw)
+    if extra:
+        level = _bump(level, 1)
+        reasons.append(f"metacaracteres de shell detectados: {', '.join(extra)}")
+
+    # Wildcards en paths sensibles
+    if _hits_sensitive_wildcard(args):
+        level = _bump(level, 1)
+        reasons.append("wildcard sobre path sensible (/etc, /boot, /dev/sd...): +1")
+
+    # Heuristica especifica: `find ... -delete` o `find ... -exec` con verbo destructivo
+    if verb == "find":
+        if "-delete" in args:
+            level = max(level, RiskLevel.HIGH)
+            reasons.append("find con -delete")
+        if "-exec" in args:
+            level = max(level, RiskLevel.HIGH)
+            reasons.append("find con -exec")
+    # `sed -i` muta archivos
+    if verb == "sed" and any(a == "-i" or a.startswith("-i") for a in args):
+        level = max(level, RiskLevel.HIGH)
+        reasons.append("sed con -i (modificacion in-place)")
+
+    # Verbo destructivo en cualquier posicion del comando (cubre encadenamientos
+    # tipo `ls /tmp; rm /tmp/foo` o `cmd && shutdown`).
+    extra_destructive = _scan_destructive_anywhere(raw, primary=verb)
+    if extra_destructive:
+        level = RiskLevel.CRITICAL
+        reasons.append(
+            f"verbo destructivo encadenado: {', '.join(extra_destructive)}"
+        )
+
+    return Classification(
+        level=level,
+        parsed_verb=verb,
+        reasons=reasons,
+        is_executable_via_interpreter=is_interp,
+    )
+
+
+def _classify_bounded_write(verb: str, args: list) -> tuple[RiskLevel, list]:
+    """
+    Casos especiales de iptables/ip6tables/ufw:
+        -L / -S / --list / --check   -> SAFE_READ
+        -F / --flush sin tabla       -> CRITICAL
+        -A / -I / -D INPUT -s <IP>   -> LOW
+        cualquier otra cosa          -> HIGH
+    """
+    reasons: list = []
+    if not args:
+        reasons.append(f"{verb} sin argumentos: HIGH por defecto")
+        return RiskLevel.HIGH, reasons
+
+    flat = " ".join(args)
+    # Solo-lectura
+    read_flags = ("-L", "-S", "--list", "--check", "-V", "--version")
+    if any(a in read_flags for a in args):
+        reasons.append(f"{verb} en modo lectura ({flat})")
+        return RiskLevel.SAFE_READ, reasons
+
+    # Flush global (peligroso)
+    if "-F" in args or "--flush" in args:
+        # Si va seguido de un nombre de cadena especifica (INPUT/FORWARD/OUTPUT)
+        idx = args.index("-F" if "-F" in args else "--flush")
+        target = args[idx + 1] if idx + 1 < len(args) else ""
+        if target in ("INPUT", "OUTPUT", "FORWARD"):
+            reasons.append(f"{verb} flush de cadena especifica: HIGH")
+            return RiskLevel.HIGH, reasons
+        reasons.append(f"{verb} flush sin cadena: CRITICAL")
+        return RiskLevel.CRITICAL, reasons
+
+    # Append/insert/delete contra una IP
+    if any(f in args for f in ("-A", "-I", "-D", "--append", "--insert", "--delete")):
+        # Comprobamos que haya una IP en los args (parametro -s <ip>)
+        has_ip = any(_IP_REGEX.match(a) for a in args)
+        if has_ip:
+            reasons.append(f"{verb} regla contra IP concreta: LOW")
+            return RiskLevel.LOW, reasons
+        reasons.append(f"{verb} regla sin IP concreta: HIGH")
+        return RiskLevel.HIGH, reasons
+
+    reasons.append(f"{verb} con flags no clasificados ({flat}): HIGH")
+    return RiskLevel.HIGH, reasons
+
+
+def _classify_broad_write(verb: str, args: list) -> tuple[RiskLevel, list]:
+    """Subcomandos de solo estado dentro de herramientas normalmente mutantes."""
+    if verb == "systemctl" and args:
+        read_subcommands = {"status", "show", "is-active", "is-enabled", "list-units"}
+        if args[0] in read_subcommands:
+            return RiskLevel.SAFE_READ, [f"{verb} {args[0]} es consulta de estado"]
+    if verb == "service" and len(args) >= 2 and args[1] == "status":
+        return RiskLevel.SAFE_READ, ["service status es consulta de estado"]
+    return RiskLevel.HIGH, [f"verbo de escritura amplia: {verb}"]
+
+
+def _detect_shell_metachars(raw: str) -> list:
+    """
+    Devuelve la lista de metacaracteres relevantes encontrados.
+
+    Las pipes se clasifican antes por tramos. Aqui quedan metacaracteres que
+    introducen control de flujo, sustitucion o escritura de salida.
+    """
+    hits = []
+    # Quitar contenido entre comillas simples/dobles para no leer metacaracteres
+    # que el shell trataria como literales.
+    sanitized = re.sub(r"'[^']*'", "''", raw)
+    sanitized = re.sub(r'"[^"]*"', '""', sanitized)
+    for token in (";", "&&", "||", "`", "$("):
+        if token in sanitized:
+            hits.append(token)
+    # `>` y `>>` escriben estado aunque el verbo principal sea de lectura.
+    redirect = re.search(r">>?\s*(\S+)", sanitized)
+    if redirect:
+        target = redirect.group(1)
+        hits.append(f"> {target}")
+    return hits
+
+
+def _split_unquoted_pipe(raw: str) -> list:
+    """Split on shell pipes outside quotes; keep logical OR for metachar handling."""
+    if "||" in raw:
+        return [raw]
+
+    segments = []
+    current = []
+    quote = None
+    escaped = False
+
+    for ch in raw:
+        if escaped:
+            current.append(ch)
+            escaped = False
+            continue
+        if ch == "\\":
+            current.append(ch)
+            escaped = True
+            continue
+        if ch in ("'", '"'):
+            current.append(ch)
+            if quote is None:
+                quote = ch
+            elif quote == ch:
+                quote = None
+            continue
+        if ch == "|" and quote is None:
+            segment = "".join(current).strip()
+            if not segment:
+                return [raw]
+            segments.append(segment)
+            current = []
+            continue
+        current.append(ch)
+
+    if quote is not None:
+        return [raw]
+    if segments:
+        final = "".join(current).strip()
+        if not final:
+            return [raw]
+        segments.append(final)
+        return segments
+    return [raw]
+
+
+def _scan_destructive_anywhere(raw: str, primary: str) -> list:
+    """
+    Devuelve los verbos destructivos encontrados como palabra completa en el
+    comando bruto, excluyendo el verbo principal (que ya se ha contado).
+
+    Cubre encadenamientos del tipo `ls /tmp; rm foo` o `whoami && shutdown`
+    que shlex no separa en clauses independientes.
+    """
+    hits = []
+    # Recorrer cada palabra del comando, ignorando contenido entre comillas
+    # (no es metodo perfecto pero suficiente para detectar palabras sueltas).
+    sanitized = re.sub(r"'[^']*'", "", raw)
+    sanitized = re.sub(r'"[^"]*"', "", sanitized)
+    for match in re.finditer(r"\b([a-zA-Z_][a-zA-Z0-9_-]*)\b", sanitized):
+        word = match.group(1)
+        if word == primary:
+            continue
+        if word in _DESTRUCTIVE_VERBS:
+            hits.append(word)
+    return hits
+
+
+def _hits_sensitive_wildcard(args: list) -> bool:
+    for a in args:
+        if "*" in a or "?" in a:
+            for path in _SENSITIVE_WILDCARD_PATHS:
+                if path in a:
+                    return True
+    return False
+
+
+def _bump(level: RiskLevel, steps: int) -> RiskLevel:
+    new = min(int(level) + steps, int(RiskLevel.CRITICAL))
+    return RiskLevel(new)
+
+
+# ---------------------------------------------------------------------------
+# Decision
+# ---------------------------------------------------------------------------
+def decide(cmd: str) -> Decision:
+    """
+    Solo SAFE_READ permite ejecucion directa. Todo lo demas exige HITL.
+    """
+    cl = classify(cmd)
+    return Decision(allow_direct=(cl.level == RiskLevel.SAFE_READ), classification=cl)
+
+
+# ---------------------------------------------------------------------------
+# Audit log (append-only) — inmutabilidad asegurada por triggers en BD
+# ---------------------------------------------------------------------------
+# Nota: la cache reactiva de despachos se elimino al introducir firma Ed25519
+# en los comandos enviados a PI-4. Si un
+# sensor reporta un comando es porque la firma fue valida en su extremo, de
+# modo que el round-trip a posteriori dejo de ser necesario.
+def audit(
+    event_type: str,
+    device: str,
+    command: str,
+    classification: Optional[Classification] = None,
+    decision_reason: str = "",
+    related_log_id: Optional[int] = None,
+) -> None:
+    """
+    Inserta una entrada en audit_log. Si la tabla no existe (BD vieja) se
+    ignora silenciosamente para no romper el flujo principal.
+    """
+    cls_label = classification.level.label() if classification else ""
+    reasons = ""
+    if classification:
+        joined = "; ".join(classification.reasons) if classification.reasons else ""
+        if decision_reason:
+            reasons = f"{decision_reason} | {joined}" if joined else decision_reason
+        else:
+            reasons = joined
+    else:
+        reasons = decision_reason
+
+    for attempt in range(3):
+        conn = None
+        try:
+            conn = sqlite3.connect(DB_PATH, timeout=10.0, check_same_thread=False)
+            conn.execute('PRAGMA journal_mode=WAL;')
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                INSERT INTO audit_log
+                    (event_type, device, command, classification, decision_reason, related_log_id)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+                (event_type, device, command, cls_label, reasons, related_log_id),
+            )
+            conn.commit()
+            return
+        except sqlite3.OperationalError as e:
+            msg = str(e).lower()
+            if "no such table" in msg:
+                logger.warning("[POLICY] audit_log no existe; saltando entrada.")
+                return
+            if "locked" in msg and attempt < 2:
+                time.sleep(1)
+                continue
+            logger.error(f"[POLICY] No se pudo escribir audit_log: {e}")
+            return
+        except Exception as e:
+            logger.error(f"[POLICY] Error inesperado escribiendo audit_log: {e}")
+            return
+        finally:
+            if conn:
+                conn.close()

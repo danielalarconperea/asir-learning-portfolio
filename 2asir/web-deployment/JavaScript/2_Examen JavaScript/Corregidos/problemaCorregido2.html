@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>Problema 2 - CORREGIDO</title>
+    <meta charset="utf-8">
+    <style>
+        /* CORRECCIÓN: Selector CSS válido con punto */
+        .error {
+            color: red;
+            margin-left: 5px;
+            font-size: 0.9em;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select {
+            padding: 5px;
+            margin: 5px 0;
+        }
+
+        #botonB {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form id="Form" name="fc">
+        <!-- CORRECCIÓN: Cambiar <error> a <span class="error"> -->
+        Nombre de Usuario: <input type="text" name="nombre" id="nombre">
+        <span class="error" id="nombre1"></span>
+        <br><br>
+
+        Contraseña: <input type="password" name="contrasena" id="contrasena">
+        <span class="error" id="contrasena1"></span>
+        <br><br>
+
+        Confirma tu Contraseña: <input type="password" name="contra1" id="contra1">
+        <span class="error" id="contrasena2"></span>
+        <br><br>
+
+        Edad: <input type="text" id="edad" name="edad">
+        <span class="error" id="edad1"></span>
+        <br><br>
+
+        Correo electrónico: <input type="email" name="gmail" id="gmail" placeholder="ejemplo@correo.com">
+        <span class="error" id="gmail1"></span>
+        <br><br>
+
+        Teléfono: <input type="text" name="telefono" id="telefono" placeholder="612345678">
+        <span class="error" id="telefono1"></span>
+        <br><br>
+
+        Número de Integrantes:
+        <select name="ni" id="ni">
+            <option value="">Elige una opción</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <span class="error" id="ni1"></span>
+        <br><br>
+
+        Fecha de nacimiento: <input type="text" placeholder="DD/MM/AAAA" id="fech" name="fech">
+        <span class="error" id="fech1"></span>
+        <br><br>
+
+        Sexo:
+        <select name="sexo" id="sexo">
+            <option value="">Elige una opción</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+        </select>
+        <span class="error" id="sexo1"></span>
+        <br><br>
+
+        Selecciona tu pasatiempo:<br>
+        <input type="checkbox" name="pasatiempo" value="programar"> Programar<br>
+        <input type="checkbox" name="pasatiempo" value="leer"> Leer<br>
+        <input type="checkbox" name="pasatiempo" value="bailar"> Bailar<br>
+        <br>
+
+        <input type="button" id="botonB" value="Aceptar" onclick="enviar()">
+    </form>
+
+    <script>
+        function enviar() {
+            var nombre = document.getElementById('nombre').value.trim();
+            var contrasena = document.getElementById('contrasena').value.trim();
+            var contra1 = document.getElementById('contra1').value.trim();
+            var edad = document.getElementById('edad').value.trim();
+            var gmail = document.getElementById('gmail').value.trim();
+            var telefono = document.getElementById('telefono').value.trim();
+            var ni = document.getElementById('ni').value;
+            var fech = document.getElementById('fech').value.trim();
+            var sexo = document.getElementById('sexo').value;
+
+            var errorNombre = document.getElementById('nombre1');
+            var errorContrasena = document.getElementById('contrasena1');
+            var errorContra1 = document.getElementById('contrasena2');
+            var errorEdad = document.getElementById('edad1');
+            var errorGmail = document.getElementById('gmail1');
+            var errorTelefono = document.getElementById('telefono1');
+            var errorNi = document.getElementById('ni1');
+            var errorFech = document.getElementById('fech1');
+            var errorSexo = document.getElementById('sexo1');
+
+            var formularioValido = true;
+
+            // Validar nombre (mínimo 3 caracteres)
+            if (nombre === '') {
+                errorNombre.innerHTML = 'Campo Obligatorio';
+                formularioValido = false;
+            } else if (nombre.length < 3) {
+                errorNombre.innerHTML = 'Requiere al menos 3 caracteres';
+                formularioValido = false;
+            } else {
+                errorNombre.innerHTML = '';
+            }
+
+            // CORRECCIÓN: Validar contraseña (entre 5 y 30 caracteres)
+            if (contrasena === '') {
+                errorContrasena.innerHTML = 'Campo Obligatorio';
+                formularioValido = false;
+            } else if (contrasena.length < 5 || contrasena.length > 30) {
+                errorContrasena.innerHTML = 'Debe contener entre 5 y 30 caracteres';
+                formularioValido = false;
+            } else {
+                errorContrasena.innerHTML = '';
+            }
+
+            // Validar confirmación de contraseña
+            if (contra1 === '') {
+                errorContra1.innerHTML = 'Campo Obligatorio';
+                formularioValido = false;
+            } else if (contra1 !== contrasena) {
+                errorContra1.innerHTML = 'Debe coincidir con la contraseña';
+                formularioValido = false;
+            } else {
+                errorContra1.innerHTML = '';
+            }
+
+            // Validar edad (entre 18 y 90)
+            if (edad === '') {
+                errorEdad.innerHTML = 'Campo Obligatorio';
+                formularioValido = false;
+            } else if (parseInt(edad) < 18 || parseInt(edad) > 90) {
+                errorEdad.innerHTML = 'Solo entre 18 y 90 años';
+                formularioValido = false;
+            } else {
+                errorEdad.innerHTML = '';
+            }
+
+            // CORRECCIÓN: Validar email con includes (más simple)
+            if (gmail === '') {
+                errorGmail.innerHTML = 'Campo Obligatorio';
+                formularioValido = false;
+            } else if (!gmail.includes('@') || !gmail.includes('.')) {
+                errorGmail.innerHTML = 'Introduce una dirección válida';
+                formularioValido = false;
+            } else {
+                errorGmail.innerHTML = '';
+            }
+
+            // CORRECCIÓN: Validar teléfono (9 dígitos en España)
+            if (telefono === '') {
+                errorTelefono.innerHTML = 'Campo Obligatorio';
+                formularioValido = false;
+            } else if (telefono.length !== 9) {
+                errorTelefono.innerHTML = 'Debe tener 9 dígitos';
+                formularioValido = false;
+            } else {
+                errorTelefono.innerHTML = '';
+            }
+
+            // Validar número de integrantes
+            if (ni === '') {
+                errorNi.innerHTML = 'Selecciona una opción';
+                formularioValido = false;
+            } else {
+                errorNi.innerHTML = '';
+            }
+
+            // Validar fecha
+            if (fech === '') {
+                errorFech.innerHTML = 'Campo Obligatorio';
+                formularioValido = false;
+            } else {
+                errorFech.innerHTML = '';
+            }
+
+            // Validar sexo
+            if (sexo === '') {
+                errorSexo.innerHTML = 'Selecciona una opción';
+                formularioValido = false;
+            } else {
+                errorSexo.innerHTML = '';
+            }
+
+            // Si todo es válido, enviar
+            if (formularioValido) {
+                alert('Formulario enviado correctamente');
+                document.getElementById('Form').submit();
+            }
+        }
+    </script>
+</body>
+
+</html>

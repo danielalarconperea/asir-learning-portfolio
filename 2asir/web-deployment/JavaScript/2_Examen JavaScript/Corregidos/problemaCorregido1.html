@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>Problema 1 - CORREGIDO</title>
+    <meta charset="utf-8">
+    <style>
+        #a {
+            border: 1px black solid;
+            width: 350px;
+            height: 210px;
+            margin-left: 150px;
+            margin-right: 150px;
+            background-color: rgb(0, 132, 255);
+        }
+
+        #b {
+            border: 1px black solid;
+            width: 320px;
+            height: auto;
+            text-align: center;
+            margin: 10px;
+            background-color: rgb(15, 15, 134);
+            color: aliceblue;
+        }
+
+        #origen {
+            width: 150px;
+            height: auto;
+            float: left;
+            margin: 10px;
+        }
+
+        #destino {
+            width: 150px;
+            height: auto;
+            float: left;
+            margin: 10px;
+        }
+
+        #c {
+            width: auto;
+            height: auto;
+            text-align: center;
+            margin: 10px;
+            clear: both;
+        }
+
+        #d {
+            width: auto;
+            height: auto;
+            text-align: center;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form name="fc">
+        <div id="a">
+            <div id="b">
+                Vuelos Monroy
+            </div>
+            <div id="origen">
+                Origen<br>
+                <input type="radio" name="origen" value="madrid"> Madrid<br>
+                <input type="radio" name="origen" value="malaga"> Málaga<br>
+                <input type="radio" name="origen" value="valencia"> Valencia<br>
+            </div>
+            <div id="destino">
+                Destino<br>
+                <input type="radio" name="destino" value="frankfurt"> Frankfurt<br>
+                <input type="radio" name="destino" value="milan"> Milán<br>
+                <input type="radio" name="destino" value="londres"> Londres<br>
+            </div>
+            <div id="c">
+                Nº de personas:
+                <select name="num">
+                    <option value="2">2</option>
+                    <option value="4">4</option>
+                    <option value="6">6</option>
+                </select>
+                <input type="button" value="Calcular" onclick="calcular()">
+            </div>
+            <div id="d">
+                Total: <input type="text" id="total" placeholder="0€" readonly>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        // CORRECCIÓN: Acceso correcto a elementos del formulario
+        var form = document.fc;
+        var origenes = document.getElementsByName('origen');
+        var destinos = document.getElementsByName('destino');
+        var totalInput = document.getElementById('total');
+
+        function calcular() {
+            var origenSeleccionado = '';
+            var destinoSeleccionado = '';
+
+            // Obtener origen seleccionado
+            for (var i = 0; i < origenes.length; i++) {
+                if (origenes[i].checked) {
+                    origenSeleccionado = origenes[i].value;
+                    break;
+                }
+            }
+
+            // Obtener destino seleccionado
+            for (var i = 0; i < destinos.length; i++) {
+                if (destinos[i].checked) {
+                    destinoSeleccionado = destinos[i].value;
+                    break;
+                }
+            }
+
+            // Validar que ambos estén seleccionados
+            if (origenSeleccionado === '' || destinoSeleccionado === '') {
+                alert('Es obligatorio seleccionar el origen y destino del vuelo');
+                return;
+            }
+
+            // Calcular coste según rutas
+            var coste = 90; // Precio por defecto
+            if (
+                (origenSeleccionado === 'madrid' && destinoSeleccionado === 'londres') ||
+                (origenSeleccionado === 'malaga' && destinoSeleccionado === 'londres') ||
+                (origenSeleccionado === 'valencia' && destinoSeleccionado === 'frankfurt')
+            ) {
+                coste = 60;
+            }
+
+            // CORRECCIÓN: Obtener número de personas correctamente
+            var numPersonas = parseInt(form.num.value);
+
+            // CORRECCIÓN: Calcular y mostrar el total
+            var totalCoste = coste * numPersonas;
+            totalInput.value = totalCoste + '€';
+        }
+    </script>
+</body>
+
+</html>

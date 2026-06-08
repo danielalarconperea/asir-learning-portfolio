@@ -17,10 +17,9 @@ if ($ver_datos == 'pantalla'){
 }else{
     $archivo = 'datos.txt';
     if (!file_exists($archivo)) {
-        fopen($archivo, 'w'); // crea el archivo vacio
+        fopen($archivo, 'w'); 
     }
-
-    // Abrir el archivo en modo escritura y agregar los datos
+    
     $file = fopen($archivo, 'a');
     fwrite($file, "El alumno <b>$nombre</b>, con teléfono <b>$numero</b>, <b>$matriculado matriculado en $enseñanza</b>" . PHP_EOL);
     fclose($file);

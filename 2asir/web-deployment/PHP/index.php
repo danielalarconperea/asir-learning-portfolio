@@ -1,8 +1,8 @@
 <?php
 /*
-  php -v
-  cd "C:\Users\dania\OneDrive - Salesianos Atocha\Escritorio\PROGRAM\2ASIR\IAW\PHP"
-  php -S localhost:8080 index.php
+php -v
+cd "C:\Users\dania\OneDrive - Salesianos Atocha\Escritorio\PROGRAM\2ASIR\Implantacion aplicaciones web\PHP"
+php -S localhost:8080 index.php
 */
 /**
  * Función para normalizar la ruta (limpiar los '.' y '..')
