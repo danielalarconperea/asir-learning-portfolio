@@ -1,0 +1,198 @@
+enable
+configure terminal
+hostname S1
+
+vlan 10
+name DISENIO
+vlan 20
+name PRODUCCION
+vlan 30
+name VENTAS
+end
+
+show vlan
+show ip interface brief 
+
+configure terminal
+
+interface range f0/1-5
+switchport mode access 
+switchport access vlan 10
+
+interface range f0/6-10
+switchport mode access 
+switchport access vlan 20
+
+interface range f0/11-15
+switchport mode access 
+switchport access vlan 30
+end
+
+show vlan
+
+configure terminal
+
+interface g0/1
+switchport mode trunk 
+switchport trunk native vlan 1
+
+! interface vlan 99
+! ipp add 192.168.99.3 255.255.255.0
+! no shutdown
+! exit
+! ip default-gateway 192.168.99.1
+! interface f0/18
+! switchport
+
+! vlan 10 --> 192.168.10.0 /24
+! vlan 20 --> 192.168.20.0 /24
+! vlan 30 --> 192.168.30.0 /24
+! vlan 1  -->  192.168.1.0 /24
+
+! Creación de subinterfaces
+interface g0/0/0.10
+encapsulation dot1Q 10
+ip address 192.168.10.1 255.255.255.0
+
+interface g0/0/0.20
+encapsulation dot1Q 20
+ip address 192.168.20.1 255.255.255.0
+
+interface g0/0/0.30
+encapsulation dot1Q 30
+ip address 192.168.30.1 255.255.255.0
+
+interface g0/0/0
+no shutdown
+
+show ip interface brief
+
+! configuramos como troncal la interfaz
+interface g0/2
+
+switchport mode trunk 
+
+switchport trunk native vlan 1
+
+switchport trunk allowed vlan all
+
+
+
+
+
+
+
+
+
+gateway
+192.168.1.1
+
+vlan 10
+192.168.1.10/24
+
+gateway
+192.168.2.1
+
+vlan 20
+192.168.2.10/24
+
+enable
+configure terminal
+hostname S1
+
+vlan 10
+vlan 20
+end
+
+show ip interface brief
+
+configure terminal
+
+interface range g1/0/1
+switchport mode access 
+switchport access vlan 10
+
+interface range g1/0/2
+switchport mode access 
+switchport access vlan 20
+exit
+
+ip routing
+
+interface vlan 10
+ip address 192.168.1.1 255.255.255.0
+interface vlan 20
+ip address 192.168.2.1 255.255.255.0
+end
+
+
+! configuramos un pc sin vlan
+
+gateway
+192.168.3.1
+
+vlan 10
+192.168.3.10/24
+
+en
+conf t
+interface g1/0/3
+no switchport
+ip address 192.168.3.1 255.255.255.0
+end
+
+show ip interface brief
+show ip route
+
+
+
+
+! 4.2.7 packet tracer
+! S1
+en
+conf terminal
+vlan 10
+vlan 30
+interface fa0/11
+switchport mode access
+switchport access vlan 10 
+interface fa0/6
+switchport mode access
+switchport access vlan 30 
+end
+! show vlan brief
+
+conf terminal
+interface g0/1
+switchport mode trunk
+end
+
+! R1
+
+conf terminal
+interface g0/0.10
+encapsulation dot1Q 10
+ip address 172.17.10.1 255.255.255.0
+interface g0/0.30
+encapsulation dot1Q 30
+ip address 172.17.30.1 255.255.255.0
+end
+! show ip interface brief
+
+conf terminal
+interface g0/0
+no shutdown
+end
+show ip interface brief
+
+
+
+
+
+!Dia 3
+!Pc6 192.168.1.10
+!Pc7 192.168.1.11
+!S1, S2, S3
+no spanning-tree vlan 1
+!Conectamos los Switches haciendo un triangulo
+!Si hacemos ping del equipo 6 al 7 habra una tormenta de broadcast, por lo que para que funcione debemos hacer shutdown a un puerto de alguno de los 3 switches.

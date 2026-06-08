@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+</head>
+<body><p>Escribe un programa que pida al usuario su peso (en kg) y su altura (en metros), 
+calcule su índice de masa corporal (IMC), y luego muestre un mensaje indicando si está en su peso ideal, bajo de peso o con sobrepeso. 
+La fórmula del IMC es:
+    IMC = peso / (altura * altura)
+    
+    Si el IMC es menor que 18.5, muestra "Bajo de peso".
+    Si el IMC es entre 18.5 y 24.9, muestra "Peso ideal".
+    Si el IMC es 25 o mayor, muestra "Sobrepeso".
+    </p>
+<script type="text/javascript">
+
+var IMC;
+var num1 = parseFloat(prompt("Ingrese su peso en kg"));
+var num2 = parseFloat(prompt("Ingrese su altura en metros"));
+
+IMC = num1 / (num2 * num2);
+if (IMC < 18.5) {
+    document.write("Bajo de peso");
+} else if (IMC >= 25) {
+    document.write("Sobrepeso");
+} else {
+    document.write("Peso ideal");
+}
+
+</script></body></html>

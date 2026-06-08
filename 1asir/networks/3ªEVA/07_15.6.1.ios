@@ -1,0 +1,48 @@
+! Edge_Router
+! Ruta estática flotante al ISP1
+ip route 0.0.0.0 0.0.0.0 10.10.10.1
+
+! Ruta estática flotante con una distancia admnistrativa de 5 al ISP2
+ip route 0.0.0.0 0.0.0.0 10.10.10.5 5
+
+! Ruta predeterminada estática Ipv6 de salto siguiente. via router ISP1
+ipv6 route ::/0 2001:db8:a:1::1
+
+! Ruta predeterminada estática flotante IPv6 con una distancia administrativa de 5 de salto siguiente. via router ISP2
+ipv6 route ::/0 2001:db8:a:2::1 5
+
+
+! Configuración de rutas estaticas atraves de las VLans
+! ISP1
+! vlan 1
+ip route 192.168.10.16 255.255.255.240 10.10.10.2
+
+! vlan 2
+ip route 192.168.11.32 255.255.255.224 10.10.10.2
+
+! vlan 1 por el ISP2
+ip route 192.168.10.16 255.255.255.240 198.0.0.2 5
+
+! vlan 2 por el ISP2
+ip route 192.168.11.32 255.255.255.224 198.0.0.2 5
+
+! vlan 1 ipv6
+ipv6 route 2001:db8:1:10::/64 2001:db8:a:1::2
+
+! vlan 2 ipv6
+ipv6 route 2001:db8:1:11::/64 2001:db8:a:1::2
+
+! vlan 1 ipv6 por el ISP2
+ipv6 route 2001:db8:1:10::/64 2001:db8:f:f::2 5
+
+! vlan 2 ipv6 por el ISP2
+ipv6 route 2001:db8:1:11::/64 2001:db8:f:f::2 5
+
+! Edge_Router
+ip route 198.0.0.10 255.255.255.255 10.10.10.1
+
+ip route 198.0.0.10 255.255.255.255 10.10.10.5 5
+
+ipv6 route 2001:db8:f:f::10/128 2001:db8:a:1::1
+
+ipv6 route 2001:db8:f:f::10/128 2001:db8:a:2::1 5

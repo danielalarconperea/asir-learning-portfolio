@@ -1,0 +1,4 @@
+H1:arial
+intro:sans-serif
+tipo1:"Lobster"
+tipo2:sans-serif

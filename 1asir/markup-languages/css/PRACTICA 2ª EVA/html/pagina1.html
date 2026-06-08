@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Iniciar Sesión</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="../imagenes/index/ball.ico" type="image/x-icon">
+</head>
+<body>
+    <header class="encabezado">
+        <img src="../imagenes/pagina1/fondo.jpg" alt="Voleibol" class="encabezado-img">
+        <h1 class="titulo1">Iniciar Sesión</h1>
+    </header>
+    <div class="perfil">
+            <a href="pagina1.html"><img src="../imagenes/index/perfil.png" width="30" class="perfil-img"></a>
+    </div>
+    <div class="menu1">
+        <div class="contenedor1">
+            <a href="index.html" class="menu1-secciones"><i class="fas fa-house"></i> Inicio</a>
+            <a href="pagina2.html" class="menu1-secciones"><i class="fas fa-volleyball-ball"></i> Material</a>
+            <a href="pagina3.html" class="menu1-secciones"><i class="fas fa-sync-alt"></i> Rotaciones</a>
+            <a href="pagina4.html" class="menu1-secciones"><i class="fas fa-dumbbell"></i> Técnicas</a>
+            <a href="pagina6.html" class="menu1-secciones"><i class="fas fa-trophy"></i> Competiciones</a>
+        </div>
+    </div>
+
+    <div class="contenedor-formulario">
+        <form class="formulario-login">
+            <fieldset class="contenido-formulario">
+                <legend class="leyenda-formulario">Registro de Jugador</legend>
+                
+                <div class="formulario">
+                    <label class="etiqueta-formulario">Nombre:</label>
+                    <input type="text" class="input-formulario">
+                </div>
+
+                <div class="formulario">
+                    <label class="etiqueta-formulario">Contraseña:</label>
+                    <input type="password" class="input-formulario">
+                </div>
+
+                <div class="formulario">
+                    <label class="etiqueta-formulario">Repetir contraseña:</label>
+                    <input type="password" class="input-formulario">
+                </div>
+
+                <div class="formulario">
+                    <label class="etiqueta-formulario">Correo Electrónico:</label>
+                    <input type="email" class="input-formulario" placeholder="tucorreo@example.com" required>
+                </div>
+
+                <div class="formulario">
+                    <label class="etiqueta-formulario">Fecha de Nacimiento:</label>
+                    <input type="date" class="input-formulario">
+                </div>
+
+                <div class="formulario">
+                    <label class="etiqueta-formulario">Teléfono:</label>
+                    <input type="tel" class="input-formulario" placeholder="+34 666 666 666">
+                </div>
+
+                <div class="formulario">
+                    <label class="etiqueta-formulario">DNI:</label>
+                    <input type="file" class="input-formulario">
+                </div>
+
+                <div class="formulario">
+                    <div class="grupo-seleccion">
+                        <label class="etiqueta-seleccion">
+                            <input type="radio" name="genero" class="seccion-estilo">
+                            Hombre
+                        </label>
+                        <label class="etiqueta-seleccion">
+                            <input type="radio" name="genero" class="seccion-estilo">
+                            Mujer
+                        </label>
+                    </div>
+                </div>
+
+                <div class="formulario">
+                    <label class="etiqueta-formulario">País:</label>
+                    <select class="selector-pais">
+                        <option></option>
+                        <option>España</option>
+                        <option>México</option>
+                        <option>Argentina</option>
+                        <option>Estados Unidos</option>
+                        <option>Francia</option>
+                        <option>Alemania</option>
+                        <option>Italia</option>
+                        <option>Japón</option>
+                        <option>China</option>
+                        <option>Canadá</option>
+                        <option>Brasil</option>
+                        <option>Australia</option>
+                        <option>India</option>
+                        <option>Reino Unido</option>
+                        <option>Portugal</option>
+                    </select>
+                </div>
+
+                <div class="formulario">
+                    <label class="etiqueta-formulario">Experiencia Previa:</label>
+                    <textarea class="area-texto"></textarea>
+                </div>
+
+                <div class="contenedor-botones">
+                    <button type="submit" class="boton-enviar">Registrarse</button>
+                    <button type="reset" class="boton-reset">Limpiar</button>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</body>
+</html>

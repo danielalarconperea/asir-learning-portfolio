@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora de Edad</title>
+</head>
+<body>
+    <script>
+        function edad(){
+            var edad = document.formEdad.edad1.value;
+            var resta = 2025 - edad;
+            
+            
+
+            if(resta <= 18){
+                alert("Eres menor de edad");
+            }else{
+                alert("eres mayor de edad");
+            }
+            
+        }
+    </script>
+    <h2>Calculadora de Edad</h2>
+    <form name="formEdad">
+        <label name="edad1">Año de Nacimiento:</label>
+        <input type="number" name="edad1"><br>
+        <button type="button" onclick="edad()">Calcular</button>
+    </form>
+</body>	
+</html>

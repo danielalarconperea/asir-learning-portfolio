@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<script lenguaje="javascript">
+function mostrar(){
+    var nombre=document.formulario.nombre.value; //DOM
+    var edad=document.formulario.edad.value;
+    var tf=document.formulario.telefono.value;
+
+    alert('Ingreso el nombre: '+nombre);
+    alert('Y la edad: '+edad);
+    alert('su telefono es: '+tf);
+}
+</script>
+</head>
+<body>
+<form name="formulario">
+    Ingrese su nombre: <input type="text" name="nombre"><br>
+    Ingrese su edad: <input type="text" name="edad" size="5"><br>
+    Ingrese su telefono <input type="text" name="telefono"><br>
+    <input type="button" value="confirmar" onclick="mostrar()">
+</body>
+</html>

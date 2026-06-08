@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AliClone - Tu Tienda Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+      <div class="container">
+        <a class="navbar-brand fw-bold text-danger" href="index.html">AliClone</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="index.html">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="producto.html">Producto Ejemplo</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contacto.html">Contacto</a>
+            </li>
+          </ul>
+          <form class="d-flex ms-lg-3 mt-2 mt-lg-0">
+              <input class="form-control me-2" type="search" placeholder="Buscar productos..." aria-label="Search">
+              <button class="btn btn-outline-danger" type="submit">Buscar</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+
+      <!-- Hero Banner / Carousel -->
+      <div id="heroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        </div>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <!-- Reemplazo de Imagen por Div -->
+            <div class="image-placeholder placeholder-banner d-block w-100">
+              <span>Banner Area (1200x400 approx)</span>
+            </div>
+             <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+                <h5>¡Ofertas Imperdibles!</h5>
+                <p>Hasta 70% de descuento en electrónica seleccionada.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <!-- Reemplazo de Imagen por Div -->
+            <div class="image-placeholder placeholder-banner d-block w-100">
+               <span>Banner Area 2 (1200x400 approx)</span>
+            </div>
+             <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+                <h5>Moda de Verano</h5>
+                <p>Descubre las últimas tendencias para esta temporada.</p>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+
+      <!-- Intro Text -->
+      <div class="text-center mb-5">
+        <h1 class="display-5">Bienvenido a AliClone</h1>
+        <p class="lead">Tu tienda online con millones de productos a precios increíbles. Encuentra todo lo que necesitas, desde electrónica hasta moda y hogar.</p>
+      </div>
+
+      <!-- Ad Section 1 -->
+       <div class="row mb-4">
+           <div class="col-md-6 mb-3 mb-md-0">
+               <div class="ad-banner p-3 text-center bg-light border">
+                   <!-- Reemplazo de Imagen por Div -->
+                   <div class="image-placeholder placeholder-ad-medium mb-2">
+                       <span>Ad Area 1 (500x150 approx)</span>
+                   </div>
+                   <p class="mt-2 small text-muted">Publicidad - Descuentos en Hogar</p>
+               </div>
+           </div>
+           <div class="col-md-6">
+                <div class="ad-banner p-3 text-center bg-light border">
+                    <!-- Reemplazo de Imagen por Div -->
+                   <div class="image-placeholder placeholder-ad-medium mb-2">
+                       <span>Ad Area 2 (500x150 approx)</span>
+                   </div>
+                    <p class="mt-2 small text-muted">Publicidad - Gadgets Tecnológicos</p>
+               </div>
+           </div>
+       </div>
+
+      <!-- Product Grid -->
+      <h2 class="mb-3">Productos Destacados</h2>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+        <!-- Product Card 1 -->
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            <!-- Reemplazo de Imagen por Div -->
+            <div class="image-placeholder placeholder-card-top card-img-top">
+                 <span>Product 1 (300x200 approx)</span>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Smartphone Modelo X</h5>
+              <p class="card-text text-danger fw-bold">$199.99</p>
+              <p class="card-text small">El último smartphone con cámara increíble y batería duradera.</p>
+              <a href="producto.html" class="btn btn-sm btn-outline-primary">Ver Detalles</a>
+            </div>
+             <div class="card-footer bg-transparent border-top-0">
+                <small class="text-muted">Envío gratis</small>
+            </div>
+          </div>
+        </div>
+        <!-- Product Card 2 -->
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            <!-- Reemplazo de Imagen por Div -->
+             <div class="image-placeholder placeholder-card-top card-img-top">
+                 <span>Product 2 (300x200 approx)</span>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Auriculares Inalámbricos Pro</h5>
+              <p class="card-text text-danger fw-bold">$49.50</p>
+              <p class="card-text small">Sonido de alta fidelidad y cancelación de ruido.</p>
+              <a href="producto.html" class="btn btn-sm btn-outline-primary">Ver Detalles</a>
+            </div>
+             <div class="card-footer bg-transparent border-top-0">
+                <small class="text-muted">Oferta limitada</small>
+            </div>
+          </div>
+        </div>
+        <!-- Product Card 3 -->
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+             <!-- Reemplazo de Imagen por Div -->
+             <div class="image-placeholder placeholder-card-top card-img-top">
+                 <span>Product 3 (300x200 approx)</span>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Zapatillas Deportivas Air</h5>
+              <p class="card-text text-danger fw-bold">$75.00</p>
+              <p class="card-text small">Comodidad y estilo para tus entrenamientos diarios.</p>
+              <a href="producto.html" class="btn btn-sm btn-outline-primary">Ver Detalles</a>
+            </div>
+             <div class="card-footer bg-transparent border-top-0">
+                <small class="text-muted">Más vendidos</small>
+            </div>
+          </div>
+        </div>
+        <!-- Product Card 4 -->
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+             <!-- Reemplazo de Imagen por Div -->
+             <div class="image-placeholder placeholder-card-top card-img-top">
+                 <span>Product 4 (300x200 approx)</span>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Robot Aspirador Smart</h5>
+              <p class="card-text text-danger fw-bold">$120.99</p>
+              <p class="card-text small">Limpia tu casa automáticamente mientras descansas.</p>
+              <a href="producto.html" class="btn btn-sm btn-outline-primary">Ver Detalles</a>
+            </div>
+             <div class="card-footer bg-transparent border-top-0">
+                <small class="text-muted">Envío rápido</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+       <!-- Ad Section 2 (Simulating AliExpress Style) -->
+        <div class="ad-banner-fullwidth bg-warning text-dark p-3 text-center mb-5 rounded shadow-sm">
+            <h4>🎉 ¡SUPER OFERTAS SEMANALES! 🎉</h4>
+            <p>No te pierdas descuentos de hasta el 80% en categorías seleccionadas. ¡Solo por tiempo limitado!</p>
+            <a href="#" class="btn btn-dark">Ver Ofertas Ahora</a>
+        </div>
+
+    </div> <!-- /container -->
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light text-center p-3 mt-5">
+      <div class="container">
+        <p>© 2023 AliClone - Todos los derechos reservados (Clon Educativo)</p>
+         <p>
+            <a href="#" class="text-light me-2">Política de Privacidad</a> |
+            <a href="#" class="text-light ms-2">Términos de Servicio</a>
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  </body>
+</html>

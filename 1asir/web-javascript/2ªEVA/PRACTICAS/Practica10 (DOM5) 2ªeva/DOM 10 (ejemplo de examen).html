@@ -1,0 +1,51 @@
+ <!doctype html>
+
+<html>
+
+<head>
+	<meta charset="UTF-8">
+    <title>JavaScript</title>
+</head>
+<body> 
+	<script type="text/javascript">
+	function cambiarColor() { 
+		var color = "";
+		var fontStyle = 'normal';
+		var boxShadow = '';
+		var borderRadius = '';
+		var padding = '';
+		if (document.form1.color[0].checked) {
+			color = document.form1.color[0].value;
+			padding = '15px'
+		}
+		if (document.form1.color[1].checked) {
+			color = document.form1.color[1].value;
+			boxShadow = '0 0 10px black';
+		}
+		if (document.form1.color[2].checked) {
+			color = document.form1.color[2].value;
+			borderRadius = '15px'
+		}
+		if (document.form1.color[3].checked) {
+			color = document.form1.color[3].value;
+			fontStyle = 'italic';
+		}
+		document.body.style.backgroundColor = color;
+		document.body.style.fontStyle = fontStyle;
+		document.body.style.boxShadow = boxShadow;
+		document.body.style.borderRadius = borderRadius;
+		document.body.style.padding = padding
+	}
+	</script>
+	¿Qué color quieres de fondo?
+	<form name="form1">
+		<input type="radio" name="color" value="#ff0000">Rojo<br>
+		<input type="radio" name="color" value="#00ff00">Verde<br>
+		<input type="radio" name="color" value="#0083ff">Azul<br>
+		<input type="radio" name="color" value="#f7ff00">Amarillo<br>
+		<input type="button" value="Cambiar Color" onClick="cambiarColor()">
+	</form>
+	
+</body>   
+
+</html> 

@@ -1,0 +1,43 @@
+ipv6 unicast-routing
+
+interface g0/0/0
+ipv6 address 2001:B:B:B::1/64
+ipv6 address FE80::1 link-local
+no shutdown
+
+interface g0/0/1
+ipv6 address 2001:C:C:C::1/64
+ipv6 address FE80::1 link-local
+no shutdown
+
+interface g0/0/2
+ipv6 address 2001:A:A:A::1/64
+ipv6 address FE80::1 link-local
+no shutdown
+
+
+
+ipv6 dhcp pool DHCPv6_STATEFUL
+address prefix 2001:B:B:B::/64 
+dns-server 2001:8888::         
+domain-name Salesianos.com
+
+interface g0/0/0
+ipv6 nd managed-config-flag
+
+ipv6 dhcp server DHCPv6_STATEFUL
+
+
+
+
+ipv6 dhcp pool DHCPv6_STATELESS
+dns-server 2001:4444::
+domain-name Salesianos.es
+
+interface g0/0/2
+ipv6 nd other-config-flag
+
+ipv6 dhcp server DHCPv6_STATELESS
+
+ipv6 address 2001:A:A:A::1/64
+ipv6 address FE80::1 link-local

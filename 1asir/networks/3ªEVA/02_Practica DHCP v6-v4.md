@@ -1,0 +1,242 @@
+A continuación tienes un ejemplo **paso a paso** de cómo podrías configurar tanto **DHCPv4** como **DHCPv6** (en sus distintas modalidades: _stateless_ y _stateful_) en Packet Tracer, siguiendo la idea general de tu topología (con un router ISP, un router CORE y varias VLAN/redes). Los nombres de interfaces y redes pueden variar ligeramente según tu diseño exacto, pero la lógica es la misma.
+
+---
+
+## 1. Habilitar IPv6 en los routers
+Por defecto en Cisco IOS hay que habilitar el encaminamiento IPv6 para que funcionen las RAs (Router Advertisements) y el DHCPv6.  
+```bash
+# En ambos routers (ISP y CORE)
+Router(config)# ipv6 unicast-routing
+```
+
+---
+
+## 2. Configurar el router ISP (ejemplo: 2911)
+
+Suponiendo que:
+- Interfaz `Gig0/0` conecta con la red del **Servidor** (172.16.1.0/24 y 2001:A::/64).  
+- Interfaz `Gig0/1` conecta hacia el router CORE (172.16.2.0/24 y 2001:B::/64).  
+
+### 2.1 Asignar direcciones IPv4 e IPv6 en ISP
+
+**Interfaz hacia el Servidor (Gig0/0)**  
+```bash
+ISP(config)# interface GigabitEthernet0/0
+ISP(config-if)# ip address 172.16.1.1 255.255.255.0
+ISP(config-if)# ipv6 address 2001:A::1/64
+ISP(config-if)# no shutdown
+```
+
+**Interfaz hacia el CORE (Gig0/1)**  
+```bash
+ISP(config)# interface GigabitEthernet0/1
+ISP(config-if)# ip address 172.16.2.1 255.255.255.0
+ISP(config-if)# ipv6 address 2001:B::1/64
+ISP(config-if)# no shutdown
+```
+
+*(Si tienes más redes conectadas al ISP, configúralas de la misma manera en las interfaces correspondientes.)*
+
+### 2.2 Configurar rutas estáticas en ISP
+La idea es que el ISP conozca cómo llegar a las redes que están detrás del CORE. Por ejemplo:
+```bash
+# Para llegar a 172.16.3.0/24, 172.16.4.0/24, 172.16.5.0/24
+ISP(config)# ip route 172.16.3.0 255.255.255.0 172.16.2.2
+ISP(config)# ip route 172.16.4.0 255.255.255.0 172.16.2.2
+ISP(config)# ip route 172.16.5.0 255.255.255.0 172.16.2.2
+
+# Para llegar a 2001:C::/64, 2001:D::/64, 2001:E::/64
+ISP(config)# ipv6 route 2001:C::/64 2001:B::2
+ISP(config)# ipv6 route 2001:D::/64 2001:B::2
+ISP(config)# ipv6 route 2001:E::/64 2001:B::2
+```
+*(Asumiendo que la IP del CORE en Gig0/1 es `172.16.2.2` y la IPv6 es `2001:B::2`.)*
+
+---
+
+## 3. Configurar el router CORE (ejemplo: 3650)
+
+Suponiendo que el CORE tiene varias interfaces hacia redes:
+- `Gig1/0/1` → Red naranja (172.16.3.0/24 y 2001:C::/64) → _IPv6 SLAAC / sin estado_  
+- `Gig1/0/2` → Red verde (172.16.4.0/24 y 2001:D::/64) → _DHCPv6 “stateless” + DHCPv4_  
+- `Gig1/0/3` → Red azul (172.16.5.0/24 y 2001:E::/64) → _DHCPv6 con estado + DHCPv4 Relay_  
+
+### 3.1 Asignar direcciones IPv4 e IPv6 en el CORE
+
+**Interfaz hacia ISP (Gig1/0/24)**  
+```bash
+CORE(config)# interface GigabitEthernet1/0/24
+CORE(config-if)# ip address 172.16.2.2 255.255.255.0
+CORE(config-if)# ipv6 address 2001:B::2/64
+CORE(config-if)# no shutdown
+```
+
+**Interfaz Red Naranja (Gig1/0/1)**  
+```bash
+CORE(config)# interface GigabitEthernet1/0/1
+CORE(config-if)# ip address 172.16.3.1 255.255.255.0
+CORE(config-if)# ipv6 address 2001:C::1/64
+CORE(config-if)# no shutdown
+```
+
+**Interfaz Red Verde (Gig1/0/2)**  
+```bash
+CORE(config)# interface GigabitEthernet1/0/2
+CORE(config-if)# ip address 172.16.4.1 255.255.255.0
+CORE(config-if)# ipv6 address 2001:D::1/64
+CORE(config-if)# no shutdown
+```
+
+**Interfaz Red Azul (Gig1/0/3)**  
+```bash
+CORE(config)# interface GigabitEthernet1/0/3
+CORE(config-if)# ip address 172.16.5.1 255.255.255.0
+CORE(config-if)# ipv6 address 2001:E::1/64
+CORE(config-if)# no shutdown
+```
+
+### 3.2 Rutas estáticas en CORE
+Para llegar a las redes del ISP (172.16.1.0/24 y 2001:A::/64, etc.), si no usas un protocolo de routing, configura:
+```bash
+CORE(config)# ip route 172.16.1.0 255.255.255.0 172.16.2.1
+CORE(config)# ipv6 route 2001:A::/64 2001:B::1
+```
+*(Y lo mismo si hay más redes en ISP.)*
+
+---
+
+## 4. Configurar DHCPv4 en el CORE (para las redes que gestiona él)
+
+El enunciado dice: “Configura DHCP para las redes IPv4 en el CORE **excepto** la red azul (172.16.5.0), que estará en ISP (utiliza DHCP relay)”. Sin embargo, a veces se interpreta que la 172.16.5.0/24 la da el ISP o el Servidor en el ISP. Ajusta según tu escenario real.  
+
+Aquí daremos de alta **dos pools** en el CORE para las redes 172.16.3.0 y 172.16.4.0.
+
+```bash
+CORE(config)# ip dhcp pool RED-NARANJA
+CORE(dhcp-config)# network 172.16.3.0 255.255.255.0
+CORE(dhcp-config)# default-router 172.16.3.1
+CORE(dhcp-config)# dns-server 8.8.8.8
+CORE(dhcp-config)# exit
+
+CORE(config)# ip dhcp pool RED-VERDE
+CORE(dhcp-config)# network 172.16.4.0 255.255.255.0
+CORE(dhcp-config)# default-router 172.16.4.1
+CORE(dhcp-config)# dns-server 8.8.8.8
+CORE(dhcp-config)# exit
+```
+
+*(Si necesitas excluir direcciones, usa `ip dhcp excluded-address 172.16.3.1 172.16.3.10` etc. antes de crear el pool.)*
+
+---
+
+## 5. Configurar DHCPv4 Relay en el CORE para la red Azul
+
+Si la red azul (172.16.5.0/24) debe recibir DHCP desde el **ISP** (o un servidor en ISP), hay que usar un **ip helper-address** en la interfaz de la red azul:
+
+```bash
+CORE(config)# interface GigabitEthernet1/0/3
+CORE(config-if)# ip helper-address 172.16.1.10
+```
+> **OJO**: `172.16.1.10` sería la IP del **servidor DHCP** que está en la red del ISP. Ajusta la IP según tu topología real.  
+
+De este modo, cualquier broadcast DHCP que llegue a la red 172.16.5.0/24 se reenviará a la IP del servidor en la red 172.16.1.0/24.
+
+---
+
+## 6. Configurar DHCPv4 en el ISP o en el Servidor (para la red Azul)
+
+Si el DHCP para 172.16.5.0/24 lo va a entregar el **servidor** en la red 172.16.1.0, debes configurarlo allí.  
+En Packet Tracer, si usas un **Server-PT** (Server0), basta con entrar a la pestaña **Services > DHCP** y crear el pool:
+- **Pool Name**: RED-AZUL  
+- **Default Gateway**: 172.16.5.1  
+- **DNS**: 8.8.8.8  
+- **Network Address**: 172.16.5.0  
+- **Subnet Mask**: 255.255.255.0  
+
+O bien, si lo quieres configurar en el router ISP en modo CLI, usarías algo como:
+```bash
+ISP(config)# ip dhcp pool RED-AZUL
+ISP(dhcp-config)# network 172.16.5.0 255.255.255.0
+ISP(dhcp-config)# default-router 172.16.5.1
+ISP(dhcp-config)# dns-server 8.8.8.8
+ISP(dhcp-config)# exit
+```
+*(Más `ip dhcp excluded-address` si hace falta.)*
+
+---
+
+## 7. Configurar DHCPv6 en el CORE
+
+### 7.1 Modo _Stateless_ (SLAAC + “other config”)  
+Por ejemplo, para la **red naranja** (2001:C::/64) donde solo quieres que los clientes obtengan automáticamente su dirección vía SLAAC pero a la vez reciban DNS por DHCPv6, se hace así:
+
+1. Creamos un pool DHCPv6 **sin** direcciones, solo para parámetros extra (DNS, domain, etc.).  
+   ```bash
+   CORE(config)# ipv6 dhcp pool DHCPV6-NARANJA
+   CORE(config-dhcpv6)# dns-server 2001:A::10
+   CORE(config-dhcpv6)# domain-name ejemplo.local
+   CORE(config-dhcpv6)# exit
+   ```
+2. En la **interfaz** de la red naranja, activamos SLAAC y la bandera _O_ (“other-config-flag”), que indica a los hosts que tomen la IP por SLAAC pero pidan parámetros extra a un DHCPv6 server. Además, enlazamos el pool:
+   ```bash
+   CORE(config)# interface GigabitEthernet1/0/1
+   CORE(config-if)# ipv6 nd other-config-flag
+   CORE(config-if)# ipv6 dhcp server DHCPV6-NARANJA
+   ```
+   *(Ojo: **no** usar `managed-config-flag`, porque eso fuerza modo *stateful*.)*
+
+### 7.2 Modo _Stateless_ + DHCPv6 (con direcciones por SLAAC y parámetros vía DHCPv6)
+La **red verde** (2001:D::/64) puede configurarse igual que la naranja si quieres que las IP se asignen por SLAAC y DHCPv6 dé los parámetros complementarios. Bastaría repetir la misma configuración con su propio pool.
+
+### 7.3 Modo _Stateful_ (DHCPv6 completo)  
+Para la **red azul** (2001:E::/64) se asume que los clientes tomarán su dirección **vía DHCPv6** completamente. Entonces:
+
+1. Creamos un pool DHCPv6 con un rango de direcciones.
+   ```bash
+   CORE(config)# ipv6 dhcp pool DHCPV6-AZUL
+   CORE(config-dhcpv6)# address prefix 2001:E::/64
+   CORE(config-dhcpv6)# dns-server 2001:A::10
+   CORE(config-dhcpv6)# domain-name ejemplo.local
+   CORE(config-dhcpv6)# exit
+   ```
+2. En la interfaz, activamos la bandera _M_ (“managed-config-flag”) y enlazamos el pool:
+   ```bash
+   CORE(config)# interface GigabitEthernet1/0/3
+   CORE(config-if)# ipv6 nd managed-config-flag
+   CORE(config-if)# ipv6 dhcp server DHCPV6-AZUL
+   ```
+   Con esto, los clientes de la red azul (2001:E::/64) pedirán **dirección** y demás parámetros a DHCPv6.
+
+---
+
+## 8. Verificación en los PCs
+
+- En cada PC, ve a **Desktop > IP Configuration** y deja DHCP en IPv4. Para IPv6, deja en **Autoconfiguration** (por defecto) para SLAAC o DHCPv6 según sea el caso.  
+- Verifica que los PCs de la red naranja y verde obtienen la IPv4 por DHCPv4 (del CORE) y la IPv6 vía SLAAC (y parámetros por DHCPv6 “stateless”).  
+- Verifica que los PCs de la red azul obtienen su IPv4 vía DHCP relay (si configuraste el servidor en el ISP o en un Server PT en la red 172.16.1.0) y su IPv6 **completamente** por DHCPv6 stateful.  
+
+En la CLI de los routers, puedes usar:
+```bash
+CORE# show ip dhcp binding
+CORE# show ipv6 dhcp binding
+```
+para confirmar qué direcciones se están asignando.
+
+---
+
+## 9. Resumen final de los pasos
+
+1. **Activar `ipv6 unicast-routing`** en todos los routers.  
+2. **Configurar direcciones IPv4/IPv6** en cada interfaz según las redes asignadas.  
+3. **Configurar rutas estáticas** (o dinámicas) para que todos los routers conozcan todas las redes.  
+4. **Configurar DHCPv4**:  
+   - En el CORE, crear pools para las redes que administra (ej. 172.16.3.0 y 172.16.4.0).  
+   - Para la red que se administra desde el ISP/Servidor (172.16.5.0), usar `ip helper-address` en el CORE.  
+   - En el ISP (o Server PT) crear el pool para la 172.16.5.0/24.  
+5. **Configurar DHCPv6**:  
+   - _Stateless_ (SLAAC + DHCPv6 “other-config-flag”): redes naranja/verde.  
+   - _Stateful_ (DHCPv6 “managed-config-flag”): red azul.  
+   - Crear pools DHCPv6 en el CORE y enlazarlos con la interfaz (`ipv6 dhcp server`).  
+6. **Probar conectividad** y verificar que cada PC recibe su IP correcta (IPv4 e IPv6) y que hay conectividad de extremo a extremo.
+
+Con estos pasos deberías tener funcionando tu laboratorio de **DHCPv4** y **DHCPv6** en Packet Tracer de forma ordenada. ¡Éxitos!

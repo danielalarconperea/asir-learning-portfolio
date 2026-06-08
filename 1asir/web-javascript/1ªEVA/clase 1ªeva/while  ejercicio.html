@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+</head>
+
+<body>
+<p>esta página contiene código de javascript</p>
+
+<script type="text/javascript">
+
+var i = 30;
+var resta = 0; 
+var numero = parseInt(prompt('Dime un número que quieras restar')); // Capturamos el número correctamente
+
+do {
+    i--; // En lugar de i++, reducimos i con i-- para que eventualmente sea menor que "numero"
+    document.write(i + '<br>');
+    resta -= i; // Restamos el valor de i a la variable resta
+} while (i > numero);
+
+document.write('La resta total es: ' + resta); // Mostramos el resultado de la resta
+
+
+</script>
+</body>
+</html>

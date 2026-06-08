@@ -1,0 +1,102 @@
+	body {
+		background: url("chip-arriba.jpg") repeat-y top left, url("chip-abajo.jpg") repeat-y right top;
+	}
+	.titulo {
+		font-family: arial;
+		text-align: center;
+		text-transform: uppercase;
+		letter-spacing: 1em;
+		word-spacing: 1em;
+		font-size: 1em;	
+	}
+	.parrafo1 {
+		text-align: justify;
+		margin-left: 450px;
+		margin-right: 450px;
+		margin-top: 25px;
+		font-family: arial;
+	}
+	.nombres {
+		text-align: center;
+		text-transform: uppercase;
+		color: blue;
+		margin-top: 25px;
+		word-spacing: 2em;
+		font-family: arial;
+	}
+	.parrafo2 {
+		background-color: #609ec6;
+		margin-left: 500px;
+		margin-right: 163px;
+		height: 235px;
+	}
+	h3 {
+	color: white;
+	background-color: #1b43b4;
+	border-bottom: 5px solid #2184c3;
+	font-family: arial;
+	}
+	.parrafo3 {
+		background-color: #609ec6;
+		margin-left: 200px;
+		margin-right: 200px;
+		width: 1525px;
+		height: 300px;
+	}
+	.parrafo4 {
+		background-color: #609ec6;
+		margin-left: 200px;
+		margin-right: 200px;
+		width: 1525px;
+		height: 260px;
+	}
+	#foto {
+		border: 2px solid black;
+		margin-left: 15px;
+		float: left;
+		width: 150px;
+		margin-right: 15px;
+		background-color: white;
+		padding: 5px;
+	}
+		#foto2 {
+		margin-left: 325px;
+		float: left;
+		width: 150px;
+		border: 2px solid black;
+		padding: 5px;
+	}
+	time {
+		color: red;
+		font-size: 20px;
+	}
+	st {
+		font-size: 20px;
+	}
+	sb {
+		border-bottom: 2px solid red;
+	}
+	#foto1 {
+		width: 40px;
+	}
+	.pie {
+		border-top:2px solid black;
+		margin-top: 25px;
+		margin-left: 200px;
+		margin-right: 160px;
+	}
+	az {
+		color: blue;
+	}
+	.texto {
+		margin-left: 30px;
+		text-align: justify;
+		margin-right: 15px;
+		font-family: arial;
+		font-size: 15px;
+	}
+	.l {
+	float: left;
+	color: blue;
+	font-size: 50px;
+	}

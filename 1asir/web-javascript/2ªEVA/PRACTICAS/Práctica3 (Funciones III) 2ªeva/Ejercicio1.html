@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejercicio1</title>
+</head>
+<body>
+<script type="text/javascript">
+
+var num = parseInt(prompt('Dime un número y te digo lo que suman sus digitos'))
+
+function Ejercicio1(numero){
+    var sumadigitos = 0, numero = String(numero), i; 
+    for (i = 0; i < numero.length; i++) {  
+        sumadigitos += parseInt(numero[i]); 
+    }
+    document.write('La suma de los dígitos del número '+numero+' es: '+sumadigitos)
+}
+Ejercicio1(num);
+
+</script>
+</body>
+</html>
+<!-- 
+Ejercicio 1: Sumar dígitos de un número
+-->

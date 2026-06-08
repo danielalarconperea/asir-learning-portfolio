@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Encuesta de Satisfacción</title>
+</head>
+<body>
+  <h1>Encuesta de Servicio</h1>
+  <!-- Se añade name="servicio" a los checkboxes para agruparlos -->
+  <form>
+    <p>¿Recomendaría nuestro servicio?</p>
+    <input type="radio" name="recomienda" id="si" value="si"> Sí<br>
+    <input type="radio" name="recomienda" id="no" value="no"> No<br><br>
+
+    <p>Servicios usados (marca al menos uno):</p>
+    <input type="checkbox" name="servicio" id="atencion" value="atencion"> Atención al cliente<br>
+    <input type="checkbox" name="servicio" id="productos" value="productos"> Productos<br>
+    <input type="checkbox" name="servicio" id="soporte" value="soporte"> Soporte técnico<br><br>
+
+    <label for="valoracion">Valoración (1-5 estrellas):</label>
+    <input type="range" id="valoracion" min="1" max="5" value="3"><br><br> <!-- Añadido value="3" como valor inicial opcional -->
+
+    <button type="button" onclick="validarEncuesta()">Enviar</button>
+  </form>
+  <p id="resultado"></p>
+
+  <script>
+    function validarEncuesta() {
+    
+      var radiosRecomienda = document.getElementsByName('recomienda');
+      var checkboxesServicios = document.getElementsByName('servicio'); // Usamos el 'name' añadid// No necesitamos obtener el range para esta validación específica
+      var resultado = document.getElementById('resultado');
+
+      var error = '';
+      var validarFormulario = true;
+      var recomiendaSeleccionado = false;
+      var servicioSeleccionado = false;
+
+      for (var i = 0; i < radiosRecomienda.length; i++) {
+        if (radiosRecomienda[i].checked) {
+          recomiendaSeleccionado = true;
+          break;
+        }
+      }
+      if (!recomiendaSeleccionado) {
+        error += 'Por favor, indica si recomendarías el servicio.<br>';
+        validarFormulario = false;
+      }
+    
+      for (var i = 0; i < checkboxesServicios.length; i++) {
+        if (checkboxesServicios[i].checked) {
+          servicioSeleccionado = true;
+          break;
+        }
+      }
+      if (!servicioSeleccionado) {
+        error += 'Debes marcar al menos un servicio utilizado.<br>';
+        validarFormulario = false;
+      }
+      resultado.innerHTML = '';
+
+      if (validarFormulario) {
+        resultado.innerHTML = '¡Gracias por completar la encuesta!';
+        resultado.style.color = 'green';
+      
+      } else {
+      
+        resultado.innerHTML = error;
+        resultado.style.color = 'red';
+      }
+    }
+  </script>
+</body>
+</html>

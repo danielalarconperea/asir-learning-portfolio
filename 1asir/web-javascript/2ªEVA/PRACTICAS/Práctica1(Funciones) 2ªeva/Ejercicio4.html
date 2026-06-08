@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejercicio4</title>
+</head>
+<body>
+<script type="text/javascript">
+
+function IVA(precio_base, porcentaje_IVA){
+    var Precio_final = precio_base * porcentaje_IVA * 0.01 + precio_base;
+    return Precio_final;
+}
+var precio_base = parseFloat(prompt('Dime el precio base del producto: ')), porcentaje_IVA = parseFloat(prompt('Dime el porcentaje de IVA (_%): '));
+alert('El precio final del producto es: '+IVA(precio_base, porcentaje_IVA));
+
+</script>
+</body>
+</html>
+<!-- 
+Ejercicio 4: Calcular el precio con IVA
+Crea una función que reciba un precio base y un porcentaje de IVA, 
+y devuelva el precio final con IVA incluido. 
+Pide al usuario que introduzca el precio base y el porcentaje de IVA, 
+y muestra el resultado del precio total.
+-->

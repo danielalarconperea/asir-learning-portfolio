@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POSICIONAMIENTO ABSOLUTO</title>
+<style>
+    div{
+        position: relative;
+        font-size: 25px;
+        border: 2px solid #000;
+        margin: 10px;
+        padding: 10px;
+        height: 200px;
+        width: 400px;
+        background-color: red;
+    }
+    #capa2{
+        position: absolute;
+        top: 30px;
+        left: 100px;
+        height: 150px;
+        width: 150px;
+        background-color: blue;
+        color: #fff;
+    }
+</style>
+</head>
+<body>
+    <div>capa-1
+        <div id="capa2">capa-2</div>
+    </div>
+    <div>capa-3
+        <div id="capa2">capaaa-2</div>
+    </div>
+</body>
+</html>

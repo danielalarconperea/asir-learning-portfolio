@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Encuesta de Satisfacción</title>
+  <style>
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+      text-align: center;
+      display: block;
+      align-content: center;
+      height: 100vh;
+    }
+    form{
+      border: 1px solid rgba(0, 0, 0, 0.137);
+      padding: 2em;
+      width: 20em;
+      text-align: left;
+      margin: auto;
+      border-radius: 20px;
+      box-shadow: 4px 6px 15px rgba(0, 0, 0, 0.426);
+    }
+  </style>
+</head>
+<body>
+  <h1>Encuesta de Servicio</h1>
+  <form>
+    <p>¿Recomendaría nuestro servicio?</p>
+    <input type="radio" name="recomienda" id="si" value="si"> Sí<br>
+    <input type="radio" name="recomienda" id="no" value="no"> No<br><br>
+
+    <p>Servicios usados (marca al menos uno):</p>
+    <input type="checkbox" name="servicio" id="atencion" value="Atención al cliente"> Atención al cliente<br>
+    <input type="checkbox" name="servicio" id="productos" value="Productos"> Productos<br>
+    <input type="checkbox" name="servicio" id="soporte" value="Soporte técnico"> Soporte técnico<br><br>
+
+    <label for="valoracion">Valoración (1-5 estrellas):</label>
+    <input type="range" id="valoracion" min="1" max="5"><br><br>
+
+    <button type="button" onclick="validarEncuesta()">Enviar</button>
+  </form>
+  <p id="resultado"></p>
+  <script>
+    function validarEncuesta(){
+      var recomienda = document.getElementsByName('recomienda');
+      var servicio = document.getElementsByName('servicio');
+      var valoracion = document.getElementById('valoracion');
+
+      var resultado = document.getElementById('resultado');
+      var error = '';
+      var resumen = '';
+      var servicioSeleccionado = false;
+      var recomiendaSeleccionado = false;
+      var formularioValido = true;
+
+
+      for(i=0; i < recomienda.length; i++){
+        if(recomienda[i].checked){
+          recomiendaSeleccionado = true;
+          resumen += 'Recomienda el servicio: '+recomienda[i].value+'<br>';
+          break;
+        }
+      }
+      if(!recomiendaSeleccionado){
+        error += 'Responda la pregunta de sí/no<br>';
+        formularioValido = false;
+      }
+      for(i=0; i < servicio.length; i++){
+        if(servicio[i].checked){
+          servicioSeleccionado = true;
+          resumen += 'Servidor seleccionado: '+servicio[i].value+'<br>'
+          break;
+        }
+      }
+      if(!servicioSeleccionado){
+        error += 'Seleccione al menos un servicio<br>';
+        formularioValido = false;
+      }
+      if(valoracion.value <= 2){
+        error += 'La valoración tiene que ser mayor a 2 estrellas<br>';
+        formularioValido = false;
+      }else{
+        resumen += 'Valoración dada: '+valoracion.value+'<br>';
+      }
+      if(formularioValido){
+        resultado.innerHTML = resumen;
+        resultado.style.color = 'green';
+      }else{
+        resultado.innerHTML = error;
+        resultado.style.color = 'red';
+      }
+    }
+  </script>
+</body>
+</html>

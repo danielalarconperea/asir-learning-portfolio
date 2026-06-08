@@ -1,0 +1,35 @@
+ <!doctype html>
+
+<html>
+
+<head>
+	<meta charset="UTF-8">
+    <title>JavaScript</title>
+</head>
+
+<body> 
+	<script type="text/javascript">
+	function contarSeleccionados() {
+		var cant=0;
+		if (document.form1.lenguaje1.checked)
+			{cant++;}
+		if (document.form1.lenguaje2.checked)
+			{cant++;}
+		if (document.form1.lenguaje3.checked)
+			{cant++;}
+		if (document.form1.lenguaje4.checked)
+			{cant++;}
+		alert ("Conoce " +cant+ " lenguajes.");
+	}
+	</script>
+	¿Cuántos lenguajes conoces?
+		<form name="form1">
+		<input type="checkbox" name="lenguaje1">JavaScript<br>
+		<input type="checkbox" name="lenguaje2">PHP<br>
+		<input type="checkbox" name="lenguaje3">Python<br>
+		<input type="checkbox" name="lenguaje4">Oracle<br>
+		<input type="button" value="Mostrar" onClick="contarSeleccionados()"
+		</form>
+</body>   
+
+</html>

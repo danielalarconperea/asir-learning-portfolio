@@ -1,0 +1,248 @@
+<!-- Ejercicio1
+
+Crear un formulario que contenga varios tipos de campos (texto, número, email y selección). 
+El programa verificará si los campos están correctamente rellenados y mostrará mensajes de error o confirmación para cada uno.
+
+Usa JavaScript para validar lo siguiente:
+-El nombre debe tener entre 3 y 15 caracteres.
+-La edad debe ser un número entre 18 y 99.
+-El correo debe ser válido.
+-Debe seleccionarse al menos un género.
+-Muestra mensajes de error o confirmación debajo del formulario en color rojo. -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validación Completa</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #333;
+    }
+
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 30px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* Estilos del formulario */
+    form {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    /* Estilos para los grupos de campos */
+    form > div {
+      margin-bottom: 20px;
+    }
+
+    /* Estilos para etiquetas */
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #2c3e50;
+    }
+
+    /* Estilos para inputs */
+    input[type="text"],
+    input[type="number"],
+    input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="email"]:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+      outline: none;
+    }
+
+    /* Estilos para radio buttons */
+    .radio-group {
+      display: flex;
+      gap: 20px;
+      margin-top: 5px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    input[type="radio"] {
+      margin-right: 8px;
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Estilos para el botón */
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    /* Estilos para mensajes de error */
+    .error {
+      color: #e74c3c;
+      font-size: 14px;
+      margin-top: 5px;
+      display: block;
+    }
+
+    /* Estilo para mensaje de éxito */
+    #mensaje {
+      color: #2ecc71;
+      text-align: center;
+      font-weight: 500;
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 4px;
+      background-color: rgba(46, 204, 113, 0.1);
+      display: none;
+    }
+
+    #mensaje:not(:empty) {
+      display: block;
+    }
+
+    /* Animaciones para mensajes */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .error:not(:empty), #mensaje:not(:empty) {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <h1>Formulario de Registro</h1>
+  <form id="formulario">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" placeholder="Escribe tu nombre"><br>
+    <span id="errorNombre" class="error"></span><br><br>
+
+    <label for="edad">Edad:</label>
+    <input type="number" id="edad" placeholder="Escribe tu edad"><br>
+    <span id="errorNumero" class="error"></span><br><br>
+
+    <label for="correo">Correo Electrónico:</label>
+    <input type="email" id="correo" placeholder="Escribe tu correo"><br>
+    <span id="errorCorreo" class="error"></span><br><br>
+
+    <label>Género:</label><br>
+    <input type="radio" name="genero" id="genero_masculino" value="Masculino"> Masculino<br>
+    <input type="radio" name="genero" id="genero_femenino" value="Femenino"> Femenino<br>
+    <span id="errorGenero" class="error"></span><br><br>
+
+    <button type="button" onclick="validarFormulario()">Enviar</button>
+  </form>
+  <p id="mensaje"></p>
+  
+  <script>
+    function validarFormulario(){
+      var FormularioValido = true;
+
+      var nombre = document.getElementById('nombre')
+      var errorNombre = document.getElementById('errorNombre')
+      if(nombre.value.trim() == ''){
+        errorNombre.innerHTML = 'Por favor, ingrese su nombre';
+        FormularioValido = false;
+      } else if(nombre.value.trim().length < 3 || nombre.value.trim().length > 15){
+        errorNombre.innerHTML = 'Por favor, ingrese un nombre de 3 a 15 caracteres';
+        formularioValido = false;
+      } else {
+        errorNombre.innerHTML = '';
+      }
+
+      var edad = document.getElementById('edad')
+      var errorNumero = document.getElementById('errorNumero')
+      if(edad.value == ''){
+        errorNumero.innerHTML = 'Por favor, ingrese su edad';
+        FormularioValido = false;
+      }else if(edad.value < 18 || edad.value > 99){
+        errorNumero.innerHTML = 'Debe tener entre 18 y 99 años';
+        FormularioValido = false;
+      }else{
+        errorNumero.innerHTML = ''
+      }
+
+      var correo = document.getElementById('correo')
+      var errorCorreo = document.getElementById('errorCorreo')
+      if(correo.value.trim() == ''){
+        errorCorreo.innerHTML = 'Por favor, ingrese su correo';
+        FormularioValido = false;
+      }else if(correo.value.trim().indexOf('.') != -1 && correo.value.trim().indexOf('@') > correo.value.trim().indexOf('.')){
+        errorCorreo.innerHTML = 'La @ tiene que escribirse antes que el .';
+        FormularioValido = false;
+      }else if(correo.value.trim().indexOf('@') == -1){
+        errorCorreo.innerHTML = 'El correo debe contener una @';
+        FormularioValido = false;
+      }else if(correo.value.trim().indexOf('.') == -1){
+        errorCorreo.innerHTML = 'El correo debe contener un .';
+        FormularioValido = false;
+      }else{
+        errorCorreo.innerHTML = ''
+      }
+
+
+      var generos = document.getElementsByName('genero')
+      var errorGenero = document.getElementById('errorGenero')
+      var generoSeleccionado = false
+      for (i=0;i<generos.length;i++){
+        if (generos[i].checked){
+          generoSeleccionado = true
+        }
+      }
+
+      if(!generoSeleccionado){
+        errorGenero.innerHTML = 'Por favor, seleccione su genero';
+        FormularioValido = false;
+      }else{
+        errorGenero.innerHTML = ''
+      }
+      
+      var mensaje = document.getElementById('mensaje')
+      if(FormularioValido){
+        mensaje.innerHTML = 'El formulario se ha enviado correctamente'
+      }
+    }
+  </script>
+  </body>
+</html>

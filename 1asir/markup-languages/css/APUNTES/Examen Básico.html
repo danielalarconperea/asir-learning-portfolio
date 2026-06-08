@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Completa de CSS</title>
+    <style>
+        /* === Estilos generales === */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .contenedor {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        .ejemplo {
+            padding: 20px;
+            margin: 10px 0;
+            background-color: #e0e0e0;
+            border: 1px solid #999;
+            border-radius: 5px;
+        }
+
+        /* === Tipografía === */
+        .tipografia-ejemplo {
+            font-family: "Georgia", serif; /* Fuente serif */
+            font-size: 1.2em; /* Tamaño de fuente relativo */
+            font-weight: bold; /* Grosor de la fuente */
+            font-style: italic; /* Estilo de fuente (cursiva) */
+            line-height: 1.6; /* Interlineado */
+            text-align: justify; /* Alineación del texto */
+            color: #0066cc; /* Color del texto */
+            text-decoration: underline; /* Subrayado */
+            text-transform: uppercase; /* Convertir texto a mayúsculas */
+        }
+
+        /* === Fondos === */
+        .fondo-ejemplo {
+            background-color: #ffcccb; /* Color de fondo */
+            background-image: url(./background.jpg); /* Imagen de fondo */
+            background-repeat: no-repeat; /* No repetir la imagen */
+            background-position: center; /* Posición de la imagen */
+            background-size: cover; /* Ajustar la imagen al contenedor */
+            padding: 50px;
+            color: #fff;
+            text-align: center;
+        }
+
+        /* === Colores === */
+        .color-ejemplo {
+            background-color: rgba(255, 99, 71, 0.7); /* Color con transparencia (RGBA) */
+            color: hsl(120, 100%, 25%); /* Color en formato HSL */
+            padding: 20px;
+            margin: 10px 0;
+        }
+
+        /* === Unidades === */
+        .unidades-ejemplo {
+            width: 50%; /* Ancho relativo */
+            height: 100px; /* Altura fija */
+            margin: 10px auto; /* Márgenes automáticos para centrar */
+            padding: 20px;
+            background-color: #add8e6;
+            font-size: 1.5rem; /* Tamaño de fuente relativo a la raíz */
+        }
+
+        /* === Selectores === */
+        /* Selector de clase */
+        .selector-clase {
+            background-color: #98fb98;
+            padding: 20px;
+        }
+
+        /* Selector de ID */
+        #selector-id {
+            background-color: #ffd700;
+            padding: 20px;
+        }
+
+        /* Selector de atributo */
+        [type="text"] {
+            border: 2px solid #0066cc;
+            padding: 10px;
+        }
+
+        /* Selector de pseudoclase */
+        .selector-pseudoclase:hover {
+            background-color: #ffb6c1;
+        }
+
+        /* === Cajas (Box Model) === */
+        .caja-ejemplo {
+            width: 200px;
+            height: 200px;
+            margin: 20px; /* Margen exterior */
+            padding: 20px; /* Relleno interior */
+            border: 5px solid #333; /* Borde */
+            background-color: #87ceeb;
+            box-sizing: border-box; /* Incluye el borde y el relleno en el tamaño total */
+        }
+
+        /* === Listas === */
+        .lista-ejemplo {
+            list-style-type: square; /* Viñetas cuadradas */
+            list-style-position: inside; /* Viñetas dentro del contenido */
+            padding-left: 20px;
+        }
+
+        .lista-ejemplo li {
+            background-color: #e6e6fa;
+            margin: 5px 0;
+            padding: 10px;
+        }
+
+        /* === Tablas === */
+        .tabla-ejemplo {
+            width: 100%;
+            border-collapse: collapse; /* Fusionar bordes de celdas */
+            margin: 20px 0;
+        }
+
+        .tabla-ejemplo th, .tabla-ejemplo td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .tabla-ejemplo th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .tabla-ejemplo tr:nth-child(even) {
+            background-color: #f2f2f2; /* Filas pares con fondo gris */
+        }
+
+        .tabla-ejemplo tr:hover {
+            background-color: #ffcccb; /* Cambio de color al pasar el mouse */
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Guía Completa de CSS</h1>
+
+        <!-- Tipografía -->
+        <h2>Tipografía</h2>
+        <div class="ejemplo tipografia-ejemplo">
+            Este es un ejemplo de cómo aplicar propiedades de tipografía en CSS, como fuentes, tamaños, colores y estilos.
+        </div>
+
+        <!-- Fondos -->
+        <h2>Fondos</h2>
+        <div class="ejemplo fondo-ejemplo">
+            Este es un ejemplo de cómo aplicar fondos en CSS, incluyendo colores, imágenes y posicionamiento.
+        </div>
+
+        <!-- Colores -->
+        <h2>Colores</h2>
+        <div class="ejemplo color-ejemplo">
+            Este es un ejemplo de cómo usar colores en CSS, incluyendo formatos como RGBA y HSL.
+        </div>
+
+        <!-- Unidades -->
+        <h2>Unidades</h2>
+        <div class="ejemplo unidades-ejemplo">
+            Este es un ejemplo de cómo usar unidades en CSS, como porcentajes, píxeles y rem.
+        </div>
+
+        <!-- Selectores -->
+        <h2>Selectores</h2>
+        <div class="ejemplo selector-clase">
+            Este es un ejemplo de un selector de clase.
+        </div>
+        <div id="selector-id" class="ejemplo">
+            Este es un ejemplo de un selector de ID.
+        </div>
+        <input type="text" placeholder="Este es un selector de atributo" class="ejemplo">
+        <div class="ejemplo selector-pseudoclase">
+            Pasa el mouse sobre este elemento para ver un ejemplo de pseudoclase.
+        </div>
+
+        <!-- Cajas (Box Model) -->
+        <h2>Cajas (Box Model)</h2>
+        <div class="ejemplo caja-ejemplo">
+            Este es un ejemplo de cómo funciona el modelo de caja en CSS, incluyendo márgenes, relleno y bordes.
+        </div>
+
+        <!-- Listas -->
+        <h2>Listas</h2>
+        <ul class="ejemplo lista-ejemplo">
+            <li>Elemento 1</li>
+            <li>Elemento 2</li>
+            <li>Elemento 3</li>
+        </ul>
+
+        <!-- Tablas -->
+        <h2>Tablas</h2>
+        <table class="ejemplo tabla-ejemplo">
+            <thead>
+                <tr>
+                    <th>Columna 1</th>
+                    <th>Columna 2</th>
+                    <th>Columna 3</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Fila 1, Celda 1</td>
+                    <td>Fila 1, Celda 2</td>
+                    <td>Fila 1, Celda 3</td>
+                </tr>
+                <tr>
+                    <td>Fila 2, Celda 1</td>
+                    <td>Fila 2, Celda 2</td>
+                    <td>Fila 2, Celda 3</td>
+                </tr>
+                <tr>
+                    <td>Fila 3, Celda 1</td>
+                    <td>Fila 3, Celda 2</td>
+                    <td>Fila 3, Celda 3</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

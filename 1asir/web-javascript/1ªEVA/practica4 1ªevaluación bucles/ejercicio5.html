@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+</head>
+<body>
+<h1>Ejercicio 5</h1>
+<script type="text/javascript">
+var contador_par, contador_impar, i, num;
+sumas_impar=0;
+sumas_par=0;
+num=parseInt(prompt('dime un número y te digo cuanto es la suma total de los números pares y los impares hasta tal número'));
+for(i=1; i<=num; i++){
+    if(i%2==0){
+        sumas_par+=i;
+    }else{
+        sumas_impar+=i;
+    }
+}
+document.write('la suma de los impares es '+sumas_impar+' y la de los pares es '+sumas_par);
+</script>
+</body>
+</html>
+
+<!--Ejercicio5: Suma de números pares e impares
+Pide al usuario un número límite. 
+Usa un bucle para sumar todos los números pares e impares hasta ese límite 
+y muestra la suma de cada tipo.-->
+
+

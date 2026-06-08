@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Edad</title>
+    <style>
+        body{
+            margin: auto;
+            display: block; 
+            text-align: center;
+            justify-content: center;
+            font-family: Arial, Helvetica, sans-serif;
+            max-width: 500px;
+        }
+        form{
+            margin: 0 100px;
+            border: 2px black solid;
+            padding: 15px;
+            max-width: auto;
+            box-shadow: 10px 20px 30px black;
+            border-radius: 15px;
+            text-align: left;
+        }
+        h1{
+            text-shadow: 1px 1px 5px rgb(54, 104, 127);
+        }
+    </style>
+</head>
+<body>
+    <script type="text/javascript">
+        function calculo(){
+            var fecha_nacimiento = document.formulario.nacimiento.value;
+            var edad = 2025 - fecha_nacimiento;
+            if (edad < 18 && edad > 0){
+                alert('Eres menor de edad');
+            }else if(edad >= 18 && edad < 200){
+                alert('Eres mayor de edad');
+            }else{
+                alert('Ingrese una fecha valida');
+            }
+        }
+    </script>
+
+    <h1>Verificación de Edad</h1>
+    <form name="formulario">
+        <label for="birthYear">Año de nacimiento:</label>
+        <input type="number" name="nacimiento" required><br><br>
+        <button type="button" onclick="calculo()">Verificar Edad</button>
+    </form>
+
+  
+</body>
+</html>

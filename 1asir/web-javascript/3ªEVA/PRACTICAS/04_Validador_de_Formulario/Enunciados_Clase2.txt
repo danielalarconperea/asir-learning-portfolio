@@ -1,0 +1,30 @@
+Ejercicio1
+
+Crear un formulario que contenga varios tipos de campos (texto, número, email y selección). El programa verificará si los campos están correctamente rellenados y mostrará mensajes de error o confirmación para cada uno.
+
+Usa JavaScript para validar lo siguiente:
+
+El nombre debe tener entre 3 y 15 caracteres.
+
+La edad debe ser un número entre 18 y 99.
+
+El correo debe ser válido.
+
+Debe seleccionarse al menos un género.
+
+Muestra mensajes de error o confirmación debajo del formulario en color rojo.
+
+
+Ejercicio 2
+
+Crear un formulario donde el usuario ingrese dos números en campos separados y seleccione una operación matemática básica (suma, resta, multiplicación o división). El programa realizará la operación seleccionada y mostrará el resultado.
+
+Tenemos un archivo HTML con un formulario con los siguientes elementos:
+
+Dos campos de entrada para números.
+
+Un menú desplegable para seleccionar la operación matemática.
+
+Un botón para calcular el resultado.
+
+Usa JavaScript para realizar la operación seleccionada y mostrar el resultado en pantalla en el p con id resultado.

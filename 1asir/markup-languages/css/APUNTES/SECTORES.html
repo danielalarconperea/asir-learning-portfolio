@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selectores CSS</title>
+    <style>
+        /* === Estilos generales === */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .contenedor {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        .ejemplo {
+            padding: 20px;
+            margin: 10px 0;
+            background-color: #e0e0e0;
+            border: 1px solid #999;
+            border-radius: 5px;
+        }
+
+        /* === Selectores Básicos === */
+
+        /* Selector de etiqueta (tag selector) */
+        /* Aplica estilos a todos los elementos <p> */
+        p {
+            color: #0066cc;
+            font-size: 1.1em;
+        }
+
+        /* Selector de clase (class selector) */
+        /* Aplica estilos a todos los elementos con la clase "destacado" */
+        .destacado {
+            background-color: #ffcccb;
+            padding: 10px;
+            border-left: 5px solid #333;
+        }
+
+        /* Selector de ID (ID selector) */
+        /* Aplica estilos al elemento con el ID "principal" */
+        #principal {
+            background-color: #add8e6;
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* === Selectores Avanzados === */
+
+        /* Selector de atributo (attribute selector) */
+        /* Aplica estilos a todos los elementos <input> con el atributo type="text" */
+        input[type="text"] {
+            border: 2px solid #0066cc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        /* Selector de pseudoclase (pseudo-class) */
+        /* Aplica estilos a los enlaces cuando se les pasa el mouse */
+        a:hover {
+            color: #ff0000;
+            text-decoration: underline;
+        }
+
+        /* Selector de pseudoelemento (pseudo-element) */
+        /* Aplica estilos a la primera línea de un párrafo */
+        p::first-line {
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Selector de descendencia (descendant selector) */
+        /* Aplica estilos a los elementos <li> que están dentro de un <ul> */
+        ul li {
+            background-color: #98fb98;
+            margin: 5px 0;
+            padding: 10px;
+        }
+
+        /* Selector de hijo directo (child selector) */
+        /* Aplica estilos a los elementos <li> que son hijos directos de un <ul> */
+        ul > li {
+            border-left: 5px solid #333;
+        }
+
+        /* Selector de hermano adyacente (adjacent sibling selector) */
+        /* Aplica estilos al primer <p> que sigue inmediatamente a un <h2> */
+        h2 + p {
+            font-style: italic;
+            color: #555;
+        }
+
+        /* Selector de hermano general (general sibling selector) */
+        /* Aplica estilos a todos los <p> que siguen a un <h2> */
+        h2 ~ p {
+            background-color: #f2f2f2;
+            padding: 10px;
+        }
+
+        /* === Selectores de Agrupación === */
+
+        /* Agrupa varios selectores para aplicar los mismos estilos */
+        h1, h2, h3 {
+            color: #333;
+            font-family: "Georgia", serif;
+        }
+
+        /* === Selectores de Combinación === */
+
+        /* Selector de clase combinada */
+        /* Aplica estilos a los elementos que tienen ambas clases */
+        .clase1.clase2 {
+            background-color: #ffd700;
+            padding: 10px;
+        }
+
+        /* Selector de clase con etiqueta */
+        /* Aplica estilos a los elementos <p> con la clase "especial" */
+        p.especial {
+            font-size: 1.2em;
+            color: #ff4500;
+        }
+
+        /* === Selectores de Universal === */
+
+        /* Selector universal (*) */
+        /* Aplica estilos a todos los elementos */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* === Selectores de Negación === */
+
+        /* Selector de negación (:not) */
+        /* Aplica estilos a todos los <p> que no tienen la clase "excluido" */
+        p:not(.excluido) {
+            background-color: #e6e6fa;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Selectores CSS</h1>
+
+        <!-- Selectores Básicos -->
+        <h2>Selectores Básicos</h2>
+        <div class="ejemplo">
+            <p>Este es un párrafo con un selector de etiqueta.</p>
+            <p class="destacado">Este es un párrafo con un selector de clase.</p>
+            <div id="principal">Este es un div con un selector de ID.</div>
+        </div>
+
+        <!-- Selectores Avanzados -->
+        <h2>Selectores Avanzados</h2>
+        <div class="ejemplo">
+            <input type="text" placeholder="Este es un input con un selector de atributo">
+            <a href="#">Pasa el mouse sobre este enlace para ver un selector de pseudoclase.</a>
+            <p>Este es un párrafo con un selector de pseudoelemento. La primera línea está en negrita.</p>
+            <ul>
+                <li>Elemento 1 (selector de descendencia)</li>
+                <li>Elemento 2 (selector de hijo directo)</li>
+            </ul>
+            <h2>Título</h2>
+            <p>Este párrafo sigue a un h2 (selector de hermano adyacente).</p>
+            <p>Este párrafo también sigue a un h2 (selector de hermano general).</p>
+        </div>
+
+        <!-- Selectores de Agrupación -->
+        <h2>Selectores de Agrupación</h2>
+        <div class="ejemplo">
+            <h1>Título 1</h1>
+            <h2>Título 2</h2>
+            <h3>Título 3</h3>
+        </div>
+
+        <!-- Selectores de Combinación -->
+        <h2>Selectores de Combinación</h2>
+        <div class="ejemplo">
+            <div class="clase1 clase2">Este div tiene dos clases combinadas.</div>
+            <p class="especial">Este párrafo tiene una clase combinada con una etiqueta.</p>
+        </div>
+
+        <!-- Selectores de Negación -->
+        <h2>Selectores de Negación</h2>
+        <div class="ejemplo">
+            <p>Este párrafo no tiene la clase "excluido".</p>
+            <p class="excluido">Este párrafo tiene la clase "excluido".</p>
+        </div>
+    </div>
+</body>
+</html>

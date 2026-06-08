@@ -1,0 +1,307 @@
+Dime paso a poso como ponfigurar esta practica de packet tracer con el listado de comandos y en que dispositivo introducir cada uno de ellos! 2. Configuración Básica de los Switches
+
+enable
+configure terminal
+! Cambiar el nombre del dispositivo para cada switch (SW1, SW2, SW3, CORE)
+hostname SW1
+
+! SW1, SW2, SW3
+ip default-gateway 172.16.255.2
+interface vlan 255
+ip address 192.168.255.? 255.255.255.0 
+
+! Configurar contraseñas
+enable secret cisco
+line console 0
+password cisco
+login
+exit
+
+! Configurar un mensaje de banner (CORE, SW1, SW2, SW3)
+banner motd # Acceso restringido solo para administradores autorizados #
+
+    ! Guardar la configuración
+    write
+
+! 3.Configuración Específica por Switch (CORE, SW1, SW2, SW3)
+! Crear VLANs: Configura las VLANs especificadas para los switches:
+enable
+configure terminal
+! Crear VLANs y asignar nombres
+vlan 10
+ name ATENCION_CLIENTE
+vlan 20
+ name PLANIFICACION_MERCADO
+vlan 30
+ name RRHH
+vlan 99
+ name ADMINISTRATIVA_NATIVA
+
+! Asignar puertos a las VLANs (CORE, SW1, SW2, SW3)
+! switchport mode access: Configura una interfaz como puerto de acceso, asociándola a una sola VLAN.
+
+interface g1/0/10
+switchport mode access
+switchport access vlan 10
+
+interface g1/0/11
+switchport mode access
+switchport access vlan 20
+
+interface g1/0/12
+switchport mode access
+switchport access vlan 30
+
+! Apagar los puertos no utilizados
+! interface range fa0/21-24
+! shutdown
+! exit
+
+! Configuración de los Enlaces Troncales
+! Un trunk es un enlace que transporta tráfico de múltiples VLANs entre switches o entre un switch y un router
+! Creamos un GRUPO de CANALES con el protocolo LACP para aplicar los enlaces troncales
+! 3.1. Configurar enlaces troncales en CORE, SW1, SW2 y SW3**
+interface range g1/0/1-2
+channel-group 1 mode active
+
+interface port-channel 1
+switchport mode trunk
+switchport trunk native vlan 255
+switchport trunk allowed vlan 10,20,30,255
+
+interface range g1/0/3-4
+channel-group 2 mode active
+
+interface port-channel 2
+switchport mode trunk
+switchport trunk native vlan 255
+switchport trunk allowed vlan 10,20,30,255
+
+! Configurar enlace troncal de SW1 a SW3
+
+interface range g1/0/5-6
+channel-group 3 mode active
+
+interface port-channel 3
+switchport mode trunk
+switchport trunk native vlan 255
+switchport trunk allowed vlan 10,20,30,255
+
+!Comando para verificar interfaces troncales
+show interfaces trunk
+! Comando para verificar VLANs activas
+show vlan brief
+! Comando para verificar el estado de Spanning Tree
+show spanning-tree
+
+
+! Configuración de Spanning-Tree en el CORE
+! En el switch CORE, configura Spanning-Tree:
+
+spanning-tree vlan 10,20,30,255 root primary
+interface range g1/0/1-24
+spanning-tree portfast default
+
+! El resto de switches
+spanning-tree portfast default
+
+
+! line co 0
+! logging synchrononous
+! exit
+
+! 5.Configuración de Enrutamiento en el CORE
+! En el switch CORE, habilita el enrutamiento entre VLANs:
+! Para permitir la comunicación entre diferentes VLAN dentro de una misma red
+
+ip routing
+
+interface vlan 10
+ip address 192.168.10.1 255.255.255.0
+
+interface vlan 20
+ip address 192.168.20.1 255.255.255.0
+
+interface vlan 30
+ip address 192.168.30.1 255.255.255.0
+
+interface vlan 40
+ip address 192.168.40.1 255.255.255.0
+
+! 6. Pruebas de Conectividad
+!  1. Asigna direcciones IP estáticas a las PCs conforme al esquema.
+!  2. Verifica la conectividad entre las PCs de la misma VLAN usando el comando:
+!    ping <IP de la PC destino>
+!  3. Verifica la conectividad entre VLANs desde el CORE (inter-VLAN routing).
+!  4. Usa `traceroute` para identificar posibles problemas en el camino.
+
+! 4.- Configura un servidor DHCP por cada VLAN Excluye las 20 primeras direcciones de cada red
+
+! CORE
+! Excluimos las primeras 20 direcciones de la LAN 10, 20, 30,40
+en
+conf t
+ip dhcp excluded-address 192.168.10.1 192.168.10.20
+ip dhcp excluded-address 192.168.20.1 192.168.20.20
+ip dhcp excluded-address 192.168.30.1 192.168.30.20
+ip dhcp excluded-address 192.168.40.1 192.168.40.20
+ip dhcp excluded-address 192.168.255.1 192.168.255.20
+
+! Creamos un grupo DHCP para LAN-10:
+ip dhcp pool VLAN_10
+network 192.168.10.0 255.255.255.0
+default-router 192.168.10.1
+dns-server 209.128.128.1
+
+! Creamos un grupo DHCP para LAN-20:
+ip dhcp pool VLAN_20
+network 192.168.20.0 255.255.255.0
+default-router 192.168.20.1
+dns-server 209.128.128.1
+
+! Creamos un grupo DHCP para LAN-30:
+ip dhcp pool VLAN_30
+network 192.168.30.0 255.255.255.0
+default-router 192.168.30.1
+dns-server 209.128.128.1
+
+! Creamos un grupo DHCP para LAN-40:
+ip dhcp pool VLAN_40
+network 192.168.40.0 255.255.255.0
+default-router 192.168.40.1
+dns-server 209.128.128.1
+
+! Creamos un grupo DHCP para LAN-255:
+ip dhcp pool VLAN_255
+network 192.168.255.0 255.255.255.0
+default-router 192.168.255.1
+dns-server 209.128.128.1
+
+
+! R1 
+! Encendemos la interfaces y las asignamos una dirección ip
+interface g0/0/0
+ip address 192.168.55.1 255.255.255.0
+no shutdown
+interface g0/0/1
+ip address 209.128.128.1 255.255.255.0
+no shutdown
+
+
+
+! CORE
+interface g1/0/23
+no switchport
+ip address 192.168.55.2 255.255.255.0
+
+! R1 --- El camino de vuelta
+ip route 192.168.0.0 255.255.0.0 g0/0/0
+
+! CORE --- Cualquier red que no conozca
+ip route 0.0.0.0 0.0.0.0 g1/0/23
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+! R1
+en
+conf t
+interface g0/0
+ip helper-address 10.1.1.2
+exit
+
+! R3
+en
+conf t
+interface g0/0
+ip helper-address 10.2.2.2
+exit
+
+! R2
+interface g0/1
+ip address dhcp 
+no shutdown
+end
+show ip interface brief
+
+! Nos muestra la dirección ip y la mac de las direcciones proporcionadas
+show ip dhcp binding
+
+
+
+
+
+
+
+
+
+
+! Prueba la conectividad de los equipos y el enrutamiento
+
+! 5.- Añade un router Cisco 4331, conéctalo al CORE y usa la red 192.168.1.0/24.
+
+! Al router 4331 conéctale un servidor (internet) y usa la red 209.128.128.0/24 en este enlace.
+
+! Configura el enrutamiento en CORE introduciendo la ruta por defecto: ip route 0.0.0.0 0.0.0.0 "interfaz de salida"
+
+! y el router 4331 introduce la ruta resumida: ip route 192.168.0.0 255.255.0.0 "interfaz de salida"
+
+
+
+
+
+
+! telnet
+telnet 192.168.10.1
+line console 0
+password cisco
+login
+enable password cisco
+
+username admin1 password cisco
+ip domain-name ESTOYESTUDIANDOREDES.COM
+crypto hey generate rsa
+1024
+
+ip ssh version 2
+line vty 0 4
+login local
+
+! Para que solo se pueda usar ssh
+transport input shh
+
+
+! SSH
+ssh -l admin1 192.168.10.1

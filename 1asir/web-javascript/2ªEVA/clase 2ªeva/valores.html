@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+</head>
+<body>
+<script>
+function cambiarColor(){
+    posicion = document.form1.select1.selectedIndex;
+    document.form1.text1.value = posicion;
+    document.form1.text2.value = document.form1.select1.options[posicion].text;
+    document.form1.text3.value = document.form1.select1.options[posicion].value;
+}
+</script>
+<form name="form1">
+<select size="1" name="select1" onchange="cambiarColor()">
+    <option value="1000">Movil</option>
+    <option value="1200">PC</option>
+    <option value="100">Pantalla</option>
+    <option value="50">Teclado</option>
+    <option value="10">ratón</option>
+</select>
+<br>
+Número de índice seleccionado del objeto SElECT:
+<input type="text" name="text1" value="88"><br>
+Texto seleccionado:<input type="text" name="text2" value="Pepe"><br>
+Valor asociado:<input type="text" name="text3"><br>
+</form>    
+</body>
+</html>

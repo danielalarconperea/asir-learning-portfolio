@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejercicio2</title>
+</head>
+<body>
+<script type="text/javascript">
+    
+function cadena_titulo (cadena){
+    var j=1, resultado='';
+    for(i = 0; i < cadena.length; i++){
+        if(cadena.charAt(i) != ' ' && j==1){
+            resultado += cadena.charAt(i).toUpperCase();
+            j=0;
+        }else{
+            resultado += cadena.charAt(i);
+            if (cadena.charAt(i) == ' ') {
+                j=1;
+            }
+        }
+    }
+    document.write(resultado);
+}
+cadena_titulo('hola buenas tardes juan alberto');
+
+</script>
+<!-- Convertir una cadena a formato de título
+Escribe un código que convierta una cadena a formato de título (cada palabra comienza con mayúscula).
+
+Ejemplo:
+
+Entrada: "este es un título"
+Salida: "Este Es Un Título" -->
+</body>
+</html>

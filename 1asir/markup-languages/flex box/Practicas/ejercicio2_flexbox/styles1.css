@@ -1,0 +1,24 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+}
+.uno{
+    display: flex;
+}
+.ficha{
+    display: flex;
+    border: black 2px solid;
+    margin: 10px;
+    padding: 0;
+    flex-basis: 25%;
+}
+.p1{
+    margin: 0;
+    padding: 0;
+    font-size: 8ex;
+}
+.p3{
+    margin: 0;
+    padding: 0;
+    text-align: justify;
+    margin-right: 4px;
+}

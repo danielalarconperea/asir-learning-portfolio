@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h1{
+            text-align: center;
+        }
+        form{
+            width: 500px;
+            justify-content: center;
+            height: 100vh;
+            margin: auto;
+        }
+        div{
+            padding: 1em;
+            background-color: antiquewhite;
+            margin: 1ex;
+            border-radius: 2ex;
+        }
+        .error{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Formulario de Contactos</h1>
+    <form id="miFormulario">
+        <div>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre">
+            <span id="errorNombre" class="error"></span>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+            <span id="errorEmail" class="error"></span>
+        </div>
+        <button type="button" onclick="return validarFormulario()">Enviar</button>
+    </form>
+    
+    <script>
+        function validarFormulario(){
+            formularioValido = true;
+
+            nombre = document.getElementById('nombre');
+            errorNombre = document.getElementById('errorNombre');
+
+            if(nombre.value.trim() == ''){
+                errorNombre.textContent = 'Te has equivocado esta vacío';
+                formularioValido = false;
+            }else if(nombre.value.trim().length < 3){
+                errorNombre.textContent = 'El nombre tiene que tener al menos 3 caracteres';
+                formularioValido = false;
+            }else{
+                errorNombre.textContent = '';
+            }
+
+            email = document.getElementById('email');
+            errorEmail = document.getElementById('errorEmail');
+
+            if(email.value.trim() == ''){
+                errorEmail.textContent = 'Por favor, ingrese su email';
+                formularioValido = false;
+            }else if(email.value.trim().length < 3){
+                errorEmail.textContent = 'El email tiene que tener al menos 3 caracteres';
+                formularioValido = false;
+            }else{
+                errorEmail.textContent = '';
+            }
+            if(formularioValido){
+                alert('formulario enviado correctamente');
+                // Aquí puedes agregar el código para enviar el formulario
+            }
+            return validarFormulario;
+        }
+    </script>
+</body>
+</html>

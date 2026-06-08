@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>destacado
+    <!-- Configuración básica del documento -->
+    <meta charset="UTF-8"/>
+    <title>Blog - Réplica AliExpress</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Inclusión de Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Inclusión de Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    <!-- Inclusión de iconos Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Enlace a los estilos personalizados -->
+    <link rel="stylesheet" href="../css/estilos.css"/>
+
+    <!-- Icono de página -->
+    <link rel="icon" href="./IMG/icono pag.ico" type="icon">
+
+    <style>
+        body {
+            font-family: "TT Norms Pro", "Open Sans", Roboto, Arial, Helvetica, sans-serif, SimSun;
+            background-color: #f8f9fa; /* Un fondo ligeramente gris para el blog */
+        }
+        .container {
+            max-width: 1650px;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .text-small {
+            font-size: 12px;
+        }
+        .opacity-75 {
+            color: #666;
+        }
+        .section-title {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .footer-link-list a {
+            color: inherit;
+        }
+        .footer-link-list a:hover {
+            text-decoration: underline;
+        }
+
+        /* Estilos específicos para el Blog */
+        .blog-header {
+            background-color: #ff4747;
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        .blog-header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+        .blog-post-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border: 1px solid #dee2e6;
+        }
+        .blog-post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .sidebar-widget {
+            padding: 1.5rem;
+            background-color: #ffffff;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #dee2e6;
+        }
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Barra de navegación (Copiada de tu index.html) -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container">
+            <!-- Logo de AliExpress -->
+            <a href="./index.html"><img src="./IMG/aliexpress titulo-Photoroom.png" alt="AliExpress" class="img-fluid" width="260"/></a>
+            <!-- Botón para menú colapsable en móviles -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Contenido del navbar colapsable -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Formulario de búsqueda -->
+                <form class="input-group me-auto ms-lg-3" style="max-width: 1000px;">
+                    <div class="form-control py-1 pe-1 border border-black rounded-pill">
+                        <div class="row g-0">
+                            <div class="col">
+                                <input class="form-control-plaintext ps-3 w-100" type="search" placeholder="fundas iphone 16 pro" aria-label="Buscar"/>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-outline-secondary border-0-secondary text-black border-0 rounded-5" type="submit"><i class="bi bi-image"></i></button>
+                                <button class="btn btn-secondary border-0 bg-black border rounded-5" type="submit"><i class="bi bi-search px-2"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- Sección derecha del navbar -->
+                <div class="d-flex align-items-center">
+                    <!-- Enlace para descargar la app -->
+                    <div class="mx-3">
+                        <a class="nav-link d-flex align-items-center p-0" href="#">
+                            <i class="bi bi-qr-code-scan fs-3"></i>
+                            <span class="d-none d-xl-block ms-1 text-nowrap lh-sm text-small">Descarga la app<br>de AliExpress</span>
+                        </a>
+                    </div>
+                    <!-- Menú desplegable para idioma/país/moneda -->
+                    <div class="me-3 dropdown">
+                        <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                            <a class="nav-link d-flex align-items-center p-0" href="#">
+                                <img src="IMG/bandera-españa.jpg" alt="Bandera ES" height="16px" class="me-1">
+                                <span class="d-none d-xl-block text-nowrap lh-sm text-start text-small">Madrid/ES/<br><b>EUR</b><i class="bi bi-caret-down"></i></span>
+                            </a>
+                        </button>
+                        <!-- Aquí iría el contenido del dropdown. Lo he omitido por brevedad, pero deberías pegarlo de tu index.html -->
+                    </div>
+                    <!-- Enlace para login o registro -->
+                    <div class="me-3">
+                        <a class="nav-link d-flex align-items-center p-0" href="./iniciar sesión.html">
+                            <i class="bi bi-person fs-3"></i>
+                            <span class="d-none d-xl-block ms-1 text-nowrap lh-sm text-small">¡Bienvenido<br><b>Identifícate/Regístrate</b></span>
+                        </a>
+                    </div>
+                    <!-- Enlace al carrito -->
+                    <div>
+                        <a class="nav-link d-flex align-items-center p-0" href="#">
+                            <i class="bi bi-cart2 fs-3"></i>
+                            <span class="d-none d-xl-block ms-1 text-nowrap fw-bold text-small">
+                                <span class="border rounded-pill px-2 py-0 me-1 text-center text-white bg-black d-inline-block">0</span><br>Cesta
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Encabezado del Blog -->
+    <header class="blog-header">
+        <div class="container">
+            <h1>Nuestro Blog</h1>
+            <p class="lead">Consejos, guías y las mejores ofertas de AliExpress</p>
+        </div>
+    </header>
+
+    <!-- Contenido Principal del Blog -->
+    <main class="container py-4">
+        <div class="row g-5">
+            <!-- Columna de Artículos -->
+            <div class="col-lg-8">
+                <!-- Artículo Destacado -->
+                <article class="mb-5">
+                    <a href="#">
+                        <img src="./IMG/producto 9.webp" class="img-fluid rounded mb-3" alt="Artículo destacado">
+                    </a>
+                    <h2 class="fw-bold mb-2"><a href="#" class="text-dark">Los 10 Gadgets Tecnológicos más vendidos en AliExpress este 2025</a></h2>
+                    <p class="text-muted">Por Equipo de AliExpress | 24 Septiembre, 2025</p>
+                    <p>Desde drones de última generación hasta relojes inteligentes que monitorizan tu salud, te traemos la lista definitiva de los gadgets que están arrasando este año. Descubre por qué son tan populares y cómo conseguirlos al mejor precio.</p>
+                    <a href="#" class="fw-bold">Seguir leyendo <i class="bi bi-arrow-right"></i></a>
+                </article>
+
+                <hr>
+
+                <!-- Lista de Artículos Recientes -->
+                <h3 class="fw-bold my-4">Artículos Recientes</h3>
+                <div class="row">
+                    <!-- Artículo 1 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 blog-post-card">
+                            <a href="#"><img src="./IMG/producto1.webp" class="card-img-top" alt="Moda de otoño"></a>
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold"><a href="#" class="text-dark">Guía de Estilo: Tendencias de Moda Otoño/Invierno</a></h5>
+                                <p class="card-text text-muted small">22 Septiembre, 2025</p>
+                                <p class="card-text">Descubre las prendas clave para esta temporada y cómo combinarlas para lucir espectacular sin gastar una fortuna.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Artículo 2 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 blog-post-card">
+                            <a href="#"><img src="./IMG/superofertas 1.webp" class="card-img-top" alt="Decoración del hogar"></a>
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold"><a href="#" class="text-dark">5 Ideas para renovar tu hogar con menos de 50€</a></h5>
+                                <p class="card-text text-muted small">20 Septiembre, 2025</p>
+                                <p class="card-text">Pequeños cambios que marcan una gran diferencia. Te mostramos productos increíbles para darle un nuevo aire a tu casa.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Artículo 3 -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 blog-post-card">
+                            <a href="#"><img src="./IMG/producto 5.webp" class="card-img-top" alt="Cocina"></a>
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold"><a href="#" class="text-dark">Los utensilios de cocina que no sabías que necesitabas</a></h5>
+                                <p class="card-text text-muted small">18 Septiembre, 2025</p>
+                                <p class="card-text">Facilita tu vida en la cocina con estos innovadores utensilios que puedes encontrar en AliExpress a precios de risa.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Artículo 4 -->
+                     <div class="col-md-6 mb-4">
+                        <div class="card h-100 blog-post-card">
+                            <a href="#"><img src="./IMG/producto 2.webp" class="card-img-top" alt="Deportes"></a>
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold"><a href="#" class="text-dark">Equípate para el Deporte: Los mejores accesorios para running</a></h5>
+                                <p class="card-text text-muted small">15 Septiembre, 2025</p>
+                                <p class="card-text">Desde zapatillas hasta pulseras de actividad, encuentra todo lo que necesitas para salir a correr con la mejor equipación.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paginación -->
+                <nav aria-label="Paginación del blog" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled"><a class="page-link" href="#">Anterior</a></li>
+                        <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Barra Lateral (Sidebar) -->
+            <div class="col-lg-4">
+                <!-- Widget de Búsqueda -->
+                <div class="sidebar-widget">
+                    <h4 class="fw-bold mb-3">Buscar</h4>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Buscar en el blog..." aria-label="Buscar">
+                        <button class="btn btn-dark" type="submit">Buscar</button>
+                    </form>
+                </div>
+                <!-- Widget de Categorías -->
+                <div class="sidebar-widget">
+                    <h4 class="fw-bold mb-3">Categorías</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="d-block py-1">Tecnología</a></li>
+                        <li><a href="#" class="d-block py-1">Moda y Accesorios</a></li>
+                        <li><a href="#" class="d-block py-1">Hogar y Jardín</a></li>
+                        <li><a href="#" class="d-block py-1">Deportes y Ocio</a></li>
+                        <li><a href="#" class="d-block py-1">Guías de Compra</a></li>
+                    </ul>
+                </div>
+                <!-- Widget de Publicaciones Recientes -->
+                <div class="sidebar-widget">
+                    <h4 class="fw-bold mb-3">Recientes</h4>
+                    <ul class="list-unstyled">
+                        <li class="d-flex mb-3">
+                            <a href="#"><img src="./IMG/producto8.webp" width="70" height="70" class="rounded me-3 object-fit-cover" alt="Reciente 1"></a>
+                            <div>
+                                <a href="#" class="text-dark fw-bold">Los 10 Gadgets más vendidos</a>
+                                <p class="text-muted small mb-0">24 Septiembre, 2025</p>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-3">
+                           <a href="#"> <img src="./IMG/producto1.webp" width="70" height="70" class="rounded me-3 object-fit-cover" alt="Reciente 2"></a>
+                            <div>
+                                <a href="#" class="text-dark fw-bold">Guía de Estilo Otoño/Invierno</a>
+                                <p class="text-muted small mb-0">22 Septiembre, 2025</p>
+                            </div>
+                        </li>
+                        <li class="d-flex">
+                            <a href="#"><img src="./IMG/superofertas 1.webp" width="70" height="70" class="rounded me-3 object-fit-cover" alt="Reciente 3"></a>
+                            <div>
+                                <a href="#" class="text-dark fw-bold">5 Ideas para renovar tu hogar</a>
+                                <p class="text-muted small mb-0">20 Septiembre, 2025</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pie de página (Copiado de tu index.html) -->
+    <div style="background-color: #eaeaea;">
+        <div class="container pt-4">
+            <div class="row mb-4">
+                <div class="col-md-2 col-sm-6 mb-3">
+                    <div class="section-title">Atención al cliente</div>
+                    <ul class="list-unstyled footer-link-list">
+                        <li><a href="#" class="text-small opacity-75">Centro de Ayuda</a></li>
+                        <li><a href="#" class="text-small opacity-75">Servicio de atención al cliente</a></li>
+                        <li><a href="#" class="text-small opacity-75">Para compradores fuera de la UE</a></li>
+                        <li><a href="#" class="text-small opacity-75">Normas para el usuario (UE)</a></li>
+                        <li><a href="#" class="text-small opacity-75">Términos y condiciones (UE)</a></li>
+                        <li><a href="#" class="text-small opacity-75">Encuesta de satisfacción del cliente (UE)</a></li>
+                        <li><a href="#" class="text-small opacity-75">Información aduanera (UE)</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 col-sm-6 mb-3">
+                    <div class="section-title">Guía de compra</div>
+                    <ul class="list-unstyled footer-link-list">
+                        <li><a href="#" class="text-small opacity-75">Crear una cuenta</a></li>
+                        <li><a href="#" class="text-small opacity-75">Pago</a></li>
+                        <li><a href="#" class="text-small opacity-75">Envío</a></li>
+                        <li><a href="#" class="text-small opacity-75">Protección del comprador</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 col-sm-6 mb-3">
+                    <div class="section-title">Colabora con nosotros</div>
+                    <ul class="list-unstyled footer-link-list">
+                        <li><a href="#" class="text-small opacity-75">Colaboraciones</a></li>
+                        <li><a href="#" class="text-small opacity-75">Programa de Afiliados</a></li>
+                        <li><a href="#" class="text-small opacity-75">Centro de dropshipping</a></li>
+                        <li><a href="#" class="text-small opacity-75">Hazte socio con nosotros</a></li>
+                        <li><a href="#" class="text-small opacity-75">Vendedores chinos</a></li>
+                        <li><a href="#" class="text-small opacity-75">Programa de vendedores</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="section-title">Pagar con</div>
+                    <div class="d-flex flex-wrap align-items-center">
+                        <img src="./IMG/visa.avif" alt="Visa" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">
+                        <img src="./IMG/mastercard.avif" alt="Mastercard" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">
+                        <img src="./IMG/paypal.avif" alt="paypal" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">
+                        <img src="./IMG/bizum.avif" alt="bizum" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">
+                        <img src="./IMG/google pay.avif" alt="Google Pay" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">
+                        <img src="./IMG/apple pay.avif" alt="Apple Pay" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="section-title">No te olvides de seguirnos en:</div>
+                    <div class="d-flex">
+                        <a href="#" class="me-2"><i class="bi bi-facebook me-2" style="font-size: 25px;"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-twitter me-2" style="font-size: 25px;"></i></a>
+                        <a href="#" class="me-2"><i class="bi bi-instagram me-2" style="font-size: 25px;"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="text-white py-1" style="background-color: black;">
+        <div class="container mt-1">
+            <p class="small">
+                Intellectual Property Protection - Privacy Policy - Mapa del sitio web - Términos de uso de AliExpress.com - Información para consumidores de la UE - Acuerdo de servicios de transacción para consumidores fuera de la UE/Reino Unido - Términos y Condiciones para Consumidores de la UE/EEE/Reino Unido - User Information Legal Enquiry Guide ©️ 2010-2025 AliExpress.com. Todos los derechos reservados.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

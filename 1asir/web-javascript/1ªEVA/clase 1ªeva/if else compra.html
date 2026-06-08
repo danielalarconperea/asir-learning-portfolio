@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+</head>
+<body>
+<script type="text/javascript">
+
+var descuento10, TotalConDescuento10, Descuento20, TotalConDescuento20;
+var ValorCompra = parseFloat(prompt("Introduce el precio de la compra:"));
+
+if (ValorCompra < 50) {
+    document.write("No tienes ofertas. El precio de la compra es: " + ValorCompra + "€");
+} 
+if (ValorCompra >= 50 && ValorCompra <= 100) {
+    Descuento10 = ValorCompra * 0.10;
+    TotalConDescuento10 = ValorCompra - Descuento10;
+    document.write("Tienes un 10% de descuento. El precio de la compra es: " + TotalConDescuento10 + "€");
+}
+if (ValorCompra > 100) {
+    Descuento20 = ValorCompra * 0.20;
+    TotalConDescuento20 = ValorCompra - Descuento20;
+    document.write("Tienes un 20% de descuento. El precio de la compra es: " + TotalConDescuento20 + "€");
+}
+
+</script>
+</body>
+</html>

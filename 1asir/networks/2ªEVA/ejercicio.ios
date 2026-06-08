@@ -1,0 +1,70 @@
+! Sw1
+enable
+configure terminal
+hostname SW1
+interface range g1/0/1-4
+channel-group 1 mode active
+! Esto hace que los cuatro cables físicos funcionen como uno lógico
+
+interface range g1/0/5-6
+channel-group 2 mode active
+end
+! show running-config
+
+! Sw2
+enable
+configure terminal
+hostname SW2
+interface range g1/0/1-4
+channel-group 1 mode active
+interface range g1/0/7-8
+channel-group 2 mode active
+end
+! show running-config
+
+! Sw3
+enable
+configure terminal
+hostname SW3
+interface range g1/0/5-6
+channel-group 1 mode active
+interface range g1/0/7-8
+channel-group 2 mode active
+end
+! show running-config
+ 
+! Añadimos 3 puertos de Sw1 a Sw2 
+! Sw1 y Sw2
+enable
+configure terminal
+interface range g1/0/11-13
+channel-group 1 mode active
+end
+
+! Funciona igual si lo hacemos poco a poco por cada interfaz
+! Añadimos 1 puertos de Sw1 a Sw2 
+! Sw1 y Sw2
+enable
+configure terminal
+interface g1/0/10
+channel-group 1 mode active
+end
+
+
+
+
+enable
+configure terminal
+interface port-channel 1
+
+switchport mode trunk 
+end
+
+! vemos las interfaces asociadas al grupo port-channel 1 
+show ip interface brief
+
+! en las interfaces de los puertos aparecera la configuración que le hemos dado al grupo
+show running-config
+
+! podemos ver que esta en full duplex con 8000Mb/s
+show interface

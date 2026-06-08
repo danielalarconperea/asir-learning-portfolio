@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script type="text/javascript">
+var cadena = 'hola', resultado = cadena.length;
+document.write('la longitud es '+resultado+'<br>'); // la longitud es 4
+
+var cadena = 'El perro se llama TOR';
+var indice = cadena.indexOf('casa');
+document.write('el valor del indice es '+indice+'<br>'); // el valor del indice es -1
+var indice = cadena.indexOf('perro');
+document.write('el valor del indice es '+indice+'<br>'); // el valor del indice es 3
+
+//Para acceder a un string carácter a carácter
+for(i = 0; i < cadena.length; i++){
+    document.write(cadena.charAt(i)); // El perro se llama TOR
+}
+document.write('<br>');
+document.write(cadena.toUpperCase()+'<br>') // EL PERRO SE LLAMA TOR
+document.write(cadena.toLowerCase()+'<br>') // el perro se llama tor
+document.write('<br>');
+//--------------------------------------------
+texto = 'Hola, ¡mundo!';
+
+contiene = texto.includes('mundo'); // contiene será true
+document.write(contiene+'<br>');
+
+subcadena = texto.slice(1, 5); // subcadena será 'ola,'
+document.write(subcadena+'<br>');
+
+nuevoTexto = texto.replace('mundo', 'universo'); //nuevoTexto será 'Hola, ¡universo!'
+document.write(nuevoTexto+'<br>');
+
+</script>
+</body>
+</html>

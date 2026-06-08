@@ -1,0 +1,93 @@
+! R1
+enable
+configure terminal
+hostname R1
+
+interface GigabitEthernet0/0/1
+description Conexion a LAN PC0
+ip address 172.17.17.254 255.255.255.0
+no shutdown
+
+interface GigabitEthernet0/0/0
+description Enlace a R2
+ip address 192.168.255.1 255.255.255.252
+no shutdown
+
+interface GigabitEthernet0/0/2
+description Enlace a R3 (Backup)
+ip address 192.168.255.9 255.255.255.252
+no shutdown
+exit
+
+! R2
+enable
+configure terminal
+hostname R2
+
+interface GigabitEthernet0/0/2
+description Conexion a LAN PC2
+ip address 172.18.18.254 255.255.255.0
+no shutdown
+
+interface GigabitEthernet0/0/1
+description Enlace a R1
+ip address 192.168.255.2 255.255.255.252
+no shutdown
+
+interface GigabitEthernet0/0/0
+description Enlace a R3
+ip address 192.168.255.5 255.255.255.252
+no shutdown
+exit
+
+! R3
+enable
+configure terminal
+hostname R3
+
+interface GigabitEthernet0/0/0
+description Conexion a LAN PC1
+ip address 172.19.19.254 255.255.255.0
+no shutdown
+
+interface GigabitEthernet0/0/2
+description Enlace a R1
+ip address 192.168.255.10 255.255.255.252
+no shutdown
+
+interface GigabitEthernet0/0/1
+description Enlace a R2
+ip address 192.168.255.6 255.255.255.252
+no shutdown
+exit
+
+! Paso 3: Configurar Enrutamiento Estático**
+! Sintaxis: ip route <red_destino> <mascara_destino> <IP_siguiente_salto> [distancia_administrativa]
+
+! R1
+configure terminal
+! Ruta Predeterminada principal hacia R2
+ip route 0.0.0.0 0.0.0.0 192.168.255.2
+! Ruta Flotante (backup) hacia R3. Se usa una distancia administrativa mayor que 1 (por defecto para estáticas). Usaremos 5.
+ip route 0.0.0.0 0.0.0.0 192.168.255.10 5
+exit
+
+! R2
+configure terminal
+! Rutas hacia las redes conectadas a R1 (LAN PC0 y Enlace R1-R3) via R1
+ip route 172.17.17.0 255.255.255.0 192.168.255.1
+ip route 192.168.255.8 255.255.255.252 192.168.255.1
+! Ruta hacia la red conectada a R3 (LAN PC1) via R3
+ip route 172.19.19.0 255.255.255.0 192.168.255.6
+exit
+
+! R3
+configure terminal
+! Rutas totalmente especificadas hacia las redes de R1 y R2
+
+! Ruta hacia la LAN de R1 (PC0) via R1
+ip route 172.17.17.0 255.255.255.0 GigabitEthernet0/0/2 192.168.255.9
+!
+! Ruta hacia la LAN de R2 (PC2) via R2
+ip route 172.18.18.0 255.255.255.0 GigabitEthernet0/0/1 192.168.255.5
+exit

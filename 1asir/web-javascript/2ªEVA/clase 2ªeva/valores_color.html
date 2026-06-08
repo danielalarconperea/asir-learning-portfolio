@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+</head>
+<body>
+<script>
+function cambiarColor(){
+    indice = document.form1.select1.selectedIndex; // Posición elegida
+    color = document.form1.select1.options[indice].value;
+
+    // Cabiamos el color de fondo del cuerpo del documento
+    document.body.style.backgroundColor = color
+}
+</script>
+<form name="form1">
+<select size="1" name="select1" onchange="cambiarColor()">
+    <option value="#FF0000">Rojo</option>
+    <option value="#00FF00">verde</option>
+    <option value="#0000FF">Azul</option>
+    <option value="#FF00FF">Rosa</option>
+    <option value="#FFFF00">Amarillo</option>
+</select>
+</form>    
+</body>
+</html>

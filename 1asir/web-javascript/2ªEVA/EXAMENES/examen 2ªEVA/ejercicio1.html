@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora de Descuento</title>
+<script type="text/javascript">
+    
+function caldescuento(){
+    var precioproducto = document.formulario.precio.value;
+    var descuentoproducto = document.formulario.Descuento.value;
+    if (descuentoproducto == 'DESCUENTO10'){
+        var descu = 0.9;
+        var precio_con_descuento = precioproducto * descu;
+        document.write('El precio final es:',precio_con_descuento);
+    }else if (descuentoproducto == 'DESCUENTO20'){
+        var descu = 0.8;
+        var precio_con_descuento = precioproducto * descu;
+        document.write('El precio final es:',precio_con_descuento);
+    }else{
+        document.write('El código de descuento no es valido')
+    }
+}
+</script>
+</head>
+<body>
+    <h2>Calculadora de Descuento</h2>
+    <form name="formulario">
+        <label Precio del Producto:></label>
+        <input name="precio" type="number" >
+        <label >Código de Descuento:</label>
+        <input name="Descuento" type="text" i required>
+        <button type="button" onclick="caldescuento()">Calcular Descuento</button>
+    </form>
+</body>
+
+
+

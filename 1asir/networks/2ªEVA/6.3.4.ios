@@ -1,0 +1,99 @@
+!! Paso 1
+! S1
+en
+show running-config
+! Vemos que estan todas las interfaces correctamente en modo troncal
+
+! S2
+en
+! show running-config
+conf terminal
+interface port-channel 2
+switchport mode trunk
+exit
+interface port-channel 3
+switchport mode trunk
+exit
+interface port-channel 6
+switchport mode trunk
+exit
+
+! S3
+en
+show running-config
+! Vemos que estan todas las interfaces correctamente en modo troncal
+
+! S4
+en
+show running-config
+! Vemos que estan todas las interfaces correctamente en modo troncal
+
+!! Paso 2
+! Corregimos cualquier puerto de switch que no esté asignado al puerto EtherChannel correspondiente
+! S1
+en
+show etherchannel summary
+
+! S2
+en
+show etherchannel summary
+
+! S3
+en
+show etherchannel summary
+
+! S4
+en
+show etherchannel summary
+conf terminal
+no interface port-channel 4
+interface range fa0/23-24
+shutdown
+channel-group 4 mode active
+! Ponemos el modo 'active' porque es el que pertenece al protocolo LACP, que es el que buscamos
+no shutdown
+exit
+no interface port-channel 5
+interface range fa0/21-22
+shutdown
+channel-group 5 mode active
+no shutdown
+exit
+
+!! Paso 3
+! Corrigimos cualquier puerto de switch que no esté negociando mediante LACP
+! S1
+en
+show etherchannel summary
+
+! S2
+en
+show etherchannel summary
+
+! S3
+en
+show etherchannel summary
+! Observamos que el protocolo con el que estan negociando es PAgP
+conf terminal
+no interface port-channel 1
+interface range g0/1-2
+shutdown
+channel-group 1 mode active
+no shutdown
+exit
+no interface port-channel 4
+interface range fa0/23-24
+shutdown
+channel-group 4 mode active
+no shutdown
+exit
+no interface port-channel 6
+interface range fa0/21-22
+shutdown
+channel-group 6 mode active
+no shutdown
+end
+
+! S4
+en
+show etherchannel summary

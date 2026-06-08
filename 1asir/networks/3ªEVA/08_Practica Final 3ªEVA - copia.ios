@@ -1,0 +1,527 @@
+! Paso 1: Configuración Básica Inicial (Todos los Switches: Sw1, Sw2, Sw3)
+enable
+configure terminal
+
+! Cambiar el nombre del dispositivo (ejecutar en cada switch cambiando el nombre)
+hostname Sw1 
+! (O Sw2, Sw3)
+
+! Paso 2: Creación de VLANs (Todos los Switches: Sw1, Sw2, Sw3)
+configure terminal
+
+! Crear VLANs y asignar nombres
+vlan 10
+ name ATENCION_CLIENTE
+vlan 20
+ name PLANIFICACION_MERCADO
+vlan 30
+ name RRHH
+vlan 99
+ name ADMINISTRATIVA_NATIVA
+
+exit
+
+
+! Paso 3: Configuración SVI y Gateway Predeterminado (Todos los Switches: Sw1, Sw2, Sw3)
+
+! Usaremos IPs .11, .12, .13 para las interfaces de gestión de los switches en la VLAN 99. R1 usará la .1.
+configure terminal
+
+! Configurar Interfaz Virtual de Switch (SVI) para Gestión (VLAN 99)
+! Asigna una IP única a cada switch:
+! En Sw1:
+interface Vlan99
+ description Gestion y Nativa
+ ip address 172.20.0.11 255.255.255.0
+ no shutdown
+exit
+ ! En Sw2:
+interface Vlan99
+ description Gestion y Nativa
+ ip address 172.20.0.12 255.255.255.0
+ no shutdown
+exit
+ ! En Sw3:
+interface Vlan99
+ description Gestion y Nativa
+ ip address 172.20.0.13 255.255.255.0
+ no shutdown
+exit
+
+! Configurar Gateway Predeterminado para el tráfico originado por el switch
+! La IP es la del Router R1 en la VLAN 99
+ip default-gateway 172.20.0.1
+exit
+
+
+! Paso 4: Asignación de Puertos de Acceso y Seguridad Inicial (Sw1, Sw2, Sw3)
+
+! En Sw1:
+configure terminal
+
+! PC3 (VLAN 10) en Fa0/3. Asignamos Fa0/3-4 a VLAN 10.
+interface range Fa0/3 - 4
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+ ! spanning-tree bpduguard enable
+ switchport port-security
+ switchport port-security maximum 3
+ switchport port-security violation shutdown
+ ! Opcional
+ switchport port-security mac-address sticky 
+ ! Apagar puertos no usados en el rango
+ shutdown 
+ ! Encender SOLO Fa0/3 (donde está PC3)
+ no shutdown 
+
+! Puertos para VLAN 20 (Naranja) - Sin PC. Asignamos Fa0/5-6.
+interface range Fa0/5 - 6
+ switchport mode access
+ switchport access vlan 20
+ spanning-tree portfast
+ ! spanning-tree bpduguard enable
+ switchport port-security
+ switchport port-security maximum 3
+ switchport port-security violation shutdown
+ switchport port-security mac-address sticky
+ ! Apagar puertos no usados
+ shutdown 
+
+! PC2 (VLAN 30 - Verde) en Fa0/1. Asignamos Fa0/1-2 a VLAN 30.
+interface range Fa0/1 - 2
+ switchport mode access
+ switchport access vlan 30
+ spanning-tree portfast
+ ! spanning-tree bpduguard enable
+ switchport port-security
+ switchport port-security maximum 3
+ switchport port-security violation shutdown
+ switchport port-security mac-address sticky
+ ! Apagar puertos no usados en el rango
+ shutdown 
+ ! Encender SOLO Fa0/1 (donde está PC2)
+ no shutdown 
+
+exit
+
+
+! En Sw2:
+configure terminal
+
+! Puertos para VLAN 10 (Azul) - Sin PC. Asignamos Fa0/5-6.
+interface range Fa0/5 - 6
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+ ! spanning-tree bpduguard enable
+ switchport port-security
+ switchport port-security maximum 3
+ switchport port-security violation shutdown
+ switchport port-security mac-address sticky
+ ! Apagar puertos no usados
+ shutdown 
+
+! PC5 (VLAN 20 - Naranja) en Fa0/3. Asignamos Fa0/3-4 a VLAN 20.
+interface range Fa0/3 - 4
+ switchport mode access
+ switchport access vlan 20
+ spanning-tree portfast
+ ! spanning-tree bpduguard enable
+ switchport port-security
+ switchport port-security maximum 3
+ switchport port-security violation shutdown
+ switchport port-security mac-address sticky
+ ! Apagar puertos no usados en el rango
+ shutdown 
+ ! Encender SOLO Fa0/3 (donde está PC5)
+ no shutdown 
+
+! PC4 (VLAN 30 - Verde) en Fa0/1. Asignamos Fa0/1-2 a VLAN 30.
+interface range Fa0/1 - 2
+ switchport mode access
+ switchport access vlan 30
+ spanning-tree portfast
+ ! spanning-tree bpduguard enable
+ switchport port-security
+ switchport port-security maximum 3
+ switchport port-security violation shutdown
+ switchport port-security mac-address sticky
+ ! Apagar puertos no usados en el rango
+ shutdown 
+ ! Encender SOLO Fa0/1 (donde está PC4)
+ no shutdown 
+
+exit
+
+
+! En Sw3:
+configure terminal
+
+! PC1 (VLAN 10 - Azul) en Fa0/1. Asignamos Fa0/1-2 a VLAN 10.
+interface range Fa0/1 - 2
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+ ! spanning-tree bpduguard enable
+ switchport port-security
+ switchport port-security maximum 3
+ switchport port-security violation shutdown
+ switchport port-security mac-address sticky
+ ! Apagar puertos no usados en el rango
+ shutdown 
+ ! Encender SOLO Fa0/1 (donde está PC1)
+ no shutdown 
+
+! PC0 (VLAN 20 - Naranja) en Fa0/3. Asignamos Fa0/3-4 a VLAN 20.
+interface range Fa0/3 - 4
+ switchport mode access
+ switchport access vlan 20
+ spanning-tree portfast
+ ! spanning-tree bpduguard enable
+ switchport port-security
+ switchport port-security maximum 3
+ switchport port-security violation shutdown
+ switchport port-security mac-address sticky
+ ! Apagar puertos no usados en el rango
+ shutdown 
+ ! Encender SOLO Fa0/3 (donde está PC0)
+ no shutdown 
+
+! Puertos para VLAN 30 (Verde) - Sin PC. Asignamos Fa0/5-6.
+interface range Fa0/5 - 6
+ switchport mode access
+ switchport access vlan 30
+ spanning-tree portfast
+ ! spanning-tree bpduguard enable
+ switchport port-security
+ switchport port-security maximum 3
+ switchport port-security violation shutdown
+ switchport port-security mac-address sticky
+ ! Apagar puertos no usados
+ shutdown
+exit
+
+! Paso 5: Configuración de EtherChannel y Troncales (Sw1, Sw2, Sw3)
+
+! En Sw1:
+configure terminal
+
+! EtherChannel hacia Sw3 (Po1) - Usando puertos etiquetados Gig2/1, Gig3/1
+interface range Gig2/1, Gig3/1
+ ! Buena practica apagar antes de configurar channel-group
+ shutdown
+ ! channel-protocol lacp
+ channel-group 1 mode active
+ no shutdown
+
+! EtherChannel hacia Sw2 (Po2) - Usando puertos etiquetados Gig0/1, Gig1/1
+interface range Gig0/1, Gig1/1
+ shutdown
+ ! channel-protocol lacp
+ channel-group 2 mode active
+ no shutdown
+
+! Configurar Port-channel 1 como Troncal
+interface Port-channel1
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+
+! Configurar Port-channel 2 como Troncal
+interface Port-channel2
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+
+exit
+
+
+! En Sw2:
+configure terminal
+
+! EtherChannel hacia Sw3 (Po3) - Usando puertos etiquetados Gig2/1, Gig3/1
+interface range Gig2/1, Gig3/1
+ shutdown
+ ! channel-protocol lacp
+ channel-group 3 mode active
+ no shutdown
+
+! EtherChannel hacia Sw1 (Po2) - Usando puertos etiquetados Gig0/1, Gig1/1
+interface range Gig0/1, Gig1/1
+ shutdown
+ ! channel-protocol lacp
+ channel-group 2 mode active
+ no shutdown
+
+! Configurar Port-channel 3 como Troncal
+interface Port-channel3
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+
+! Configurar Port-channel 2 como Troncal
+interface Port-channel2
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+
+exit
+
+
+! En Sw3:
+configure terminal
+
+! EtherChannel hacia Sw1 (Po1) - Usando puertos etiquetados Gig2/1, Gig3/1
+interface range Gig2/1, Gig3/1
+ shutdown
+ ! channel-protocol lacp
+ channel-group 1 mode active
+ no shutdown
+
+! EtherChannel hacia Sw2 (Po3) - Usando puertos etiquetados Gig0/1, Gig1/1
+interface range Gig0/1, Gig1/1
+ shutdown
+ ! channel-protocol lacp
+ channel-group 3 mode active
+ no shutdown
+
+! Configurar Port-channel 1 como Troncal
+interface Port-channel1
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+
+! Configurar Port-channel 3 como Troncal
+interface Port-channel3
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+
+! Configurar Enlace Troncal hacia R1 (Puerto Gig9/1)
+interface Gig9/1
+ switchport mode trunk
+ switchport trunk native vlan 99
+ switchport trunk allowed vlan 10,20,30,99
+ no shutdown
+
+exit
+
+
+! Paso 6: Configuración de Spanning Tree (STP)
+! En Sw3 (Convertirlo en Root Bridge):
+configure terminal
+
+! Establecer Sw3 como root bridge para todas las VLANs (menor prioridad)
+spanning-tree vlan 10,20,30,99 priority primary
+
+exit
+
+! Nota: PortFast ya fue habilitado en los puertos de acceso en el Paso 4.
+
+
+! Paso 7: Configuración del Router R1
+enable
+configure terminal
+
+! Habilitar interfaz hacia Sw3 y configurar subinterfaces (Router-on-a-Stick)
+interface Gi0/0
+ description Enlace_Troncal_a_Sw3
+ no shutdown
+
+interface Gi0/0.10
+ encapsulation dot1Q 10
+ description Gateway_VLAN10_Clientes
+ ip address 172.20.1.1 255.255.255.0
+
+interface Gi0/0.20
+ encapsulation dot1Q 20
+ description Gateway_VLAN20_Mercado
+ ip address 172.20.2.1 255.255.255.0
+
+interface Gi0/0.30
+ encapsulation dot1Q 30
+ description Gateway_VLAN30_RRHH
+ ip address 172.20.3.1 255.255.255.0
+
+interface Gi0/0.99
+ encapsulation dot1Q 99 native
+ description Gateway_VLAN99_Admin_Nativa
+ ip address 172.20.0.1 255.255.255.0
+
+! Configurar interfaces hacia Internet
+interface Gi0/2/0
+ description Enlace_Principal_Internet_(210.1.1.12/30)
+ ip address 210.1.1.14 255.255.255.252
+ no shutdown
+
+interface Gi0/3/0
+ description Enlace_Backup_Internet_(210.1.1.8/30)
+ ip address 210.1.1.6 255.255.255.252
+ no shutdown
+
+! Configurar rutas estáticas: Predeterminada y Flotante
+! Asume que el siguiente salto es .9 para la principal y .13 para la backup
+ip route 0.0.0.0 0.0.0.0 210.1.1.9 name Ruta_Predeterminada_Principal
+ip route 0.0.0.0 0.0.0.0 210.1.1.13 10 name Ruta_Predeterminada_Flotante
+
+! Configurar Servidor DHCP
+! Excluir las primeras 5 IP utilizables de cada pool (.1 a .5) y la IP del router
+ip dhcp excluded-address 172.20.1.1 172.20.1.5
+ip dhcp excluded-address 172.20.2.1 172.20.2.5
+ip dhcp excluded-address 172.20.3.1 172.20.3.5
+! No se necesita DHCP para VLAN 99 (IPs fijas)
+
+! Pool DHCP para VLAN 10
+ip dhcp pool VLAN10_CLIENTES
+ network 172.20.1.0 255.255.255.0
+ default-router 172.20.1.1
+ dns-server 8.8.8.8
+
+! Pool DHCP para VLAN 20
+ip dhcp pool VLAN20_MERCADO
+ network 172.20.2.0 255.255.255.0
+ default-router 172.20.2.1
+ dns-server 8.8.8.8
+
+! Pool DHCP para VLAN 30
+ip dhcp pool VLAN30_RRHH
+ network 172.20.3.0 255.255.255.0
+ default-router 172.20.3.1
+ dns-server 8.8.8.8
+
+exit
+
+
+! Paso 8: Configuración de Acceso SSH Seguro (Todos los Switches: Sw1, Sw2, Sw3)
+
+configure terminal
+! 0. Configurar contraseñas básicas (SSH configurará mejores más adelante)
+enable secret cisco 
+line console 0
+ password cisco 
+ login
+exit
+
+! 0. Configurar un mensaje de banner
+banner motd # Acceso restringido. Solo personal autorizado. #
+
+! 1. Establecer Nombre de Dominio IP (Necesario para generar claves RSA)
+! Usa un nombre de dominio
+ip domain-name cisco.com
+
+! 2. Generar Claves RSA para SSH (Usa 1024 bits o más)
+crypto key generate rsa modulus 1024
+
+! 3. Crear Usuario Local para SSH
+! Cambia el password
+username admin privilege 15 secret TuPasswordSSHSuperSeguro 
+
+! 4. Configurar Líneas VTY para usar SSH y login local
+line vty 0 15
+ transport input ssh
+ login local
+ exit
+
+! 5. (Opcional pero recomendado) Deshabilitar Telnet si solo quieres SSH
+! no transport input telnet
+
+! 6. Asegurar la contraseña de enable (si no usaste una fuerte antes)
+enable secret TuPasswordEnableSuperSeguro ! Cambia el password
+
+! 7. Habilitar SSH versión 2 (más segura)
+ip ssh version 2
+
+exit
+
+! Guardar configuración inicial (opcional en este punto)
+! write memory
+
+
+---
+
+! Paso 9: Configuración de Seguridad Adicional (DHCP Snooping, ARP Inspection)
+
+! Ejecuta estos comandos en cada switch (Sw1, Sw2, Sw3).
+
+configure terminal
+
+! === DHCP Snooping ===
+! Habilitar globalmente
+ip dhcp snooping
+
+! Habilitar en las VLANs de usuarios (donde hay clientes DHCP)
+ip dhcp snooping vlan 10,20,30
+
+! Confiar en los puertos troncales (EtherChannels y enlace a R1)
+! Revisa los números de Port-channel correctos para CADA switch
+! En Sw1:
+interface Port-channel1
+ ip dhcp snooping trust
+interface Port-channel2
+ ip dhcp snooping trust
+! En Sw2:
+interface Port-channel2
+ ip dhcp snooping trust
+interface Port-channel3
+ ip dhcp snooping trust
+! En Sw3:
+interface Port-channel1
+ ip dhcp snooping trust
+interface Port-channel3
+ ip dhcp snooping trust
+interface GigabitEthernet0/1 ! Puerto hacia R1 (donde está el servidor DHCP)
+ ip dhcp snooping trust
+
+! (Los puertos de acceso son 'untrusted' por defecto, lo cual es correcto)
+
+! === Dynamic ARP Inspection (DAI) ===
+! Habilitar DAI en las VLANs de usuarios
+ip arp inspection vlan 10,20,30
+
+! Confiar en los puertos troncales (generalmente los mismos que DHCP Snooping trust)
+! Revisa los números de Port-channel correctos para CADA switch
+! En Sw1:
+interface Port-channel1
+ ip arp inspection trust
+interface Port-channel2
+ ip arp inspection trust
+! En Sw2:
+interface Port-channel2
+ ip arp inspection trust
+interface Port-channel3
+ ip arp inspection trust
+! En Sw3:
+interface Port-channel1
+ ip arp inspection trust
+interface Port-channel3
+ ip arp inspection trust
+interface GigabitEthernet0/1 ! Puerto hacia R1
+ ip arp inspection trust
+
+! (Los puertos de acceso son 'untrusted' por defecto, lo cual es correcto)
+
+exit
+
+
+
+! Paso 10: Configuración de los PCs (PC0 a PC5)
+
+! 1.  Abre la configuración IP de cada PC.
+! 2.  Selecciona la opción DHCP.
+! 3.  Espera a que obtenga una dirección IP de su VLAN correspondiente desde el router R1.
+
+! Paso 11: Guardar Configuración Final y Verificación
+
+! En TODOS los dispositivos (R1, Sw1, Sw2, Sw3):
+
+enable
+copy running-config startup-config
+! o simplemente
+write memory
+    
+
+! Comandos de Verificación Útiles:
+!     Switches: `show vlan brief`, `show interfaces trunk`, `show etherchannel summary`, `show spanning-tree summary`, `show spanning-tree vlan <id>`, `show ip ssh`, `show ip dhcp snooping`, `show ip arp inspection`, `show port-security interface <id>`, `show ip interface brief`, `ping <ip_router_vlan99>`, `ssh -l admin <ip_otro_switch_vlan99>`
+!     Router R1: `show ip interface brief`, `show ip route`, `show ip dhcp binding`, `show ip dhcp pool`
+!     PCs: `ipconfig /all` (en Command Prompt), `ping <gateway>`, `ping <ip_otro_pc_misma_vlan>`, `ping <ip_otro_pc_otra_vlan>`, `ping 8.8.8.8` (o IP de Internet)

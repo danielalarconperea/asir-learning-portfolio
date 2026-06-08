@@ -1,0 +1,12 @@
+
+Crea una página web responsive utilizando Bootstrap que contenga los siguientes elementos:
+
+Una barra de navegación en la parte superior con el nombre de tu sitio web y tres enlaces.
+
+Un contenedor principal con dos columnas en dispositivos medianos y grandes, pero una sola columna en dispositivos pequeños.
+
+En la columna izquierda, coloca una imagen y un párrafo de texto debajo.
+
+En la columna derecha, crea una lista de 3 elementos con iconos.
+
+Al final de la página, añade un botón centrado que diga "Leer más".

@@ -1,0 +1,13 @@
+Enunciados de los ejercicios subconsultas:
+
+Ejercicio 1:Listar los nombres de empleados que trabajan en departamentos ubicados en "Chicago" o "Boston".
+
+Ejercicio 2:Mostrar los empleados que ganan más que al menos un empleado del departamento de "Accounting" (deptno = 10).
+
+Ejercicio 3 :Encontrar los empleados cuyo salario es mayor que todos los salarios de los "Clerk".
+
+Ejercicio 4 :Obtener los departamentos cuyo salario promedio es mayor que el salario promedio de toda la empresa.
+
+Ejercicio 5: Mostrar los empleados que ganan más que el salario promedio de su propio departamento.
+
+Ejercicio 6 :Listar los departamentos que no tienen empleados.

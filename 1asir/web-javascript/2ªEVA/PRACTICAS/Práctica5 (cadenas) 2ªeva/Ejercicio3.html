@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejercicio3</title>
+</head>
+<body>
+<script type="text/javascript">
+
+function contar_palabras(cadena){
+    var es_letra=false, contador=0;
+    for(i=0; i<cadena.length; i++){
+        if((cadena.charAt(i) != ' ') && es_letra==false){
+            contador++
+            es_letra=true
+        }
+        if(cadena.charAt(i) == ' '){
+            es_letra=false
+        } 
+    }
+    document.write('La frase: ',cadena,'. Tiene ',contador,' palabras')
+}
+
+contar_palabras('Hola buenas tardes juan alberto')
+
+</script>
+<!-- Contar la cantidad de palabras en una cadena
+Escribe un código que cuente la cantidad de palabras en una cadena, considerando que las palabras están separadas por espacios.
+
+Ejemplo:
+
+Entrada: "Hola mundo cómo estás"
+Salida: 4 -->
+</body>
+</html>

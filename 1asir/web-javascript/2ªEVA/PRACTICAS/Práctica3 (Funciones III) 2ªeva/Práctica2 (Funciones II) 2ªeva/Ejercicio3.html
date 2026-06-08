@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejercicio3</title>
+</head>
+<body>
+<script type="text/javascript">
+
+function factorial(){
+    var factorial=1, num = parseInt(prompt('introduce un número positivo y te digo su factorial'));
+    if(num>0){
+        for(i=1; i<=num; i++){
+                factorial*=i;
+            }
+        document.write('El factorial de '+num+' es: '+factorial);
+    }else{
+        document.write('Escribe un valor mayor que 0')
+    }
+}
+factorial()
+
+</script>
+</body>
+</html>
+<!-- 
+Calcular el factorial de un número
+Crea una función que reciba un número entero positivo y devuelva su factorial. 
+El factorial de un número se calcula multiplicando todos los números desde 1 hasta ese número. 
+Por ejemplo, 5! = 5 × 4 × 3 × 2 × 1 = 120.
+-->

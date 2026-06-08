@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body bgcolor="black"><font color="white">
+<script type="text/javascript">
+function cargar_datos(notas){
+    var f,v;
+    for(f=0; f < notas.length; f++){
+        1
+        v=prompt('ingrese nota:');
+        notas[f]=parseInt(v);
+    }
+}
+function mostrar_notas(notas){
+    var f;
+    document.write('Listado de notas<br>');
+    for(f=0; f < notas.length; f++){
+        document.write(f+' --->'+notas[f]+'<br>');
+    }
+}
+var notas = new Array(5);
+//mostrar_notas(notas);
+cargar_datos(notas);
+mostrar_notas(notas);
+</script></font>
+</body>
+</html>

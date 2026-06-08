@@ -1,0 +1,748 @@
+-- MySQL Administrator dump 1.4
+--
+-- ------------------------------------------------------
+-- Server version	5.0.45-community-nt
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+
+-- 
+-- Create schema aeropuerto
+--
+
+CREATE DATABASE IF NOT EXISTS aeropuerto;
+USE aeropuerto;
+
+--
+-- Definition of table `aeropuertos`
+--
+
+DROP TABLE IF EXISTS `aeropuertos`;
+CREATE TABLE `aeropuertos` (
+  `IATA` char(3) NOT NULL default '',
+  `localidad` varchar(35) NOT NULL default '',
+  PRIMARY KEY  (`IATA`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `aeropuertos`
+--
+
+/*!40000 ALTER TABLE `aeropuertos` DISABLE KEYS */;
+INSERT INTO `aeropuertos` (`IATA`,`localidad`) VALUES 
+ ('ALC','ALICANTE'),
+ ('LEI','ALMERIA'),
+ ('AMS','AMSTERDAM'),
+ ('BCN','BARCELONA'),
+ ('BER','BERLIN'),
+ ('BIO','BILBAO'),
+ ('BOG','BO;TA'),
+ ('BUE','BUENOS AIRES'),
+ ('CUN','CANCUN'),
+ ('CCS','CARACAS'),
+ ('CAS','CASABLANCA'),
+ ('FUE','FUERTEVENTURA'),
+ ('LPA','GRAN CANARIA'),
+ ('HAJ','HANOVER'),
+ ('VDE','HIERRO'),
+ ('LCG','LA CORU¥A'),
+ ('HAV','LA HABANA'),
+ ('ACE','LANZAROTE'),
+ ('LIS','LISBOA'),
+ ('LON','LONDRES'),
+ ('MAD','MADRID'),
+ ('AGP','MALAGA'),
+ ('MLN','MELILLA'),
+ ('PMI','PALMA MALLORCA'),
+ ('PAR','PARIS'),
+ ('ROM','ROMA'),
+ ('SCL','SANTIA; DE CHILE'),
+ ('SCQ','SANTIA; DE COMPOSTELA'),
+ ('SVQ','SEVILLA'),
+ ('TCI','TENERIFE');
+/*!40000 ALTER TABLE `aeropuertos` ENABLE KEYS */;
+
+
+--
+-- Definition of table `agencias`
+--
+
+DROP TABLE IF EXISTS `agencias`;
+CREATE TABLE `agencias` (
+  `code` char(3) NOT NULL default '',
+  `nombre` char(30) NOT NULL default '',
+  `direccion` char(50) default NULL,
+  `telefono` char(10) default NULL,
+  PRIMARY KEY  (`code`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `agencias`
+--
+
+/*!40000 ALTER TABLE `agencias` DISABLE KEYS */;
+INSERT INTO `agencias` (`code`,`nombre`,`direccion`,`telefono`) VALUES 
+ ('A01','Barcelo Viajes',NULL,NULL),
+ ('A02','Halcon Viajes',NULL,NULL),
+ ('A03','Viajes El Corte Ingles',NULL,NULL),
+ ('A04','Viajes Marsans',NULL,NULL),
+ ('A05','Vie Viajes',NULL,NULL);
+/*!40000 ALTER TABLE `agencias` ENABLE KEYS */;
+
+
+--
+-- Definition of table `aviones`
+--
+
+DROP TABLE IF EXISTS `aviones`;
+CREATE TABLE `aviones` (
+  `tipo` char(3) NOT NULL default '',
+  `descripcion` varchar(50) NOT NULL default '',
+  `longitud` decimal(4,2) NOT NULL default '0.00',
+  `envergadura` decimal(4,2) NOT NULL default '0.00',
+  `butacas` int(11) NOT NULL default '0',
+  `alcance` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`tipo`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `aviones`
+--
+
+/*!40000 ALTER TABLE `aviones` DISABLE KEYS */;
+INSERT INTO `aviones` (`tipo`,`descripcion`,`longitud`,`envergadura`,`butacas`,`alcance`) VALUES 
+ ('32S','Airbus todas las series','63.70','60.30',255,5000),
+ ('310','Airbus 310','46.66','43.90',191,9400),
+ ('340','Airbus 340','63.70','60.30',277,11500),
+ ('727','Boeing 727','48.03','32.92',153,2400),
+ ('737','Boeing 737','33.40','28.88',136,4000),
+ ('73S','Boeing 727-200','30.56','28.34',121,1700),
+ ('747','Boeing 747','70.51','59.64',418,10000),
+ ('74M','Boeing 747 COMBI','70.51','59.64',280,10000),
+ ('74S','Boeing 747-200','70.51','59.63',410,10000),
+ ('757','Boeing 757','47.32','38.05',200,3700),
+ ('CS5','CASA CN-235','21.40','25.81',44,750),
+ ('AB2','Airbus A320/200','37.57','34.10',147,3500),
+ ('AB3','Airbus A300','53.57','44.84',256,3700),
+ ('D10','McDonnell Douglas DC-10','55.35','50.39',268,9100),
+ ('DC9','McDonnell Douglas DC-9','36.35','28.42',92,2750),
+ ('D9S','McDonnell Douglas DC-9 Series 30 y 40','36.35','28.42',92,2750),
+ ('M87','McDonnell Douglas MD-87','39.70','32.90',109,2900),
+ ('M80','McDonnell Douglas MD-80','45.08','32.86',165,4631),
+ ('M88','McDonnell Douglas MD-88','45.08','32.86',155,2100),
+ ('ATR','ATR-72','27.12','27.05',68,1500);
+/*!40000 ALTER TABLE `aviones` ENABLE KEYS */;
+
+
+--
+-- Definition of table `companias`
+--
+
+DROP TABLE IF EXISTS `companias`;
+CREATE TABLE `companias` (
+  `code` char(2) NOT NULL default '',
+  `nombre` varchar(30) NOT NULL default '',
+  PRIMARY KEY  (`code`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `companias`
+--
+
+/*!40000 ALTER TABLE `companias` DISABLE KEYS */;
+INSERT INTO `companias` (`code`,`nombre`) VALUES 
+ ('IB','Iberia'),
+ ('AO','Aviaco'),
+ ('AR','Aerolineas Argentinas'),
+ ('AX','Binter Mediterraneo'),
+ ('NT','Binter Canarias');
+/*!40000 ALTER TABLE `companias` ENABLE KEYS */;
+
+
+--
+-- Definition of table `flota`
+--
+
+DROP TABLE IF EXISTS `flota`;
+CREATE TABLE `flota` (
+  `matricula` char(6) NOT NULL default '',
+  `tipo_avion` char(3) NOT NULL default '',
+  `compania` char(2) NOT NULL default '',
+  PRIMARY KEY  (`matricula`),
+  KEY `ix_tipo_avion` (`tipo_avion`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `flota`
+--
+
+/*!40000 ALTER TABLE `flota` DISABLE KEYS */;
+INSERT INTO `flota` (`matricula`,`tipo_avion`,`compania`) VALUES 
+ ('EC-AAA','DC9','IB'),
+ ('EC-AAB','DC9','IB'),
+ ('EC-AAC','DC9','IB'),
+ ('EC-AAD','DC9','IB'),
+ ('EC-AAE','AB3','IB'),
+ ('EC-AAF','AB3','IB'),
+ ('EC-AAG','AB3','IB'),
+ ('EC-AAH','AB3','IB'),
+ ('EC-AAI','AB3','IB'),
+ ('EC-AAJ','AB3','IB'),
+ ('EC-AAK','AB3','IB'),
+ ('EC-AAL','AB3','IB'),
+ ('EC-AAM','AB2','IB'),
+ ('EC-AAN','AB2','IB'),
+ ('EC-AAO','AB2','IB'),
+ ('EC-AAP','AB2','IB'),
+ ('EC-AAQ','AB2','IB'),
+ ('EC-AAR','AB2','IB'),
+ ('EC-AAS','AB2','IB'),
+ ('EC-AAT','AB2','IB'),
+ ('EC-AAU','AB2','IB'),
+ ('EC-AAV','AB2','IB'),
+ ('EC-AAW','AB2','IB'),
+ ('EC-AAX','AB2','IB'),
+ ('EC-AAY','AB2','IB'),
+ ('EC-AAZ','AB2','IB'),
+ ('EC-ABA','AB2','IB'),
+ ('EC-ABB','AB2','IB'),
+ ('EC-ABC','AB2','IB'),
+ ('EC-ABD','AB2','IB'),
+ ('EC-ABE','AB2','IB'),
+ ('EC-ABF','AB2','IB'),
+ ('EC-ABH','D10','IB'),
+ ('EC-ABI','D10','IB'),
+ ('EC-ABJ','D10','IB'),
+ ('EC-ABK','D10','IB'),
+ ('EC-ABL','D10','IB'),
+ ('EC-ABM','D10','IB'),
+ ('EC-ABN','D10','IB'),
+ ('EC-ABR','M87','IB'),
+ ('EC-ABS','M87','IB'),
+ ('EC-ABT','M87','IB'),
+ ('EC-ABU','M87','IB'),
+ ('EC-ABV','M87','IB'),
+ ('EC-ABW','M87','IB'),
+ ('EC-ABX','M87','IB'),
+ ('EC-ABY','M87','IB'),
+ ('EC-ABZ','M87','IB'),
+ ('EC-ACA','M87','IB'),
+ ('EC-ACB','M87','IB'),
+ ('EC-ACD','M87','IB'),
+ ('EC-ACE','M87','IB'),
+ ('EC-ACF','M87','IB'),
+ ('EC-ACG','M87','IB'),
+ ('EC-ACH','M87','IB'),
+ ('EC-ACI','M87','IB'),
+ ('EC-ACJ','M87','IB'),
+ ('EC-ACK','M87','IB'),
+ ('EC-ACL','M87','IB'),
+ ('EC-ACM','M87','IB'),
+ ('EC-ACN','M87','IB'),
+ ('EC-ACO','M87','IB'),
+ ('EC-ACP','M87','IB'),
+ ('EC-ACQ','727','IB'),
+ ('EC-ACR','727','IB'),
+ ('EC-ACS','727','IB'),
+ ('EC-ACT','727','IB'),
+ ('EC-ACU','727','IB'),
+ ('EC-ACV','727','IB'),
+ ('EC-ACW','727','IB'),
+ ('EC-ACX','727','IB'),
+ ('EC-ACY','727','IB'),
+ ('EC-ACZ','727','IB'),
+ ('EC-ADA','727','IB'),
+ ('EC-ADB','727','IB'),
+ ('EC-ADC','727','IB'),
+ ('EC-ADD','727','IB'),
+ ('EC-ADE','727','IB'),
+ ('EC-ADF','727','IB'),
+ ('EC-ADG','727','IB'),
+ ('EC-ADH','727','IB'),
+ ('EC-ADI','727','IB'),
+ ('EC-ADJ','727','IB'),
+ ('EC-ADK','727','IB'),
+ ('EC-ADL','727','IB'),
+ ('EC-ADM','727','IB'),
+ ('EC-ADN','727','IB'),
+ ('EC-ADO','727','IB'),
+ ('EC-ADP','727','IB'),
+ ('EC-ADQ','727','IB'),
+ ('EC-ADR','727','IB'),
+ ('EC-ADS','757','IB'),
+ ('EC-ADT','757','IB'),
+ ('EC-ADU','757','IB'),
+ ('EC-ADV','757','IB'),
+ ('EC-ADW','757','IB'),
+ ('EC-ADX','757','IB'),
+ ('EC-ADY','757','IB'),
+ ('EC-ADZ','757','IB'),
+ ('EC-AEA','747','IB'),
+ ('EC-AEB','747','IB'),
+ ('EC-AEC','747','IB'),
+ ('EC-AED','747','IB'),
+ ('EC-AEE','747','IB'),
+ ('EC-AEF','747','IB'),
+ ('EC-AEG','747','IB'),
+ ('EC-OAA','DC9','AO'),
+ ('EC-OAB','DC9','AO'),
+ ('EC-OAC','DC9','AO'),
+ ('EC-OAD','DC9','AO'),
+ ('EC-OAE','DC9','AO'),
+ ('EC-OAF','DC9','AO'),
+ ('EC-OAG','DC9','AO'),
+ ('EC-OAH','DC9','AO'),
+ ('EC-OAI','DC9','AO'),
+ ('EC-OAJ','DC9','AO'),
+ ('EC-OAK','DC9','AO'),
+ ('EC-OAL','DC9','AO'),
+ ('EC-OAM','DC9','AO'),
+ ('EC-OAN','DC9','AO'),
+ ('EC-OAO','DC9','AO'),
+ ('EC-OAP','DC9','AO'),
+ ('EC-OAQ','DC9','AO'),
+ ('EC-OAR','DC9','AO'),
+ ('EC-OAS','M88','AO'),
+ ('EC-OAT','M88','AO'),
+ ('EC-OAU','M88','AO'),
+ ('EC-OAV','M88','AO'),
+ ('EC-OAW','M88','AO'),
+ ('EC-OAX','M88','AO'),
+ ('EC-OAY','M88','AO'),
+ ('EC-OAZ','M88','AO'),
+ ('EC-OBA','M88','AO'),
+ ('EC-OBB','M88','AO'),
+ ('EC-OBC','M88','AO'),
+ ('EC-OBD','M88','AO'),
+ ('EC-OBE','M88','AO'),
+ ('EC-BAA','CS5','AX'),
+ ('EC-BAB','CS5','AX'),
+ ('EC-BAC','CS5','AX'),
+ ('EC-BAF','CS5','AX'),
+ ('EC-BAG','ATR','NT'),
+ ('EC-BAH','ATR','NT'),
+ ('EC-BAI','ATR','NT'),
+ ('EC-BAJ','ATR','NT'),
+ ('EC-BAK','ATR','NT'),
+ ('EC-BAL','ATR','NT'),
+ ('EC-BAM','CS5','NT'),
+ ('EC-BAO','CS5','NT'),
+ ('EC-BAP','CS5','NT'),
+ ('EC-BAR','CS5','NT'),
+ ('EC-BAS','DC9','NT'),
+ ('EC-BAT','DC9','NT'),
+ ('EC-BAU','DC9','NT'),
+ ('EC-BAX','DC9','NT'),
+ ('AC-AAA','73S','AR'),
+ ('AC-AAB','73S','AR'),
+ ('AC-AAC','73S','AR'),
+ ('AC-AAD','73S','AR'),
+ ('AC-AAE','73S','AR'),
+ ('AC-AAF','73S','AR'),
+ ('AC-AAG','73S','AR'),
+ ('AC-AAH','73S','AR'),
+ ('AC-AAI','73S','AR'),
+ ('AC-AAJ','73S','AR'),
+ ('AC-AAK','M88','AR'),
+ ('AC-AAL','M88','AR'),
+ ('AC-AAM','M88','AR'),
+ ('AC-AAN','M88','AR'),
+ ('AC-AAO','M88','AR'),
+ ('AC-AAP','M88','AR'),
+ ('AC-AAQ','310','AR'),
+ ('AC-AAR','310','AR'),
+ ('AC-AAS','310','AR'),
+ ('AC-AAT','727','AR'),
+ ('AC-AAU','727','AR'),
+ ('AC-AAV','727','AR'),
+ ('AC-AAW','727','AR'),
+ ('AC-AAX','727','AR'),
+ ('AC-AAY','727','AR'),
+ ('AC-AAZ','727','AR'),
+ ('AC-ABA','727','AR'),
+ ('AC-ABB','74S','AR'),
+ ('AC-ABC','74S','AR'),
+ ('AC-ABD','74S','AR'),
+ ('AC-ABE','74S','AR'),
+ ('AC-ABF','74S','AR'),
+ ('AC-ABO','74S','AR');
+/*!40000 ALTER TABLE `flota` ENABLE KEYS */;
+
+
+--
+-- Definition of table `partes`
+--
+
+DROP TABLE IF EXISTS `partes`;
+CREATE TABLE `partes` (
+  `num_parte` int(11) NOT NULL default '0',
+  `num_vuelo` char(6) NOT NULL default '',
+  `mat` char(6) NOT NULL default '',
+  `fecha` date NOT NULL default '0000-00-00',
+  `hora_salida` time NOT NULL default '00:00:00',
+  `hora_llegada` time NOT NULL default '00:00:00',
+  `nivel_vuelo` int(11) default NULL,
+  `comb_consumido` int(11) default NULL,
+  PRIMARY KEY  (`num_parte`),
+  KEY `ix_a_p` (`mat`),
+  KEY `ix_v_p` (`num_vuelo`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `partes`
+--
+
+/*!40000 ALTER TABLE `partes` DISABLE KEYS */;
+INSERT INTO `partes` (`num_parte`,`num_vuelo`,`mat`,`fecha`,`hora_salida`,`hora_llegada`,`nivel_vuelo`,`comb_consumido`) VALUES 
+ (406,'IB0369','EC-ACK','1996-01-08','14:40:00','15:45:00',290,1150),
+ (407,'AO774','EC-OBB','1996-01-08','18:30:00','19:50:00',291,2530),
+ (408,'AO342','EC-OAL','1996-01-08','09:30:00','14:25:00',294,10350),
+ (409,'IB3164','EC-ABC','1996-01-08','09:25:00','14:15:00',294,10350),
+ (410,'AO348','EC-OAI','1996-01-09','09:25:00','10:20:00',290,1265),
+ (411,'AO344','EC-OAR','1996-01-09','09:25:00','10:20:00',290,1265),
+ (412,'AX1620','EC-BAF','1996-01-09','11:40:00','12:20:00',290,920),
+ (413,'IB4247','EC-AAJ','1996-01-09','13:15:00','17:20:00',294,10350),
+ (414,'AO709','EC-OAV','1996-01-09','13:15:00','17:20:00',294,10350),
+ (415,'IB5245','EC-ACL','1996-01-09','11:20:00','13:50:00',292,5290),
+ (416,'AO773','EC-OBA','1996-01-09','13:15:00','17:20:00',294,10350),
+ (417,'IB4249','EC-AAE','1996-01-09','13:15:00','17:20:00',294,10350),
+ (418,'IB3245','EC-AAQ','1996-01-10','13:00:00','15:25:00',292,5175),
+ (419,'IB3249','EC-AAX','1996-01-10','19:30:00','21:55:00',292,5175),
+ (393,'IB5246','EC-ABR','1996-01-05','08:05:00','10:35:00',292,5290),
+ (394,'IB3242','EC-ABG','1996-01-05','07:50:00','12:10:00',294,9660),
+ (395,'AO649','EC-OAS','1996-01-06','07:50:00','12:10:00',294,9660),
+ (396,'IB3246','EC-ABG','1996-01-06','13:45:00','18:45:00',295,11500),
+ (397,'AO643','EC-OAV','1996-01-06','13:45:00','18:45:00',295,11500),
+ (398,'AO702','EC-OAS','1996-01-06','07:35:00','08:30:00',290,1265),
+ (399,'AO704','EC-OAB','1996-01-06','12:40:00','13:35:00',290,1265),
+ (400,'AO706','EC-OBE','1996-01-07','16:00:00','16:55:00',290,1265),
+ (401,'AO708','EC-OAI','1996-01-07','21:10:00','22:05:00',290,1265),
+ (402,'IB5522','EC-AAE','1996-01-07','07:35:00','12:20:00',294,10235),
+ (403,'AO684','EC-OAG','1996-01-07','15:35:00','16:35:00',291,2300),
+ (404,'AO523','EC-OAK','1996-01-07','11:55:00','13:45:00',291,3450),
+ (405,'AO651','EC-OAX','1996-01-08','07:50:00','08:40:00',290,1150),
+ (420,'AO701','EC-OAO','1996-01-10','07:50:00','08:50:00',291,2300),
+ (421,'AO703','EC-OAY','1996-01-10','12:00:00','12:55:00',290,1265),
+ (422,'AO775','EC-OBE','1996-01-11','16:10:00','17:20:00',291,2530),
+ (423,'IB1452','EC-AAW','1996-01-12','07:50:00','08:50:00',291,2300),
+ (424,'IB1454','EC-ACW','1996-01-12','11:35:00','12:35:00',291,2300),
+ (425,'IB3962','EC-ABS','1996-01-12','09:55:00','12:20:00',292,5175),
+ (426,'AO791','EC-OAK','1996-01-12','07:35:00','09:00:00',291,2875),
+ (427,'AO795','EC-OAQ','1996-01-12','19:40:00','21:05:00',291,2875),
+ (428,'AO761','EC-OAR','1996-01-14','09:45:00','11:35:00',291,3450),
+ (429,'IB0845','EC-ADI','1996-01-15','08:45:00','09:45:00',291,2300),
+ (430,'IB6171','EC-ADL','1996-01-15','09:20:00','10:20:00',291,2300),
+ (431,'IB2605','EC-ACI','1996-01-15','09:30:00','10:30:00',291,2300),
+ (432,'IB0945','EC-ADU','1996-01-15','09:45:00','10:45:00',291,2300),
+ (433,'IB6251','EC-ABF','1996-01-16','10:00:00','11:00:00',291,2300),
+ (434,'IB1045','EC-ADA','1996-01-16','10:45:00','11:45:00',291,2300),
+ (435,'IB1244','EC-ADI','1996-01-16','10:20:00','11:45:00',291,2875),
+ (436,'IB1238','EC-ADX','1996-01-17','16:30:00','17:55:00',291,2875),
+ (437,'IB1242','EC-ABA','1996-01-17','22:05:00','23:30:00',291,2875),
+ (438,'IB1562','EC-ACK','1996-01-18','08:25:00','10:00:00',291,3105),
+ (439,'IB1568','EC-ADH','1996-01-18','16:05:00','17:40:00',291,3105),
+ (440,'IB1564','EC-AAE','1996-01-18','21:50:00','23:25:00',291,3105),
+ (441,'IB1122','EC-AAF','1996-01-18','10:25:00','11:50:00',291,2875),
+ (442,'IB1124','EC-ACZ','1996-01-19','11:30:00','12:55:00',291,2875),
+ (443,'AO685','EC-OAL','1996-01-19','16:55:00','17:55:00',291,2300),
+ (444,'IB0433','EC-ADW','1996-01-20','07:50:00','12:10:00',294,9660),
+ (445,'IB1455','EC-ADI','1996-01-20','14:20:00','18:30:00',294,9430),
+ (446,'IB1451','EC-AAS','1996-01-21','07:45:00','08:45:00',291,2300),
+ (447,'IB1459','EC-ADN','1996-01-21','18:55:00','19:55:00',291,2300),
+ (448,'IB0435','EC-ADU','1996-01-21','07:50:00','08:45:00',290,1265),
+ (449,'IB0463','EC-ACZ','1996-01-22','10:55:00','11:50:00',290,1265),
+ (450,'IB0453','EC-ADT','1996-01-22','18:45:00','19:40:00',290,1265),
+ (451,'AO679','EC-OAF','1996-02-01','17:15:00','18:30:00',291,2645),
+ (452,'AR1100','AC-ABB','1996-02-01','23:00:00','18:45:00',NULL,NULL),
+ (453,'IB3244','EC-ABD','1996-02-01','16:05:00','12:10:00',NULL,NULL),
+ (454,'IB6840','EC-AEC','1996-02-02','16:05:00','09:25:00',NULL,NULL),
+ (455,'AR1386','AC-AAQ','1996-02-02','12:30:00','16:50:00',294,9660),
+ (456,'AR1342','AC-ABO','1996-02-02','23:30:00','07:50:00',NULL,NULL),
+ (458,'AO124','EC-OAS','1996-02-03','16:05:00','11:30:00',NULL,NULL),
+ (459,'AR1110','AC-ABO','1996-02-03','23:00:00','14:30:00',NULL,NULL),
+ (460,'IB6842','EC-AEA','1996-02-03','16:05:00','07:20:00',NULL,NULL),
+ (461,'IB4300','EC-ACA','1996-02-03','15:05:00','21:40:00',296,14605),
+ (462,'NT201','EC-BAX','1996-02-03','08:45:00','09:20:00',290,805),
+ (463,'NT213','EC-BAG','1996-02-03','14:05:00','14:50:00',290,1035),
+ (464,'NT415','EC-BAR','1996-02-04','08:50:00','09:50:00',291,2300),
+ (465,'NT425','EC-BAG','1996-02-04','20:25:00','21:10:00',290,1035),
+ (466,'NT200','EC-BAX','1996-02-04','07:30:00','08:05:00',290,805),
+ (467,'NT212','EC-BAK','1996-02-04','13:00:00','13:35:00',290,805),
+ (468,'NT363','EC-BAG','1996-02-05','15:30:00','16:20:00',290,1150),
+ (469,'NT502','EC-BAT','1996-02-05','07:30:00','08:05:00',290,805),
+ (470,'NT532','EC-BAG','1996-02-05','15:00:00','15:40:00',290,920),
+ (471,'IB0817','EC-AAG','1996-02-06','07:20:00','10:30:00',293,7130),
+ (472,'IB0809','EC-AAJ','1996-02-06','15:15:00','18:45:00',293,7590),
+ (473,'NT010','EC-BAG','1996-02-06','06:50:00','07:20:00',290,690),
+ (474,'NT135','EC-BAM','1996-02-07','18:00:00','18:35:00',290,805),
+ (475,'AO792','EC-OAR','1996-02-07','09:35:00','11:00:00',291,2875),
+ (476,'AO125','EC-OAS','1996-02-08','17:05:00','18:05:00',291,2300),
+ (477,'IB6620','EC-ABN','1996-02-08','17:35:00','08:05:00',NULL,NULL),
+ (478,'IB3101','EC-ADA','1996-02-09','09:05:00','13:45:00',294,10120),
+ (479,'IB3107','EC-ACA','1996-02-09','13:15:00','15:20:00',292,5750),
+ (480,'IB6912','EC-ACA','1996-02-10','08:05:00','09:05:00',291,2300),
+ (481,'IB2614','EC-AAE','1996-02-10','08:20:00','09:20:00',291,2300),
+ (482,'IB1000','EC-ACZ','1996-02-10','10:00:00','11:00:00',291,2300),
+ (483,'IB1200','EC-ADD','1996-02-10','12:00:00','13:00:00',291,2300),
+ (484,'IB1400','EC-ACX','1996-02-10','14:00:00','15:00:00',291,2300),
+ (485,'AR1127','AC-ABO','1996-02-11','23:45:00','07:55:00',NULL,NULL),
+ (486,'AR1147','AC-ABA','1996-02-11','23:45:00','07:55:00',NULL,NULL),
+ (487,'IB3700','EC-ADC','1996-02-12','13:30:00','14:10:00',290,920),
+ (488,'AO122','EC-OAN','1996-02-12','07:50:00','08:50:00',291,2300),
+ (489,'AO126','EC-OAY','1996-02-12','15:20:00','16:20:00',291,2300),
+ (490,'IB6621','EC-ABN','1996-02-14','11:50:00','15:45:00',293,8165),
+ (491,'IB3100','EC-ADK','1996-02-14','08:10:00','08:20:00',290,230),
+ (492,'IB3108','EC-ACL','1996-02-14','20:40:00','20:50:00',290,230),
+ (493,'IB3414','EC-ADW','1996-02-14','14:15:00','16:05:00',291,3450),
+ (494,'IB3400','EC-ABW','1996-02-15','19:50:00','21:40:00',291,3450),
+ (495,'IB0562','EC-ABZ','1996-02-15','08:30:00','09:35:00',291,3450),
+ (496,'IB0554','EC-ABS','1996-02-15','18:25:00','19:30:00',291,3450),
+ (497,'IB3604','EC-ADV','1996-02-15','09:30:00','11:50:00',292,5060),
+ (498,'IB3602','EC-AAF','1996-02-16','18:20:00','20:40:00',292,5060),
+ (499,'IB0763','EC-ACF','1996-02-16','07:50:00','09:00:00',291,2530),
+ (500,'AO185','EC-OAA','1996-02-16','12:30:00','13:35:00',291,3450),
+ (501,'IB3409','EC-ACI','1996-02-16','07:05:00','09:00:00',291,3565),
+ (502,'IB3403','EC-AAF','1996-02-17','10:15:00','12:10:00',291,3565),
+ (503,'IB3407','EC-ADU','1996-02-17','17:10:00','19:05:00',291,3565),
+ (504,'IB4627','EC-AAQ','1996-02-17','12:40:00','14:20:00',291,3220),
+ (505,'IB4625','EC-ACP','1996-02-17','18:50:00','20:30:00',291,3220),
+ (506,'IB3609','EC-AAF','1996-02-17','08:25:00','10:50:00',292,5175),
+ (507,'IB3605','EC-ADV','1996-02-18','12:50:00','15:15:00',292,5175),
+ (508,'AR1211','AC-AAJ','1996-02-18','07:00:00','08:50:00',291,3450),
+ (509,'AR1231','AC-AAK','1996-02-19','11:45:00','13:35:00',291,3450),
+ (510,'IB0543','EC-ABV','1996-02-19','07:10:00','08:10:00',291,2300),
+ (511,'IB0547','EC-ADJ','1996-02-19','09:15:00','10:15:00',291,2300),
+ (512,'IB0557','EC-ADX','1996-02-20','17:00:00','18:00:00',291,2300),
+ (513,'IB0103','EC-AAS','1996-02-20','07:30:00','08:25:00',290,1265),
+ (514,'IB0139','EC-ACQ','1996-02-20','18:15:00','19:10:00',290,1265),
+ (515,'NT102','EC-BAG','1996-02-21','08:00:00','08:30:00',290,690),
+ (516,'NT150','EC-BAK','1996-02-21','20:00:00','20:30:00',290,690),
+ (517,'NT655','EC-BAK','1996-02-22','08:00:00','08:40:00',290,920),
+ (518,'IB0959','EC-AAF','1996-02-22','19:50:00','23:25:00',293,7705);
+/*!40000 ALTER TABLE `partes` ENABLE KEYS */;
+
+
+--
+-- Definition of table `reservas`
+--
+
+DROP TABLE IF EXISTS `reservas`;
+CREATE TABLE `reservas` (
+  `num_vuelo` char(6) NOT NULL default '',
+  `fecha` date NOT NULL default '0000-00-00',
+  `agencia` char(3) NOT NULL default '',
+  `plazas` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`num_vuelo`,`fecha`,`agencia`),
+  KEY `ix_r_a` (`agencia`),
+  KEY `ix_r_v` (`num_vuelo`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `reservas`
+--
+
+/*!40000 ALTER TABLE `reservas` DISABLE KEYS */;
+INSERT INTO `reservas` (`num_vuelo`,`fecha`,`agencia`,`plazas`) VALUES 
+ ('IB0103','2001-03-30','A01',50),
+ ('IB0103','2001-03-30','A02',105),
+ ('IB0103','2001-03-30','A03',100),
+ ('IB0554','2001-03-25','A04',25),
+ ('IB0554','2001-03-25','A02',15),
+ ('IB0554','2001-03-25','A05',30),
+ ('IB0557','2001-03-30','A04',25),
+ ('IB0557','2001-03-30','A02',15),
+ ('IB0557','2001-03-30','A05',30),
+ ('IB2614','2001-02-03','A04',35),
+ ('IB2614','2001-02-03','A01',73),
+ ('IB2614','2001-02-03','A05',85),
+ ('IB2614','2001-02-04','A04',45),
+ ('IB2614','2001-02-04','A01',80),
+ ('IB2614','2001-02-04','A05',90),
+ ('IB1000','2001-02-05','A04',49),
+ ('IB1000','2001-02-05','A01',85),
+ ('IB1000','2001-02-05','A05',97),
+ ('IB0845','2001-02-03','A04',35),
+ ('IB0845','2001-02-03','A01',73),
+ ('IB0845','2001-02-03','A05',85),
+ ('IB0845','2001-02-04','A04',45),
+ ('IB0845','2001-02-04','A01',88),
+ ('IB0845','2001-02-04','A05',94),
+ ('IB0543','2001-02-03','A04',35),
+ ('IB0543','2001-02-02','A01',73),
+ ('IB0543','2001-02-03','A05',85);
+/*!40000 ALTER TABLE `reservas` ENABLE KEYS */;
+
+
+--
+-- Definition of table `vuelos`
+--
+
+DROP TABLE IF EXISTS `vuelos`;
+CREATE TABLE `vuelos` (
+  `num_vuelo` varchar(6) NOT NULL default '',
+  `origen` varchar(35) NOT NULL default '',
+  `destino` varchar(35) NOT NULL default '',
+  `hora_salida` time NOT NULL default '00:00:00',
+  `hora_llegada` time NOT NULL default '00:00:00',
+  `duracion` decimal(4,2) default NULL,
+  `distancia` int(11) default NULL,
+  `tipo_avion` char(3) NOT NULL default '',
+  PRIMARY KEY  (`num_vuelo`),
+  KEY `ix_origen` (`origen`),
+  KEY `ix_tramos` (`origen`,`destino`),
+  KEY `ix_avion` (`tipo_avion`),
+  KEY `ix_destino` (`destino`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `vuelos`
+--
+
+/*!40000 ALTER TABLE `vuelos` DISABLE KEYS */;
+INSERT INTO `vuelos` (`num_vuelo`,`origen`,`destino`,`hora_salida`,`hora_llegada`,`duracion`,`distancia`,`tipo_avion`) VALUES 
+ ('AO122','MADRID','LA CORUÑA','07:50:00','08:50:00','1.00',600,'D9S'),
+ ('AO124','BUENOS AIRES','LA CORUÑA','16:05:00','11:30:00','12.00',NULL,'M80'),
+ ('AO125','LA CORUÑA','MADRID','17:05:00','18:05:00','1.00',600,'M80'),
+ ('AO126','MADRID','LA CORUÑA','15:20:00','16:20:00','1.00',600,'M80'),
+ ('AO185','PALMA MALLORCA','MADRID','12:30:00','13:35:00','1.50',900,'D9S'),
+ ('AO342','ALMERIA','LONDRES','09:25:00','14:15:00','4.50',2700,'D9S'),
+ ('AO344','ALMERIA','MADRID','09:25:00','10:20:00','0.55',330,'D9S'),
+ ('AO348','ALMERIA','MADRID','09:25:00','10:20:00','0.55',330,'D9S'),
+ ('AO523','ALICANTE','GRAN CANARIA','11:55:00','13:45:00','1.50',900,'D9S'),
+ ('AO643','ALICANTE','AMSTERDAM','13:45:00','18:45:00','5.00',3000,'M87'),
+ ('AO649','ALICANTE','AMSTERDAM','07:50:00','12:10:00','4.20',2520,'M80'),
+ ('AO651','ALICANTE','MADRID','07:50:00','08:40:00','0.50',300,'M80'),
+ ('AO679','BILBAO','MALAGA','17:15:00','18:30:00','1.15',690,'D9S'),
+ ('AO684','ALICANTE','BILBAO','15:35:00','16:35:00','1.00',600,'D9S'),
+ ('AO685','BILBAO','ALICANTE','16:55:00','17:55:00','1.00',600,'D9S'),
+ ('AO701','BARCELONA','ALICANTE','07:50:00','08:50:00','1.00',600,'D9S'),
+ ('AO702','ALICANTE','BARCELONA','07:35:00','08:30:00','0.55',330,'M80'),
+ ('AO703','BARCELONA','ALICANTE','12:00:00','12:55:00','0.55',330,'M80'),
+ ('AO704','ALICANTE','BARCELONA','12:40:00','13:35:00','0.55',330,'M80'),
+ ('AO706','ALICANTE','BARCELONA','16:00:00','16:55:00','0.55',330,'M80'),
+ ('AO708','ALICANTE','BARCELONA','21:10:00','22:05:00','0.55',330,'D9S'),
+ ('AO709','AMSTERDAM','ALICANTE','13:15:00','17:20:00','4.50',2700,'M80'),
+ ('AO761','BARCELONA','LANZAROTE','09:45:00','11:35:00','1.50',900,'D9S'),
+ ('AO773','AMSTERDAM','ALMERIA','13:15:00','17:20:00','4.50',2700,'M80'),
+ ('AO774','ALMERIA','BARCELONA','18:10:00','19:20:00','1.10',660,'M80'),
+ ('AO775','BARCELONA','ALMERIA','16:10:00','17:20:00','1.10',660,'M80'),
+ ('AO791','BARCELONA','LA CORUÑA','07:35:00','09:00:00','1.25',750,'D9S'),
+ ('AO792','LA CORUÑA','BARCELONA','09:35:00','11:00:00','1.25',750,'D9S'),
+ ('AO795','BARCELONA','LA CORUÑA','19:40:00','21:05:00','1.25',750,'D9S'),
+ ('AR1100','BUENOS AIRES','AMSTERDAM','23:00:00','18:45:00',NULL,NULL,'747'),
+ ('AR1110','BUENOS AIRES','MADRID','23:00:00','14:30:00',NULL,NULL,'747'),
+ ('AR1127','MADRID','BUENOS AIRES','23:45:00','07:55:00',NULL,NULL,'747'),
+ ('AR1147','MADRID','BUENOS AIRES','23:45:00','07:55:00',NULL,NULL,'727'),
+ ('AR1211','SANTIAGO DE CHILE','BUENOS AIRES','07:00:00','08:50:00','1.50',900,'73S'),
+ ('AR1231','SANTIAGO DE CHILE','BUENOS AIRES','11:45:00','13:35:00','1.50',900,'M80'),
+ ('AR1342','BUENOS AIRES','CANCUN','23:30:00','07:50:00',NULL,NULL,'747'),
+ ('AR1386','BUENOS AIRES','BOGOTA','12:30:00','16:50:00','4.20',2520,'310'),
+ ('AR941','BUENOS AIRES','CARACAS','08:50:00','14:30:00','5.40',3240,'D10'),
+ ('AX1620','ALMERIA','MELILLA','11:40:00','12:20:00','0.40',240,'CS5'),
+ ('IB0103','SEVILLA','MADRID','07:30:00','08:25:00','0.55',330,'32S'),
+ ('IB0139','SEVILLA','MADRID','18:15:00','19:10:00','0.55',330,'727'),
+ ('IB0369','ALICANTE','MADRID','14:40:00','15:30:00','0.50',300,'M87'),
+ ('IB0433','BILBAO','AMSTERDAM','07:50:00','12:10:00','4.20',2520,'757'),
+ ('IB0435','BILBAO','MADRID','07:50:00','08:45:00','0.55',330,'757'),
+ ('IB0453','BILBAO','MADRID','18:45:00','19:40:00','0.55',330,'757'),
+ ('IB0463','BILBAO','MADRID','10:55:00','11:50:00','0.55',330,'727'),
+ ('IB0543','SANTIAGO DE COMPOSTELA','MADRID','07:10:00','08:10:00','1.00',600,'M87'),
+ ('IB0547','SANTIAGO DE COMPOSTELA','MADRID','09:15:00','10:15:00','1.00',600,'727'),
+ ('IB0554','MADRID','SANTIAGO DE COMPOSTELA','18:25:00','19:30:00','1.50',900,'727'),
+ ('IB0557','SANTIAGO DE COMPOSTELA','MADRID','17:00:00','18:00:00','1.00',600,'757'),
+ ('IB0562','MADRID','SANTIAGO DE COMPOSTELA','08:30:00','09:35:00','1.50',900,'M87'),
+ ('IB0763','PALMA MALLORCA','MADRID','07:50:00','09:00:00','1.10',660,'M87'),
+ ('IB0809','GRAN CANARIA','MADRID','15:15:00','18:45:00','3.30',1980,'AB3'),
+ ('IB0817','GRAN CANARIA','MADRID','07:20:00','10:30:00','3.10',1860,'AB3'),
+ ('IB0845','BARCELONA','MADRID','08:45:00','09:45:00','1.00',600,'727'),
+ ('IB0945','BARCELONA','MADRID','09:45:00','10:45:00','1.00',600,'757'),
+ ('IB0959','TENERIFE','MADRID','19:50:00','23:25:00','3.35',2010,'AB3'),
+ ('IB1000','MADRID','BARCELONA','10:00:00','11:00:00','1.00',600,'727'),
+ ('IB1045','BARCELONA','MADRID','10:45:00','11:45:00','1.00',600,'727'),
+ ('IB1122','BARCELONA','SEVILLA','10:25:00','11:50:00','1.25',750,'32S'),
+ ('IB1124','BARCELONA','SEVILLA','11:30:00','12:55:00','1.25',750,'727'),
+ ('IB1200','MADRID','BARCELONA','12:00:00','13:00:00','1.00',600,'727'),
+ ('IB1238','BARCELONA','MALAGA','16:30:00','17:55:00','1.25',750,'757'),
+ ('IB1242','BARCELONA','MALAGA','22:05:00','23:30:00','1.25',750,'32S'),
+ ('IB1244','BARCELONA','MALAGA','10:20:00','11:45:00','1.25',750,'727'),
+ ('IB1400','MADRID','BARCELONA','14:00:00','15:00:00','1.00',600,'727'),
+ ('IB1451','BILBAO','BARCELONA','07:45:00','08:45:00','1.00',600,'32S'),
+ ('IB1452','BARCELONA','BILBAO','07:50:00','08:50:00','1.00',600,'32S'),
+ ('IB1454','BARCELONA','BILBAO','11:35:00','12:35:00','1.00',600,'727'),
+ ('IB1455','BILBAO','AMSTERDAM','14:20:00','18:30:00','4.10',2460,'727'),
+ ('IB1459','BILBAO','BARCELONA','18:55:00','19:55:00','1.00',600,'727'),
+ ('IB1562','BARCELONA','SANTIAGO DE COMPOSTELA','08:25:00','10:00:00','1.35',810,'M87'),
+ ('IB1564','BARCELONA','SANTIAGO DE COMPOSTELA','21:50:00','23:25:00','1.35',810,'32S'),
+ ('IB1568','BARCELONA','SANTIAGO DE COMPOSTELA','16:05:00','17:40:00','1.35',810,'727'),
+ ('IB2605','BARCELONA','MADRID','09:30:00','10:30:00','1.00',600,'M87'),
+ ('IB2614','MADRID','BARCELONA','08:20:00','09:20:00','1.00',600,'32S'),
+ ('IB3100','MADRID','LISBOA','08:10:00','08:20:00','0.10',60,'727'),
+ ('IB3101','LISBOA','GRAN CANARIA','09:05:00','13:45:00','4.40',2640,'727'),
+ ('IB3107','LISBOA','MADRID','13:15:00','15:20:00','2.50',1500,'M87'),
+ ('IB3108','MADRID','LISBOA','20:40:00','20:50:00','0.10',60,'M87'),
+ ('IB3164','ALMERIA','LONDRES','09:25:00','14:15:00','4.50',2700,'32S'),
+ ('IB3242','ALICANTE','AMSTERDAM','07:50:00','12:10:00','4.20',2520,'32S'),
+ ('IB3244','BUENOS AIRES','AMSTERDAM','16:05:00','12:10:00',NULL,NULL,'32S'),
+ ('IB3245','AMSTERDAM','MADRID','13:00:00','15:25:00','2.25',1350,'32S'),
+ ('IB3246','ALICANTE','AMSTERDAM','13:45:00','18:45:00','5.00',3000,'32S'),
+ ('IB3249','AMSTERDAM','MADRID','19:30:00','21:55:00','2.25',1350,'32S'),
+ ('IB3400','MADRID','PARIS','19:50:00','21:40:00','1.50',900,'M87'),
+ ('IB3403','PARIS','MADRID','10:15:00','12:10:00','1.55',930,'32S'),
+ ('IB3407','PARIS','MADRID','17:10:00','19:05:00','1.55',930,'757'),
+ ('IB3409','PARIS','MADRID','07:05:00','09:00:00','1.55',930,'M87'),
+ ('IB3414','MADRID','PARIS','14:15:00','16:05:00','1.50',900,'757'),
+ ('IB3602','MADRID','ROMA','18:20:00','20:40:00','2.20',1320,'32S'),
+ ('IB3604','MADRID','ROMA','09:30:00','11:50:00','2.20',1320,'757'),
+ ('IB3605','ROMA','MADRID','12:50:00','15:15:00','2.25',1350,'757'),
+ ('IB3609','ROMA','MADRID','08:25:00','10:50:00','2.25',1350,'32S'),
+ ('IB3700','MADRID','CASABLANCA','13:30:00','14:10:00','0.40',240,'727'),
+ ('IB3962','BARCELONA','HANOVER','09:55:00','12:20:00','2.25',1350,'M87'),
+ ('IB4247','AMSTERDAM','ALICANTE','13:15:00','17:20:00','4.50',2700,'32S'),
+ ('IB4249','AMSTERDAM','ALMERIA','13:15:00','17:20:00','4.50',2700,'32S'),
+ ('IB4300','CASABLANCA','PARIS','15:05:00','21:40:00','6.35',3810,'M87'),
+ ('IB4625','ROMA','BARCELONA','18:50:00','20:30:00','1.40',840,'M87'),
+ ('IB4627','ROMA','BARCELONA','12:40:00','14:20:00','1.40',840,'32S'),
+ ('IB5245','AMSTERDAM','ALICANTE','11:20:00','13:50:00','2.30',1380,'M87'),
+ ('IB5246','ALICANTE','AMSTERDAM','08:05:00','10:35:00','2.30',1380,'M87'),
+ ('IB5522','ALICANTE','BERLIN','07:35:00','12:20:00','4.45',2670,'32S'),
+ ('IB6171','BARCELONA','MADRID','09:20:00','10:20:00','1.00',600,'727'),
+ ('IB6251','BARCELONA','MADRID','10:00:00','11:00:00','1.00',600,'32S'),
+ ('IB6620','LA HABANA','MADRID','17:35:00','08:05:00',NULL,NULL,'D10'),
+ ('IB6621','MADRID','LA HABANA','11:50:00','15:45:00','3.55',2130,'D10'),
+ ('IB6840','BUENOS AIRES','BARCELONA','16:05:00','09:25:00',NULL,NULL,'747'),
+ ('IB6842','BUENOS AIRES','MADRID','16:05:00','07:20:00',NULL,NULL,'747'),
+ ('IB6912','MADRID','BARCELONA','08:05:00','09:05:00','1.00',600,'M87'),
+ ('NT010','GRAN CANARIA','TENERIFE','06:50:00','07:20:00','0.30',180,'ATR'),
+ ('NT102','TENERIFE','GRAN CANARIA','08:00:00','08:30:00','0.30',180,'ATR'),
+ ('NT135','GRAN CANARIA','TENERIFE','18:00:00','18:35:00','0.35',210,'CS5'),
+ ('NT150','TENERIFE','GRAN CANARIA','20:00:00','20:30:00','0.30',180,'ATR'),
+ ('NT200','GRAN CANARIA','FUERTEVENTURA','07:30:00','08:05:00','0.35',210,'DC9'),
+ ('NT201','FUERTEVENTURA','GRAN CANARIA','08:45:00','09:20:00','0.35',210,'DC9'),
+ ('NT212','GRAN CANARIA','FUERTEVENTURA','13:00:00','13:35:00','0.35',210,'ATR'),
+ ('NT213','FUERTEVENTURA','GRAN CANARIA','14:05:00','14:50:00','0.45',270,'ATR'),
+ ('NT363','GRAN CANARIA','HIERRO','15:30:00','16:20:00','0.50',300,'ATR'),
+ ('NT415','FUERTEVENTURA','TENERIFE','08:50:00','09:50:00','1.00',600,'CS5'),
+ ('NT425','FUERTEVENTURA','TENERIFE','20:25:00','21:10:00','0.45',270,'ATR'),
+ ('NT502','GRAN CANARIA','LANZAROTE','07:30:00','08:05:00','0.35',210,'DC9'),
+ ('NT532','GRAN CANARIA','LANZAROTE','15:00:00','15:40:00','0.40',240,'ATR'),
+ ('NT655','TENERIFE','HIERRO','08:00:00','08:40:00','0.40',240,'ATR');
+/*!40000 ALTER TABLE `vuelos` ENABLE KEYS */;
+
+
+
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

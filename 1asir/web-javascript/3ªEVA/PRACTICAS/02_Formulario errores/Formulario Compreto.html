@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h1{
+            text-align: center;
+        }
+        form{
+            width: 500px;
+            justify-content: center;
+            margin: auto;
+            padding: 1em;
+            background-color: rgb(251, 227, 195);
+            border-radius: 2ex;
+        }
+        div{
+            padding: 1em;
+            background-color: antiquewhite;
+            margin: 1ex;
+            border-radius: 2ex;
+        }
+        .error{
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Formulario Completo</h1>
+    <form id="miFormulario">
+        <div>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre"><br>
+            <span id="errorNombre" class="error"></span>
+        </div>
+        <div>
+            <label for="terminos">
+            <input type="checkbox" id="terminos" name="terminos">Acepto los términos y condiciones</label><br>
+            <span id="errorTerminos" class="error"></span>
+        </div>
+        <div>
+            <label for="genero">
+            <input type="radio" name="genero" value="masculino">Masculino</label><br>
+            <label for="genero">
+            <input type="radio" name="genero" value="femenino">Femenino</label><br>
+            <label for="genero">
+            <input type="radio" name="genero" value="otro">Otro</label><br>
+            <span id="errorGenero" class="error"></span>
+        </div>
+        <button type="button" onclick="validarFormulario()">Enviar</button>
+    </form>
+    <script>
+        function validarFormulario(){
+            formularioValido = true;
+
+            nombre = document.getElementById('nombre');
+            errorNombre = document.getElementById('errorNombre');
+
+            if(nombre.value.trim() == ''){
+                errorNombre.textContent = 'Por favor, ingrese su nombre';
+                formularioValido = false;
+            }else if(nombre.value.length < 3){
+                errorNombre.textContent = 'Por favor, ingrese un nombre de al menos 3 caracteres';
+                formularioValido = false;
+            }else{
+                errorNombre.textContent = '';
+            }
+
+            terminos = document.getElementById('terminos');
+            errorTerminos = document.getElementById('errorTerminos');
+
+            if(!terminos.checked){  // terminos.checked == false
+                errorTerminos.textContent = 'Por favor, acepte los terminos y condiciones';
+                formularioValido = false;
+            }else{
+                errorTerminos.textContent = '';
+            }
+
+            generos = document.getElementsByName('genero');
+            errorGenero = document.getElementById('errorGenero');
+            generoSeleccionado = false;
+
+            for(i = 0; i < generos.length; i++){
+                if(generos[i].checked){
+                    generoSeleccionado = true;
+                    break;
+                }
+            }
+            if(!generoSeleccionado){
+                errorGenero.textContent = 'Por favor, seleccione un genero';
+                formularioValido = false;
+            }else{
+                errorGenero.textContent = '';
+            }
+            return validarFormulario;
+        }
+    </script>
+</body>
+</html>

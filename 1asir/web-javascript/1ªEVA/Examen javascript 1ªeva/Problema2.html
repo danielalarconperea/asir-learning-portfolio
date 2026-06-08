@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Problema2</title>
+</head>
+<body>
+<script type="text/javascript">
+
+var num1=parseInt(prompt('dime un número')), num2=parseInt(prompt('dime otro número')), num3=parseInt(prompt('dime otro número'));
+
+if(num1==num2 && num1==num3){
+    document.write('Todos los números son el '+num1+' y son iguales');
+}else{
+    if(num1>=num2 && num1>=num3){
+        document.write('el '+num1+' es el mayor<br><br>');
+    }else if(num2>=num1 && num2>=num3){
+        document.write('el '+num2+' es el mayor<br><br>');
+    }else{
+        document.write('el '+num3+' es el mayor<br><br>');
+    }
+
+    if(num1<=num2 && num1<=num3){
+        document.write('el '+num1+' es el menor');
+    }else if(num2<=num1 && num2<=num3){
+        document.write('el '+num2+' es el menor');
+    }else{
+        document.write('el '+num3+' es el menor');
+    }
+}
+</script>
+</body>
+</html>

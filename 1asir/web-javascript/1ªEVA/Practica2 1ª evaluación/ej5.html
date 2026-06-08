@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+</head>
+<body><h1>EJERCICIO 5</h1>
+<!--5.-Crea un programa que pida al usuario su edad y el valor de su compra. 
+    Aplica descuentos basados en las siguientes reglas:
+
+    -Si la edad es menor de 12 o mayor de 65, aplica un 15% de descuento si la compra es mayor de 100€.
+    -Si la edad está entre 18 y 25 y la compra es mayor de 50€, aplica un 10% de descuento.
+    -Si la edad es mayor de 25 y la compra es mayor de 200€, aplica un 5% de descuento.
+    -Si ninguna de las condiciones se cumple, no hay descuento.
+-->
+<script type="text/javascript">
+
+var edad = prompt('dime tú edad');
+var compra = prompt('dime el valor de la compra');
+
+if ((edad < 12 || edad > 65) && compra > 100)
+{
+    document.write('tienes un descuento del 15% tu compra vale: ' + (compra * 0.85));
+}
+else if (edad < 25 && edad > 18 && compra > 50)
+{
+    document.write('tienes un 10% de descuento tu compra vale: ' + (compra * 0.9));
+}
+else if (edad > 25 && compra > 200)
+{
+    document.write('tienes un descuento del 5% tu compra vale:' + (compra * 0.95));
+}
+else
+{
+    document.write('no hay descuento tu compra vale: '+ compra);
+}
+</script>
+</body>
+</html>

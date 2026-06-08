@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora de Préstamos</title>
+</head>
+<body>
+  <h1>Calculadora de Préstamos</h1>
+  <form>
+    <label for="monto">Monto del préstamo ($):</label>
+    <input type="number" id="monto" min="1000" max="1000000"><br><br>
+
+    <label for="tasa">Tasa de interés anual (%):</label>
+    <input type="number" id="tasa" min="0" max="20" step="0.1"><br><br>
+
+    <label for="plazo">Plazo en años:</label>
+    <select id="plazo">
+      <option value="">Seleccione...</option>
+      <option value="5">5 años</option>
+      <option value="10">10 años</option>
+      <option value="15">15 años</option>
+      <option value="20">20 años</option>
+      <option value="30">30 años</option>
+    </select><br><br>
+
+    <p>Frecuencia de pago:</p>
+    <input type="radio" name="frecuencia" id="mensual" value="mensual"> Mensual
+    <input type="radio" name="frecuencia" id="quincenal" value="quincenal"> Quincenal<br><br>
+
+    <button type="button" onclick="calcularPrestamo()">Calcular</button>
+  </form>
+  <p id="resultado"></p>
+  <script>
+    function calcularPrestamo(){
+        var monto = parseFloat(document.getElementById('monto'));
+        var tasa = parseFloat(document.getElementById('tasa'));
+        var plazo = document.getElementById('plazo');
+        var frecuencias = document.getElementsByName('frecuencias');
+
+        var resultado = document.getElementById('resultado');
+        var error = '';
+        var validarFormulario = true;
+        var frecuencia_seleccionada = false;
+
+        
+        if(monto.value < 1000 || monto.value > 1000000){
+          error += 'El número de personas debe estar entre 1 y 4<br>';
+          validarFormulario = false;
+        }
+        if(tasa.value < 0 || tasa.value > 20){
+          error += 'El número de tasa debe estar entre 0% y 20%<br>';
+          validarFormulario = false;
+        }
+        if(plazo.value == ''){ // o habitacion[0].selected
+          error += 'Seleccione un plazo<br>';
+          validarFormulario = false;
+        }
+        for(i=0; i < frecuencias.length; i++)
+          if(frecuencias[i].checked){
+            frecuencia_seleccionada = true
+          }
+        if(!frecuencia_seleccionada){
+          error += 'Selecciona una frecuencia<br>';
+          validarFormulario = false;
+        }
+
+        resultado.innerHTML = error;
+        if(validarFormulario){
+          resultado.innerHTML = 'el formulario se ha enviado correctamente';
+          resultado.style.color = 'green';
+        }else{
+          resultado.innerHTML = error;
+          resultado.style.color = 'red';
+        }
+        
+    }
+  </script>
+</body>
+</html>
+<!-- Ejercicio 2: Calculadora de préstamo
+
+En este formulario encontraremos 4 campos:
+
+    Monto del préstamo (input type="number")
+
+    Tasa de interés anual (input type="number")
+
+    Plazo en meses (select (menú desplegable) con opciones)
+
+    Frecuencia de pago (input type="radio" x 2)
+
+Parámetros a controlar:
+
+    El monto del préstamo debe estar entre 1.000€ y 1.000.000€.
+    
+    La tasa de interés anual debe estar entre 0% y 20%.
+    
+    Se debe seleccionar al menos un plazo en el menú desplegable.
+    
+    Se debe seleccionar una de las dos frecuencias de pago.
+    
+    Mostrar los respectivos errores en cada control.
+
+    Si no hay ningún error hay que mostrar la cantidad mensual o quincenal que tendrá que pagar el usuario.
+    Para esto calculamos el interés total:
+    interesTotal = monto * (tasa/100) * plazo
+    Una vez tenemos el interés total calculamos el monto total:
+    total = monto + interesTotal
+    Finalmente se mostrará un resultado con el pago mensual final o quincenal dependiendo de la elección del usuario. (Nota: El cálculo del pago periódico típicamente es pago = total / numero_de_pagos, donde numero_de_pagos depende del plazo y la frecuencia).
+
+ -->

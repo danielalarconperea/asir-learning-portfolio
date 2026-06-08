@@ -1,0 +1,109 @@
+ipv6 unicast-routing
+
+
+interface GigabitEthernet0/0
+ip address 172.16.1.1 255.255.255.0
+ipv6 address 2001:A::1/64
+no shutdown
+
+
+
+interface GigabitEthernet0/1
+ip address 172.16.2.1 255.255.255.0
+ipv6 address 2001:B::1/64
+no shutdown
+
+
+ip route 172.16.3.0 255.255.255.0 172.16.2.2
+ip route 172.16.4.0 255.255.255.0 172.16.2.2
+ip route 172.16.5.0 255.255.255.0 172.16.2.2
+
+ipv6 route 2001:C::/64 2001:B::2
+ipv6 route 2001:D::/64 2001:B::2
+ipv6 route 2001:E::/64 2001:B::2
+
+
+
+interface GigabitEthernet1/0/24
+ip address 172.16.2.2 255.255.255.0
+ipv6 address 2001:B::2/64
+no shutdown
+
+ 
+
+interface GigabitEthernet1/0/1
+ip address 172.16.3.1 255.255.255.0
+ipv6 address 2001:C::1/64
+no shutdown
+
+ 
+
+interface GigabitEthernet1/0/2
+ip address 172.16.4.1 255.255.255.0
+ipv6 address 2001:D::1/64
+no shutdown
+
+
+
+interface GigabitEthernet1/0/3
+ip address 172.16.5.1 255.255.255.0
+ipv6 address 2001:E::1/64
+no shutdown
+
+
+
+ip route 172.16.1.0 255.255.255.0 172.16.2.1
+ipv6 route 2001:A::/64 2001:B::1
+
+
+
+ip dhcp pool RED-NARANJA
+network 172.16.3.0 255.255.255.0
+default-router 172.16.3.1
+dns-server 8.8.8.8
+exit
+
+ip dhcp pool RED-VERDE
+network 172.16.4.0 255.255.255.0
+default-router 172.16.4.1
+dns-server 8.8.8.8
+exit
+
+
+
+interface GigabitEthernet1/0/3
+ip helper-address 172.16.1.10
+
+
+ip dhcp pool RED-AZUL
+network 172.16.5.0 255.255.255.0
+default-router 172.16.5.1
+dns-server 8.8.8.8
+exit
+
+
+ipv6 dhcp pool DHCPV6-NARANJA
+dns-server 2001:A::10
+domain-name ejemplo.local
+exit
+
+
+interface GigabitEthernet1/0/1
+ipv6 nd other-config-flag
+ipv6 dhcp server DHCPV6-NARANJA
+
+
+ipv6 dhcp pool DHCPV6-AZUL
+address prefix 2001:E::/64
+dns-server 2001:A::10
+domain-name ejemplo.local
+exit
+
+
+interface GigabitEthernet1/0/3
+ipv6 nd managed-config-flag
+ipv6 dhcp server DHCPV6-AZUL
+
+
+show ip dhcp binding
+show ipv6 dhcp binding

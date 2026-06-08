@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validación Completa</title>
+</head>
+<body>
+  <h1>Formulario de Registro</h1>
+  <form id="formulario">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" placeholder="Escribe tu nombre"><br><br>
+
+    <label for="edad">Edad:</label>
+    <input type="number" id="edad" placeholder="Escribe tu edad"><br><br>
+
+    <label for="correo">Correo Electrónico:</label>
+    <input type="email" id="correo" placeholder="Escribe tu correo"><br><br>
+
+    <label>Género:</label><br>
+    <input type="radio" name="genero" id="genero_masculino" value="Masculino"> Masculino<br>
+    <input type="radio" name="genero" id="genero_femenino" value="Femenino"> Femenino<br><br>
+
+    <button type="button" onclick="validarFormulario()">Enviar</button>
+  </form>
+  <p id="mensaje"></p>
+
+  <script>
+    function validarFormulario() {
+      var nombre = document.getElementById("nombre").value;
+      var edad = document.getElementById("edad").value;
+      var correo = document.getElementById("correo").value;
+      var generoMasculino = document.getElementById("genero_masculino").checked;
+      var generoFemenino = document.getElementById("genero_femenino").checked;
+      var mensaje = document.getElementById("mensaje");
+
+      let errores = "";
+
+      // Validar nombre
+      if (nombre.trim() == "" || nombre.length < 3 || nombre.length > 15) {
+        errores += "El nombre debe tener entre 3 y 15 caracteres.<br>";
+      }
+
+      // Validar edad
+      if (isNaN(edad) || edad < 18 || edad > 99) {
+        errores += "La edad debe ser un número entre 18 y 99.<br>";
+      }
+
+      // Validar correo
+      if (correo.indexOf("@") === -1 || correo.indexOf(".") === -1 || correo.indexOf("@") > correo.lastIndexOf(".")) {
+		errores += "El correo electrónico no es válido.<br>";
+}
+
+      // Validar género
+      if (!generoMasculino && !generoFemenino) {
+        errores += "Debes seleccionar un género.<br>";
+      }
+
+      // Mostrar resultados
+      if (errores == "") {
+        mensaje.innerHTML = "Formulario válido. ¡Gracias por registrarte!";
+        mensaje.style.color = "green";
+      } else {
+        mensaje.innerHTML = errores;
+        mensaje.style.color = "red";
+      }
+    }
+  </script>
+</body>
+</html>

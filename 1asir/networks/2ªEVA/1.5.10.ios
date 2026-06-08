@@ -1,0 +1,28 @@
+! R1
+cisco
+en
+class
+show ip interface brief | exclude unassigned
+! La ip serial esta mal configurada por lo que hay que cambiarla
+conf terminal
+interface g0/0/0
+no shutdown
+exit
+interface s0/1/0
+ip address 209.165.200.225 255.255.255.252
+end
+show ip interface brief | exclude unassigned
+show ip route | begin Gate
+show interface | include Desc|conn
+show interface g0/0/0 | include duplex
+
+! R2
+cisco
+en
+class
+show ipv6 interface brief
+conf terminal
+interface g0/0/1
+no ipv6 address 2001:db8:c0de:14::1/64
+ipv6 address 2001:db8:c0de:13::1/64
+show running-config | incluye ipv6|interface

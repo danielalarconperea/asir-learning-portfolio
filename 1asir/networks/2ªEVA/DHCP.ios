@@ -1,0 +1,23 @@
+en
+conf t
+ip dhcp
+
+
+
+! ------------
+
+show running-config | section dhcp
+show ip dhcp binding
+show ip dhcp server statistics
+
+! ------------
+! Si queremos que no preste servicios aunque este ya configurado
+no service dhcp
+
+! Si queremos que vuelva a prestar servicios
+service dhcp
+
+! Esta configuración vale para que los servicios de dhcp lo coja de un servidor de fuera
+conf t
+interface g0/0/0
+ip helper-address 192.168.1.11

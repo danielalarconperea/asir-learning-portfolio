@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Funciones</title>
+</head>
+<body>
+<script type="text/javascript">
+
+function Par_Impar(num1){
+    if (num1 % 2 == 0){
+        alert("El número "+num1+" es par");
+    }else{ 
+        alert("El número "+num1+" es impar");
+    }
+}
+// Par_Impar(3);
+// Par_Impar(6);
+// Par_Impar(5);
+// Par_Impar(2);
+
+function suma(num1, num2){
+    alert(num1+num2);
+}
+// suma(3,5);
+// suma(3,76);
+// suma(3,55);
+// suma(3,3);
+
+
+
+function mostrardia(){
+    var fecha = new Date();
+    document.write('Hoy es día '+fecha.getDate()+'<br>');
+    document.write('El mes es '+fecha.getMonth()+'<br>');
+    document.write('El año es '+parseInt(fecha.getYear()+1900)+'<br>');
+    document.write('El año es '+fecha.getFullYear()+'<br>');
+}
+mostrardia()
+
+</script>
+</body>
+</html>

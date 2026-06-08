@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+</head>
+
+<body>
+<p>esta página contiene código de javascript</p>
+
+<script type="text/javascript">
+
+var nota1 = (prompt("Introduce la primera clave:"));
+var nota2 = (prompt("Introduce la segunda clave:"));
+var nota3 = (prompt("Introduce la tercera clave:"));
+
+if (nota1==nota2 && nota2==nota3)
+{
+    document.write("Ingresó 3 claves iguales!!!");
+} 
+else if (nota1==nota2 || nota1==nota3 || nota2==nota3) 
+{
+    document.write("Ingresó 2 claves iguales!!!");
+}
+else 
+{
+    document.write("Ingresó todas las claves distintas");
+}
+</script>
+</body>
+</html>

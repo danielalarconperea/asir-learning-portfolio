@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ejercicio 1</title>
+<script type="text/javascript">
+function Conversor(){
+    var Celsius = parseFloat(document.FormConversor.Celsius.value);
+    var Fahrenheit = (Celsius * 9/5) + 32;
+    document.write('La temperatura en Fahrenheit es de '+Fahrenheit);
+}
+</script>
+</head>
+<body>
+<form name="FormConversor">
+    <label for="Celsius">Temperatura en Celsius:</label>
+    <input type="number" name="Celsius">
+    <button type="button" onclick="Conversor()">Convertir en Fahrenheit</button>
+</form>
+</body>
+<!-- Conversor de Temperatura:
+Crea un formulario que permita al usuario ingresar una temperatura en grados Celsius. 
+Al hacer clic en un botón, el formulario debe convertir la temperatura a grados Fahrenheit 
+Fahrenheit = (Celsius * 9/5) + 32. -->
+</html>

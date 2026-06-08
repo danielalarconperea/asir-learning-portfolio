@@ -1,0 +1,15 @@
+Ejercicio para clase:Usando la BBDD de tienda.sql
+
+
+1.- Obtener todos los productos con sus fabricante
+2.- Listar todos los fabricantes junto con la cantidad de productos que tienen.
+3.- Mostrar todos los productos, incluso aquellos que no tienen un fabricante asociado.
+4.- Mostrar el nombre del producto y con el nombre del fabricante. Quiero todos los productos incluidos los nulos.
+5.- Mostrar el nombre del producto y con el nombre del fabricante. Quiero solo los productos que tengan fabricante en la BBDD.
+6.-Mostrar los nombre del fabricante y sus productos siempre que el fabricante tenga una "a" en el nombre.
+7.-Obtener todos los productos y sus fabricantes, ordenados por el nombre del fabricante de forma descendente.
+8.-Mostrar el nombre del producto, su precio y el nombre del fabricante.
+
+-- Extra:
+9.-Mostrar el nombre de los fabricantes junto con el precio promedio de sus productos, ordenados de mayor a menor precio promedio
+10.-Mostrar el nombre de los fabricantes que tienen al menos un producto cuyo precio es más alto que el precio promedio de todos los productos vendidos por ese fabricante.

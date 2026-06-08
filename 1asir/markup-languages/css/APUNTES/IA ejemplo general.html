@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo Completo de CSS</title>
+    <style>
+        /* === Propiedades de Fuente === */
+        .fuente-ejemplo {
+            font-family: Tahoma, "Times New Roman", Arial; /* Define la familia de la fuente */
+            font-size: 16px; /* Tamaño de la fuente */
+            font-weight: bold; /* Grosor de la fuente */
+            font-style: italic; /* Estilo de la fuente (cursiva) */
+            font-variant: small-caps; /* Texto en versalitas */
+            color: #FF3300; /* Color del texto */
+        }
+
+        /* === Propiedades de Color y Fondo === */
+        .fondo-ejemplo {
+            background-color: #BBBB8B; /* Color de fondo */
+            background-image: url('img/fondo.gif'); /* Imagen de fondo */
+            background-repeat: no-repeat; /* No repetir la imagen de fondo */
+            background-position: center; /* Posición de la imagen de fondo */
+            background-attachment: fixed; /* Fondo fijo al hacer scroll */
+        }
+
+        /* === Propiedades del Texto === */
+        .texto-ejemplo {
+            text-align: justify; /* Alineación horizontal del texto */
+            text-decoration: underline; /* Subrayado del texto */
+            text-transform: capitalize; /* Convertir la primera letra de cada palabra en mayúscula */
+            line-height: 150%; /* Interlineado del texto */
+            letter-spacing: 0.5em; /* Espacio entre letras */
+            word-spacing: 0.5em; /* Espacio entre palabras */
+            text-indent: 10px; /* Tabulación de la primera línea */
+        }
+
+        /* === Propiedades de Márgenes y Relleno === */
+        .margenes-relleno-ejemplo {
+            margin: 10px 15px; /* Márgenes: arriba/abajo 10px, izquierda/derecha 15px */
+            padding: 10px; /* Relleno de 10px en todos los lados */
+        }
+
+        /* === Propiedades de Bordes === */
+        .bordes-ejemplo {
+            border: 1px solid #FF3300; /* Borde sólido de 1px de grosor */
+            border-radius: 10px; /* Bordes redondeados */
+            border-image: url('img/borde.png') 30 round; /* Borde con imagen */
+        }
+
+        /* === Propiedades de Posicionamiento === */
+        .posicionamiento-ejemplo {
+            position: relative; /* Posicionamiento relativo */
+            top: -10px; /* Mover 10px hacia arriba */
+            left: 30px; /* Mover 30px a la derecha */
+            z-index: 2; /* Orden de apilamiento */
+            overflow: scroll; /* Scroll si el contenido desborda */
+        }
+
+        /* === Propiedades de Listas === */
+        .lista-ejemplo {
+            list-style-type: square; /* Viñetas cuadradas */
+            list-style-image: url('img/encabezado.gif'); /* Imagen como viñeta */
+            list-style-position: inside; /* Viñetas dentro del contenido */
+        }
+
+        /* === Transformaciones y Animaciones === */
+        .transformacion-ejemplo {
+            transform: rotate(45deg); /* Rotar 45 grados */
+            animation: mover 2s ease-in-out infinite; /* Animación */
+        }
+
+        @keyframes mover {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(100px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* === Transiciones === */
+        .transicion-ejemplo {
+            transition: background-color 0.5s ease; /* Transición suave del color de fondo */
+        }
+        .transicion-ejemplo:hover {
+            background-color: #00FF00; /* Cambia el color de fondo al pasar el mouse */
+        }
+
+        /* === Filtros CSS === */
+        .filtro-ejemplo {
+            filter: grayscale(50%); /* Aplica un filtro de escala de grises */
+        }
+
+        /* === Gradientes === */
+        .gradiente-ejemplo {
+            background: linear-gradient(to right, #FF3300, #00FF00); /* Gradiente lineal */
+        }
+
+        /* === Sombras === */
+        .sombra-ejemplo {
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Sombra de caja */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombra de texto */
+        }
+
+        /* === Media Queries === */
+        @media screen and (max-width: 600px) {
+            .responsive-ejemplo {
+                font-size: 14px; /* Cambia el tamaño de la fuente en pantallas pequeñas */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fuente-ejemplo">
+        <h1>Ejemplo de Propiedades de Fuente</h1>
+        <p>Este es un ejemplo de cómo aplicar diferentes propiedades de fuente en CSS.</p>
+    </div>
+
+    <div class="fondo-ejemplo">
+        <h2>Ejemplo de Propiedades de Fondo</h2>
+        <p>Este es un ejemplo de cómo aplicar diferentes propiedades de fondo en CSS.</p>
+    </div>
+
+    <div class="texto-ejemplo">
+        <h2>Ejemplo de Propiedades de Texto</h2>
+        <p>Este es un ejemplo de cómo aplicar diferentes propiedades de texto en CSS.</p>
+    </div>
+
+    <div class="margenes-relleno-ejemplo">
+        <h2>Ejemplo de Márgenes y Relleno</h2>
+        <p>Este es un ejemplo de cómo aplicar márgenes y relleno en CSS.</p>
+    </div>
+
+    <div class="bordes-ejemplo">
+        <h2>Ejemplo de Bordes</h2>
+        <p>Este es un ejemplo de cómo aplicar bordes en CSS.</p>
+    </div>
+
+    <div class="posicionamiento-ejemplo">
+        <h2>Ejemplo de Posicionamiento</h2>
+        <p>Este es un ejemplo de cómo posicionar elementos en CSS.</p>
+    </div>
+
+    <ul class="lista-ejemplo">
+        <li>Elemento 1</li>
+        <li>Elemento 2</li>
+        <li>Elemento 3</li>
+    </ul>
+
+    <div class="transformacion-ejemplo">
+        <h2>Ejemplo de Transformación y Animación</h2>
+        <p>Este es un ejemplo de cómo aplicar transformaciones y animaciones en CSS.</p>
+    </div>
+
+    <div class="transicion-ejemplo">
+        <h2>Ejemplo de Transición</h2>
+        <p>Este es un ejemplo de cómo aplicar transiciones en CSS.</p>
+    </div>
+
+    <div class="filtro-ejemplo">
+        <h2>Ejemplo de Filtros CSS</h2>
+        <p>Este es un ejemplo de cómo aplicar filtros en CSS.</p>
+    </div>
+
+    <div class="gradiente-ejemplo">
+        <h2>Ejemplo de Gradientes</h2>
+        <p>Este es un ejemplo de cómo aplicar gradientes en CSS.</p>
+    </div>
+
+    <div class="sombra-ejemplo">
+        <h2>Ejemplo de Sombras</h2>
+        <p>Este es un ejemplo de cómo aplicar sombras en CSS.</p>
+    </div>
+
+    <div class="responsive-ejemplo">
+        <h2>Ejemplo de Media Queries</h2>
+        <p>Este es un ejemplo de cómo aplicar media queries en CSS.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+!ether-channel eagp active
+! CORE - S. capa 3
+en
+conf t
+h CORE
+interface range g1/0/1-2
+channel-group 1 mode active
+interface range g1/0/3-4
+channel-group 2 mode active
+interface range g1/0/5-6
+channel-group 3 mode active
+
+! S0 - S. capa 2
+en
+conf t
+h S0
+interface range g1/0/1-2
+channel-group 1 mode active
+interface range fa0/22-24
+channel-group 2 mode active
+
+! S2 - S. capa 2
+en
+conf t
+h S2
+interface range g1/0/1-2
+channel-group 1 mode active
+interface range fa0/22-24
+channel-group 2 mode active
+interface range fa0/19-21
+channel-group 3 mode active
+
+! S1 - S. capa 2
+en
+conf t
+h S2
+interface range g1/0/1-2
+channel-group 1 mode active
+interface range fa0/22-24
+channel-group 2 mode active
+
+! CORE 
+spanning tree vlan 1 root primary
+! Para convertir a CORE en puente raiz

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORDER</title>
+<!-- Factor de expansión de laos elementos flexibles: flex-shrink
+La propiedad flex-shrink, que toma valores enteros, indica la proporción en que se esterachan
+los elementos cuando su contenido no cabe en el espacio disponible en la dirección principal.
+Si todos los elementos toman el mismo valor, el espacio se reparte a partes iguales.
+-->
+<style>
+    div{display: flex;}
+    p{
+        flex-shrink: 2;
+
+        background-color: rgba(137, 43, 226, 0.322);
+        border: black 1px solid; 
+        margin: 2px; 
+        border-radius: 15px; 
+        box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.375); 
+        padding: 5px;
+    }
+    p.menor{flex-shrink: 1;}
+    p.mayor{flex-shrink: 4;}
+</style>
+</head>
+<body>
+<div>
+    <p>primer parrafo</p>
+    <p>segundo parrafo</p>
+    <p class="mayor">tercer parrafo tercer parrafo tercer parrafo tercer parrafo</p>
+    <p class="menor">cuarto parrafo</p>
+</div>
+<div>
+    <p>primer parrafo</p>
+    <p>segundo parrafo</p>
+    <p>tercer parrafo</p>
+    <p>cuarto parrafo</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurador de Tema</title>
+    <style>
+        body{
+            margin: auto;
+            display: block; 
+            text-align: center;
+            justify-content: center;
+            font-family: Arial, Helvetica, sans-serif;
+            max-width: 500px;
+            
+        }
+        form{
+            margin: 0 100px;
+            border: 2px black solid;
+            padding: 15px;
+            max-width: auto;
+            box-shadow: 10px 20px 30px black;
+            border-radius: 15px;
+            text-align: left;
+        }
+        h1{
+            text-shadow: 1px 1px 5px rgb(54, 104, 127);
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <script type="text/javascript">
+        function tema_color(){
+            var texto_nombre = document.formulario.nombre.value;
+            var indice = document.formulario.tema.selectedIndex;
+            var tema_predefinido = document.formulario.tema.options[indice].value;
+            if(texto_nombre == ''){
+                alert('Introduce un nombre')
+            }else if(tema_predefinido == 'Claro'){
+                document.write('<br><center><h1 style: style="text-shadow: 2px 2px 3px #aeaeae; font-family: Arial, Helvetica, sans-serif;">'+texto_nombre+'</h1></center>');
+                document.body.style.backgroundColor = '#ffffff'
+                document.body.style.color = '#000000'
+            }else if(tema_predefinido == 'Oscuro' && document.formulario.modo_oscuro.checked){
+                document.write('<br><center><h1 style: style="text-shadow: 2px 2px 2px #000000; font-family: Arial, Helvetica, sans-serif;">'+texto_nombre+'</h1></center>');
+                document.body.style.backgroundColor = '#212121';
+                document.body.style.color = '#aeaeae';
+            }else if(tema_predefinido == 'Oscuro'){
+                document.write('<br><center><h1 style: style="text-shadow: 2px 2px 3px #000000; font-family: Arial, Helvetica, sans-serif;">'+texto_nombre+'</h1></center>');
+                document.body.style.backgroundColor = '#3d3d3d';
+                document.body.style.color = '#ffffff';
+            }
+        }
+    </script>
+
+    <h1>Configurador de Tema Personalizado</h1>
+    <form name="formulario">
+        <label for="name">Nombre:</label>
+        <input type="text" name="nombre" required><br><br>
+
+        <label for="theme">Tema:</label>
+        <select name="tema">
+            <option value="">Selecciona un tema</option>
+            <option value="Claro">Claro</option>
+            <option value="Oscuro">Oscuro</option>
+        </select><br><br>
+
+        <label>
+            <input name="modo_oscuro" type="checkbox"> Modo Nocturno Adicional
+        </label><br><br>
+
+        <button type="button" onclick="tema_color()">Aplicar Tema</button>
+    </form>
+
+    
+</body>
+</html>

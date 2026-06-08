@@ -1,0 +1,74 @@
+! R1
+interface g0/0/0
+ip address 192.168.0.1 255.255.255.0
+no shutdown
+
+interface g0/0/1
+ip address 192.168.255.1 255.255.255.252
+no shutdown
+
+interface g0/0/2
+ip address 192.168.255.5 255.255.255.252
+no shutdown
+
+! R2
+interface g0/0/0
+ip address 192.168.255.9 255.255.255.252
+no shutdown
+
+interface g0/0/1
+ip address 192.168.255.2 255.255.255.252
+no shutdown
+
+interface g0/0/2
+ip address 192.168.0.1 255.255.255.0
+no shutdown
+
+! R3
+interface g0/0/0
+ip address 192.168.255.10 255.255.255.252
+no shutdown
+
+interface g0/0/1
+ip address 192.168.0.1 255.255.255.0
+no shutdown
+
+interface g0/0/2
+ip address 192.168.255.6 255.255.255.252
+no shutdown
+
+en
+conf t
+hostname R1
+router ospf 10
+network 192.168.0.0 0.0.0.255 area 0
+network 192.168.255.0 0.0.0.3 area 0
+network 192.168.255.4 0.0.0.3 area 0
+passive-interface g0/0/0
+
+en
+conf t
+hostname R2
+router ospf 20
+network 192.168.1.0 0.0.0.255 area 0
+network 192.168.255.0 0.0.0.3 area 0
+network 192.168.255.8 0.0.0.3 area 0
+passive-interface g0/0/2
+
+en
+conf t
+hostname R3
+router ospf 10
+network 192.168.2.0 0.0.0.255 area 0
+network 192.168.255.4 0.0.0.3 aea 0
+network 192.168.255.8 0.0.0.3 area 0
+passive-interface g0/0/1
+
+clear ip ospf process 
+
+
+show ip route
+show ip ospf neighbor
+show ip ospf interface
+
+

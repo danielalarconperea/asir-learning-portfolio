@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<script type="text/javascript">
+
+function nota_media() {
+    var i, nota, suma = 0; // Inicializar la suma de notas
+
+    for (i = 0; i < 6; i++) {
+        nota = parseFloat(prompt('Introduce una nota'));
+        suma += nota; // Sumar la nota ingresada a la suma total
+    }
+    var media = suma / i; // Calcular la media fuera del bucle
+    document.write('Tu media es: ' + media);
+}
+
+nota_media();
+
+</script>
+</body>
+</html>

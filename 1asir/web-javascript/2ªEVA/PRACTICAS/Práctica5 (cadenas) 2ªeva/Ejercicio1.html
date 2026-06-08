@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejercicio1</title>
+</head>
+<body>
+<script type="text/javascript">
+
+var cadena = 'hola o aloh', textoinvertido='';
+
+for(i = 0; i< cadena.length; i++){
+    textoinvertido += cadena[cadena.length-i-1];
+}
+if(cadena == textoinvertido){
+    document.write('La cadena: '+cadena+', es un palíndromo')
+}else{
+    document.write('La cadena: '+cadena+', no es un palíndromo')
+}
+
+</script>
+<!-- Verificar si una cadena es un palíndromo
+Escribe un programa que determine si una cadena es un palíndromo (se lee igual de izquierda a derecha que de derecha a izquierda). -->
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reserva de Hotel</title>
+</head>
+<body>
+  <h1>Reserva de Habitación</h1>
+  <form>
+    <label for="entrada">Fecha de entrada:</label>
+    <input type="date" id="entrada"><br><br>
+
+    <label for="salida">Fecha de salida:</label>
+    <input type="date" id="salida"><br><br>
+
+    <label for="personas">Personas (1-4):</label>
+    <input type="number" id="personas" min="1" max="4"><br><br>
+
+    <label for="habitacion">Tipo de habitación:</label>
+    <select id="habitacion">
+      <option value="">Seleccione...</option>
+      <option value="individual">Individual</option>
+      <option value="doble">Doble</option>
+      <option value="suite">Suite</option>
+    </select><br><br>
+
+    <button type="button" onclick="validarReserva()">Reservar</button>
+  </form>
+  <p id="mensaje"></p>
+  <script>
+    function validarReserva(){
+        var fecha_entrada = document.getElementById('entrada');
+        var fecha_salida = document.getElementById('salida');
+        var personas = document.getElementById('personas');
+        var habitacion = document.getElementById('habitacion');
+        var mensaje = document.getElementById('mensaje');
+        var error = '';
+        var validarFormulario = true;
+
+        if(fecha_entrada.value == '' || fecha_salida.value== ''){
+          error += 'Rellena los campos fechas<br>';
+          validarFormulario = false;
+        }else if(fecha_salida.value < fecha_entrada.value){
+          error += 'La fecha de salida no puede ser anterior a la de entrada<br>';
+          validarFormulario = false;
+        }
+        if(personas.value < 1 || personas.value > 4){
+          error += 'El número de personas debe estar entre 1 y 4<br>';
+          validarFormulario = false;
+        }
+        if(habitacion.value == ''){ // o habitacion[0].selected
+          error += 'Seleccione el tipo de habitación<br>';
+          validarFormulario = false;
+        }else if(fecha_salida.value < fecha_entrada.value){
+          error += 'La fecha de salida no puede ser anterior a la de entrada<br>';
+          validarFormulario = false;
+        }
+        if(validarFormulario){
+          mensaje.innerHTML = 'el formulario se ha enviado correctamente';
+          mensaje.style.color = 'green';
+        }else{
+          mensaje.innerHTML = error;
+          mensaje.style.color = 'red';
+        }
+        
+    }
+  </script>
+</body>
+</html>
+<!-- 
+Ejercicio 1: Formulario de reserva de Habitación de hotel
+
+En este formulario encontraremos 4 campos:
+    Fecha de entrada (input type="date")
+    Fecha de salida (input type="date")
+    Número de personas (input type="number")
+    Tipo de habitación (select (menú desplegable) con 3 tipos de habitación)
+
+Parámetros a controlar:
+
+    La fecha de salida no puede ser anterior a la de entrada. Es decir, si entro el 02/04/2025 no puedo salir el 01/04/2025.
+    El número de personas debe estar entre 1 y 4.
+    Se debe seleccionar como mínimo un tipo de habitación.
+    Para cada error mostrar un mensaje de advertencia indicando lo que está mal.
+    Si todo está bien, indicar que el formulario se ha enviado correctamente con un mensaje. 
+-->

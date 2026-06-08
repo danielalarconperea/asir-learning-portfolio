@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+</head>
+
+<body>
+<p>esta página contiene el primer javascript</p>
+
+<script type="text/javascript">
+
+//alert("buenas noches Juan Alberto");
+
+//skfasdlkñfjasñdjfklasñd
+
+var numero, sum, nombre;
+numero = 46;
+sum = numero + 4;
+nombre = 'DAJA';
+
+/*
+Esto es un comentario
+de varias líneas.
+
+let helado = "chocolate";
+if (helado === "chocolate") {
+  alert("¡Sí, amo el helado de chocolate!");
+} else {
+  alert("Awwww, pero mi favorito es el de chocolate...");
+}
+*/
+
+document.write(numero);
+document.write('<br>');
+document.write(sum);
+document.write('<br>');
+document.write(nombre);
+document.write('<br>');
+
+
+function suma(num1, num2) {
+  let resultado = num1 + num2;
+  //document.write(resultado);
+  return resultado;
+}
+document.write(suma(4, 7));
+
+document.write('<br>');
+
+function resta(num1, num2) {
+  let resultado = num1 - num2;
+  //document.write(resultado);
+  return resultado;
+}
+document.write(resta(4, 7));
+
+document.write('<br>');
+
+function multiplica(num1, num2) {
+  let resultado = num1 * num2;
+  //document.write(resultado);
+  return resultado;
+}
+document.write(multiplica(4, 7));
+
+document.write('<br>');
+
+function division(num1, num2) {
+  let resultado = num1 / num2;
+  //document.write(resultado);
+  return resultado;
+}
+document.write(division(4, 7));
+
+
+document.write('<br>');
+
+document.write('el área del cuadrado es: ' + multiplica(10, 10));
+
+document.write('<br>');
+
+document.write('el perímetro del cuadrado es: ' + multiplica(4, 10));
+
+document.write('<br>');
+
+var a,b,c,d,e,f;
+
+f=prompt("dime un número f");
+e=prompt("dime otro número e");
+
+f=parseInt(f);
+e=parseInt(e);
+
+a=e+f;
+b=e-f;
+c=e*f;
+d=e/f;
+
+a=document.write("la suma es " +a+"<br>");
+b=document.write("la resta es "+b+"<br>");
+c=document.write("la multiplicación es "+c+"<br>");
+d=document.write("la división es "+d+"<br>");
+
+
+</script>
+
+
+</body></html>

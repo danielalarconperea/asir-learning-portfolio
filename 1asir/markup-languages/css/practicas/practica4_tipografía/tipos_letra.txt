@@ -1,0 +1,4 @@
+tipo1:arial
+tipo2:sans-serif
+tipo3:monospace
+tipo4:cursive

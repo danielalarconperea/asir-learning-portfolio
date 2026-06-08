@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORDER</title>
+<!-- Factor de expansión de laos elementos flexibles: flex-grow
+La propiedad flex-grow hace que los elementos crezcan hasta ocupar todo el espacio disponible en la dirección principal.
+La propiedad flex-grow toma valores enteros que indican la proporción en que se reparte el espacio.
+Si todos los elementos toman el mismo valor, el espacio se reparte a partes iguales.
+-->
+<style>
+    div{display: flex;}
+    p{
+        flex-grow: 2;
+
+        background-color: rgba(137, 43, 226, 0.322);
+        border: black 1px solid; 
+        margin: 2px; 
+        border-radius: 15px; 
+        box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.375); 
+        padding: 5px;
+    }
+    p.menor{flex-grow: 1;}
+    p.mayor{flex-grow: 4;}
+</style>
+</head>
+<body>
+<div>
+    <p>primer parrafo</p>
+    <p>segundo parrafo</p>
+    <p class="mayor">tercer parrafo tercer parrafo tercer parrafo tercer parrafo</p>
+    <p class="menor">cuarto parrafo</p>
+</div>
+<div>
+    <p>primer parrafo</p>
+    <p>segundo parrafo</p>
+    <p>tercer parrafo</p>
+    <p>cuarto parrafo</p>
+</div>
+</body>
+</html>

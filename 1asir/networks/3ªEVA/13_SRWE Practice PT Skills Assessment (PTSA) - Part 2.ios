@@ -1,0 +1,367 @@
+De acuerdo, aquí tienes los apuntes en español, manteniendo los términos de redes que se entienden mejor en inglés:
+
+```text
+! ############################################################
+! #############      CONFIGURACIÓN S1-1      #############
+! ############################################################
+enable
+configure terminal
+hostname S1-1
+
+! Parte 1: Configurar Seguridad del Switch
+! (Configuración básica como enable secret, console, vty, ssh omitida en el script de la práctica, añadir si es necesario)
+
+! Paso 1: Configurar VLANs
+! a. Configurar VLAN 10 con nombre users.
+! b. Configurar VLAN 999 con nombre unused.
+vlan 10
+ name users
+vlan 999
+ name unused
+exit
+
+! Paso 2: Configurar puertos de switch activos.
+! a. Configurar FastEthernet 0/1 a 0/5 y GigabitEthernet 0/1 como puertos de acceso estático en la VLAN 10.
+interface range f0/1-5, g0/1
+ switchport mode access
+ switchport access vlan 10
+
+! b. Activar port security en los puertos.
+!    Configurar los puertos activos para aceptar un máximo de 4 MAC addresses.
+!    Si ocurre una violación, configurar los puertos para descartar tramas de la MAC address no autorizada, registrarlo y enviar una alerta (acción 'restrict').
+!    Las MAC addresses deben permanecer en la tabla de MAC address por un máximo de 10 minutos antes de ser eliminadas.
+!    Los puertos deben añadir las MAC addresses aprendidas a la running configuration (mediante 'sticky').
+interface range f0/1-5
+ switchport port-security
+ switchport port-security maximum 4
+ switchport port-security violation restrict
+ switchport port-security aging time 10
+ switchport port-security mac-address sticky
+exit
+
+!    Configurar la MAC address de PC-A como una dirección estática en el puerto FastEthernet0/1.
+interface f0/1
+ switchport port-security mac-address 00D0.D3DC.2825
+exit
+
+! c. Proteger contra DHCP snooping.
+!    Nota: En esta red simulada, DHCP snooping podría no operar correctamente en Packet Tracer. Configúralo como lo harías normalmente. Recibirás crédito completo por una configuración que cumpla los requisitos siguientes.
+!    Activar DHCP snooping globalmente.
+ip dhcp snooping
+!    Activar DHCP snooping para las dos VLANs que configuraste.
+ip dhcp snooping vlan 10,999
+!    Configurar los puertos para limitar la tasa a 5 paquetes DHCP por segundo.
+interface range f0/1-5, g0/1
+ ip dhcp snooping limit rate 5
+exit
+!    Configurar el puerto que enlaza al router como trusted (de confianza).
+interface g0/1
+ ip dhcp snooping trust
+exit
+
+! d. Proteger contra ataques ARP implementando Dynamic ARP Inspection (DAI).
+!    Activar DAI globalmente. (Nota: El script activa DAI por VLAN)
+!    Activar DAI en las dos VLANs.
+ip arp inspection vlan 10,999
+!    Configurar el puerto que enlaza al router como trusted (de confianza).
+interface g0/1
+ ip arp inspection trust
+exit
+
+! e. Mitigar ataques STP configurando BPDUguard y PortFast en los puertos activos.
+interface range f0/1-5
+ spanning-tree portfast
+ spanning-tree bpduguard enable
+! (Se asume salir del modo de configuración de rango de interface si es necesario antes del siguiente bloque)
+
+! Paso 3: Asegurar puertos de switch no utilizados.
+! a. Mover todos los puertos de switch no utilizados a la VLAN 999.
+! b. Configurar todos los puertos de switch no utilizados como puertos de acceso estático.
+! c. Desactivar todos los puertos de switch no utilizados.
+interface range f0/6-24, g0/2
+ switchport mode access
+ switchport access vlan 999
+ shutdown
+exit
+
+! ############################################################
+! #############   CONFIGURACIÓN Branch-101   #############
+! ############################################################
+enable
+configure terminal
+hostname Branch-101
+
+! (Configuración básica como enable secret, console, vty, ssh omitida en el script de la práctica, añadir si es necesario)
+
+! Parte 2: Configurar Direccionamiento y DHCP
+! Paso 1: Configurar y direccionar una subinterface para la red de usuarios WLAN.
+! a. Configurar la subinterface 10 en la interface del router que está conectada al switch S4-1.
+! b. El router debe proveer enrutamiento router-on-a-stick para la VLAN 10.
+! c. Configurar la subinterface con la dirección de la Tabla de Direccionamiento.
+interface g0/0/0.10
+ description WLAN users
+ encapsulation dot1q 10
+ ip address 192.168.10.1 255.255.255.0
+exit
+
+! Paso 2: Configurar un DHCP pool para la red de usuarios WLAN.
+! a. Excluir la IP address de la interface del router y la IP address de administración del WLC.
+ip dhcp excluded-address 192.168.10.1
+ip dhcp excluded-address 192.168.10.254
+! b. Configurar un DHCP pool que será utilizado por los hosts que se conectan a la WLAN.
+!    Nombrar el pool WLAN-hosts.
+!    Configurar el pool para usar direcciones en la red 192.168.10.0/24.
+!    El pool también debe proveer las direcciones del default gateway y del DNS server.
+ip dhcp pool WLAN-hosts
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ dns-server 198.51.100.163
+exit
+
+! Paso 3: Configurar una interface como cliente DHCP.
+! En Branch-101, configurar la interface que está conectada al ISP Router para recibir su dirección mediante DHCP.
+interface g0/0/1
+ ip address dhcp
+! (El script original tenía un 'exit' aquí, luego un 'end', y después reingresaba a 'config'. Se consolida.)
+! exit
+
+! Parte 3: Configurar Rutas Estáticas
+! Paso 2: Configurar rutas estáticas en Branch-101.
+! Branch-101 también debe ser configurado con rutas estáticas hacia las otras tres redes en la red de Netacad PLC.
+! Requerirá default routes y floating static routes en IPv4 e IPv6 siguiendo las mismas directrices que se usaron para las rutas estáticas de Central.
+! Las rutas IPv6 usan argumentos de dirección de next-hop.
+! Las rutas IPv4 usan argumentos de exit interface (interfaz de salida).
+! Todas las rutas deben preferir los enlaces Ethernet sobre el enlace serial.
+! Las floating routes de respaldo usan una distancia administrativa de 10.
+
+! a. Configurar default routes IPv4 hacia la nube usando el enlace Ethernet como el enlace preferido y el enlace serial como respaldo.
+!    Nota: Para el propósito de esta evaluación, por favor ingresa las rutas estáticas IPv4 en el siguiente orden:
+!    1) Default route IPv4
+!    2) Floating default route IPv4
+ip route 0.0.0.0 0.0.0.0 g0/0/1
+ip route 0.0.0.0 0.0.0.0 s0/1/0 10
+
+! b. Asegurar que el dispositivo está configurado para enrutar IPv6.
+ipv6 unicast-routing
+
+! c. Configurar default routes IPv6 hacia la nube. Usar el enlace Ethernet como la ruta primaria y el enlace serial como respaldo.
+!    Usar una distancia administrativa de 10 para la ruta de respaldo. Estas rutas deben especificar la IP address de la interface del next-hop.
+!    Nota: Para el propósito de esta evaluación, por favor ingresa las rutas estáticas IPv6 en el siguiente orden:
+!    1) Default route IPv6
+!    2) Floating default route IPv6
+ipv6 route ::/0 2001:DB8:ACAD:C::1
+ipv6 route ::/0 2001:DB8:ACAD:B::1 10
+exit
+
+! ############################################################
+! #############    CONFIGURACIÓN Central     #############
+! ############################################################
+enable
+configure terminal
+hostname Central
+
+! (Configuración básica como enable secret, console, vty, ssh omitida en el script de la práctica, añadir si es necesario)
+
+! Parte 3: Configurar Rutas Estáticas
+! Paso 1: Configurar rutas estáticas en Central.
+! a. Configurar default routes IPv4 hacia la nube usando el enlace Ethernet como el enlace preferido y el enlace serial como floating backup.
+!    Usar una distancia administrativa de 10 para la ruta de respaldo. Estas rutas deben ser configuradas como rutas directamente conectadas.
+!    Nota: Las interfaces Ethernet mostrarán una advertencia cuando se configuren sin una IP address de next-hop. En esta configuración, la interface es punto-a-punto, así que la advertencia puede ser ignorada.
+ip route 0.0.0.0 0.0.0.0 g0/0/2
+ip route 0.0.0.0 0.0.0.0 s0/1/0 10
+
+! b. Configurar rutas estáticas IPv4 hacia la red de usuarios WLAN de la Sede Remota (Remote Branch LAN) siguiendo las mismas directrices anteriores para el tipo de ruta y la distancia administrativa.
+ip route 192.168.10.0 255.255.255.0 g0/0/2
+ip route 192.168.10.0 255.255.255.0 s0/1/0 10
+
+! c. Configurar una host route IPv4 en Central hacia el Server-O1 en la LAN de la Oficina Remota. Crear una ruta directamente conectada.
+ip route 192.168.3.122 255.255.255.255 s0/1/1
+
+!    Nota: Para el propósito de esta evaluación, por favor ingresa las rutas estáticas IPv4 en el siguiente orden:
+!    1) Default route IPv4
+!    2) Floating default route IPv4
+!    3) Host route IPv4
+!    4) Ruta estática IPv4 a la Remote Branch LAN
+!    5) Floating static route IPv4 a la Remote Branch LAN
+!    (El script sigue un orden ligeramente diferente para el punto 3 y 4/5)
+
+! d. Asegurar que el dispositivo está configurado para enrutar IPv6.
+ipv6 unicast-routing
+
+! e. Configurar default routes IPv6 hacia la nube. Usar el enlace Ethernet como la ruta primaria y el enlace serial como el floating backup.
+!    Usar una distancia administrativa de 10 para la ruta de respaldo. Estas rutas deben especificar la IP address de la interface del next-hop.
+ipv6 route ::/0 2001:DB8:ACAD:A::2
+ipv6 route ::/0 2001:db8:acad:b::2 10
+
+! f. Configurar una host route IPv6 en Central hacia el Server-O1 en la LAN de la Oficina Remota. Debe ser una ruta de next-hop.
+ipv6 route 2001:db8:acad:3::122/128 2001:db8:acad:d::2
+
+!    Nota: Para el propósito de esta evaluación, por favor ingresa las rutas estáticas IPv6 en el siguiente orden:
+!    1) Default route IPv6
+!    2) Floating default route IPv6
+!    3) Host route IPv6
+exit
+
+! ############################################################
+! #############    CONFIGURACIÓN WLC-10      #############
+! ############################################################
+! Parte 4: Configurar una Wireless LAN usando un Wireless LAN Controller (WLC)
+! Usuario/contraseña: admin/admin. Conectar al WLC vía HTTPS: https://192.168.100.254
+
+! Paso 1: Configurar una interface VLAN.
+! a. Crear una nueva interface y nombrarla WLAN 10. La interface debe usar la VLAN 10 y el puerto físico 1.
+!    GUI: CONTROLLER > Interfaces > New...
+!         Nombre de Interface: WLAN 10
+!         VLAN ID: 10
+!         Hacer clic en Apply.
+! b. Usar la información en la tabla de direccionamiento para configurar los ajustes de direccionamiento para la interface.
+!    GUI: WLAN 10 > Edit
+!         Número de Puerto: 1
+!         Identificador de VLAN: 10 (ya configurado)
+!         IP Address: 192.168.10.254
+!         Netmask: 255.255.255.0
+!         Gateway: 192.168.10.1
+!         Primary DHCP Server: 192.168.10.1
+!         Hacer clic en Apply.
+
+! Paso 2: Configurar un RADIUS server.
+! a. Configurar el WLC con la IPv4 address del RADIUS server.
+! b. Usar un shared secret (secreto compartido) de RADsecret.
+!    GUI: SECURITY > AAA > RADIUS > Authentication > New...
+!         Server IP Address: 172.16.1.100
+!         Shared Secret Format: ASCII
+!         Shared Secret: RADsecret
+!         Confirm Shared Secret: RADsecret
+!         Key Wrap: Desmarcado (o según necesidad)
+!         Número de Puerto: 1812 (predeterminado)
+!         Estado del Servidor: Enabled (Habilitado)
+!         Soporte para CoA: Disabled (Deshabilitado) (o según necesidad)
+!         Network User: Marcado (predeterminado)
+!         Management: Desmarcado (o según necesidad)
+!         Hacer clic en Apply.
+
+! Paso 3: Configurar una Wireless LAN.
+! a. Crear una nueva WLAN. Nombrarla WLAN 10 y configurar el SSID como SSID-10.
+!    GUI: WLANS > Create New > Go
+!         Nombre de Perfil: WLAN 10
+!         SSID: SSID-10
+!         ID: (seleccionar uno disponible, ej. 1 si es la primera)
+!         Hacer clic en Apply.
+! b. La wireless LAN debe usar la interface VLAN que fue configurada previamente.
+!    GUI: WLANS > Edit 'WLAN 10' (o el ID que corresponda)
+!         Interface/Interface Group (G): WLAN 10 (seleccionar de la lista)
+! c. Configurar la WLAN para usar la política de seguridad WPA2 y 802.1X (dot1x) para Authentication Key Management.
+!    GUI: WLANS > Edit 'WLAN 10' > Security Tab
+!         Layer 2 > Layer 2 Security: WPA+WPA2
+!         WPA2 Parameters > WPA2 Policy: Marcado
+!                         AES: Marcado
+!         Authentication Key Management > 802.1X: Marcado
+! d. Configurar la WLAN para usar el RADIUS server que fue configurado previamente para autenticar usuarios wireless.
+!    GUI: WLANS > Edit 'WLAN 10' > Security Tab > AAA Servers
+!         Authentication Servers: Enabled (Habilitado)
+!         Server 1: 172.16.1.100 (seleccionar el RADIUS server configurado)
+! e. Abrir la pestaña Advanced y desplazarse hacia abajo a las secciones de FlexConnect. Activar FlexConnect Local Switching y FlexConnect Local Auth.
+!    GUI: WLANS > Edit 'WLAN 10' > Advanced Tab
+!         FlexConnect > FlexConnect Local Switching: Marcado
+!         FlexConnect > FlexConnect Local Auth: Marcado
+!         Hacer clic en Apply.
+! f. Verificar que la WLAN está configurada y operativa.
+!    GUI: WLANS > Status: Enabled (asegurarse que está marcada la casilla "Enabled" (Habilitado) para la WLAN)
+!         Hacer clic en Apply si se cambia.
+
+! Paso 4: Configurar un DHCP scope para la red de administración.
+! Configurar un nuevo DHCP scope para ser usado por los LAPs (Lightweight Access Points) y otros dispositivos de administración en la red.
+! a. Nombrar el DHCP scope Wired_Admin.
+!    GUI: CONTROLLER > Internal DHCP Server > DHCP Scope > New...
+!         Nombre del Scope: Wired_Admin
+!         Hacer clic en Apply.
+! b. Iniciar el scope en la dirección 192.168.100.240. Terminar el scope en la dirección 192.168.100.249.
+!    GUI: DHCP Scope > Edit 'Wired_Admin'
+!         Dirección de Inicio del Pool: 192.168.100.240
+!         Dirección de Fin del Pool: 192.168.100.249
+!         Network: 192.168.100.0
+!         Netmask: 255.255.255.0
+!         Default Routers: 192.168.100.1 (IP de G0/0/0.100 en Branch-101)
+!         DNS Servers: (Según tabla de direccionamiento, ej. 198.51.100.163)
+!         Estado: Enabled (Habilitado)
+!         Hacer clic en Apply.
+! c. Otra información requerida se puede encontrar en la Tabla de Direccionamiento.
+
+! Paso 5: Configurar un SNMP server.
+! Configurar un SNMP server para recibir traps desde el WLC.
+! a. Usar el nombre de comunidad branch-wireless.
+! b. Usar 172.16.1.100 como la dirección del servidor.
+!    GUI: MANAGEMENT > SNMP > SNMP Trap Receivers > New...
+!         Nombre de Comunidad: branch-wireless
+!         IP Address: 172.16.1.100
+!         Estado: Enable (Habilitar)
+!         Hacer clic en Apply.
+
+! ############################################################
+! #############  CONFIGURACIÓN Wireless Host   #############
+! ############################################################
+! Parte 4:
+! Paso 6: Configurar el host wireless.
+! Configurar el Laptop (o Host Wireless) para conectarse a la WLAN.
+! a. Crear un nuevo perfil wireless en el host. Usar el nombre work net para el perfil.
+!    En el Wireless Host Laptop: Desktop > PC Wireless
+!    Pestaña Profiles > New
+!    Nombre de Perfil: work net
+!    Hacer clic en OK.
+! b. Configurar el perfil para el SSID de la WLAN.
+!    Seleccionar perfil 'work net' > Advanced Setup
+!    Nombre de Red Wireless (SSID): SSID-10
+!    Configuración de Red: DHCP (o según necesidad)
+! c. Usar autenticación enterprise con un nombre de usuario user1 y contraseña user1Pass.
+!    Pestaña Security:
+!    Security: WPA2-Enterprise
+!    Authentication: EAP-FAST (o el método soportado y configurado, la práctica usualmente implica PEAP o EAP-FAST)
+!    Nombre de Usuario (Login name): user1
+!    Contraseña (Password): user1Pass
+!    (Asegurar que los parámetros de EAP como "Validate server certificate" (Validar certificado del servidor) estén desactivados si no se usa un certificado real)
+! d. Cuando hayas terminado, haz clic en Connect to Network (Conectar a la Red). Tomará tiempo establecer la conexión.
+!    Hacer clic en Save.
+!    Pestaña Connect > Seleccionar 'SSID-10' o el perfil 'work net' > Hacer clic en Connect.
+!    (Puede requerir 'Fast Forward Time' (Avance Rápido del Tiempo) en Packet Tracer)
+
+! ############################################################
+! #############      VERIFICACIÓN FINAL      #############
+! ############################################################
+! 1. En PCs/Host Wireless: Verificar que obtienen IP/IPv6, máscara, gateway y DNS.
+! 2. Hacer ping desde PCs/Host Wireless a su gateway.
+! 3. Hacer ping entre PCs en la misma VLAN.
+! 4. Hacer ping entre PCs en diferentes VLANs (prueba de enrutamiento inter-VLAN).
+! 5. Hacer ping desde PC/Host Wireless a IPs en otras redes (ej. Server-O1, Internet Server).
+! 6. Comandos show en S1-1:
+!    show vlan brief
+!    show interfaces status
+!    show port-security interface [interface-id]
+!    show port-security address
+!    show ip dhcp snooping
+!    show ip dhcp snooping binding
+!    show ip arp inspection vlan [vlan-id]
+!    show spanning-tree summary
+!    show spanning-tree interface [interface-id] detail
+! 7. Comandos show en Branch-101 y Central:
+!    show ip interface brief
+!    show ipv6 interface brief
+!    show ip route
+!    show ipv6 route
+!    show ip dhcp pool
+!    show ip dhcp binding
+! 8. En WLC-10 (GUI):
+!    MONITOR > Clients (para ver clientes wireless conectados)
+!    WLANS > Pasar el cursor sobre el icono de la WLAN para ver estadísticas.
+! 9. Hacer ping desde PC/Host Wireless a recursos externos (ej. IP del Internet Server) para probar las default routes.
+
+! ############################################################
+! #############     GUARDAR CONFIGURACIÓN    #############
+! ############################################################
+! En S1-1, Branch-101, Central:
+copy running-config startup-config
+! o
+write memory
+! En WLC-10:
+! Commands (en la esquina superior derecha de la GUI) > Save Configuration (Guardar Configuración)
+! ############################################################
+```

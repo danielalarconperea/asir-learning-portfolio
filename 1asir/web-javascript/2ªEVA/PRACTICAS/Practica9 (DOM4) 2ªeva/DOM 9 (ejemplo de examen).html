@@ -1,0 +1,61 @@
+ <!doctype html>
+
+<html>
+
+<head>
+	<meta charset="UTF-8">
+    <title>JavaScript</title>
+	<style>
+		body{
+			font-family: Arial, Helvetica, sans-serif;
+			padding: 3ex;
+			background-color: rgb(44, 44, 44);
+			color: white;
+			font-size: x-large;
+		}
+		input, select{
+			padding: 5px;
+			font-size: x-large;
+		}
+		button{
+			position: relative;
+			top: -1.3ex;
+			font-size: large;
+		}
+	</style>
+</head>
+
+<body> 
+	<script type="text/javascript">
+	function calcular() { 
+	var num1 = parseFloat(document.calculadora.num1.value);
+	var num2 = parseFloat(document.calculadora.num2.value);
+	posicion=document.calculadora.operacion.selectedIndex;
+	var operacion = document.calculadora.operacion.options[posicion].value;
+	var resultado;
+	
+	switch(operacion) {
+		case "suma": resultado = num1 + num2; break;
+		case "resta": resultado = num1 - num2; break;
+		case "multiplicacion": resultado = num1 * num2; break;
+		case "division": resultado = num1 / num2; break;
+	}
+	alert("El resultado es: "+ resultado);
+
+	}
+	</script>
+	¿Qué operación quieres realizar?<br><br>
+	<form name="calculadora">
+		<input type="number" name="num1">
+		<select name="operacion">
+			<option value="suma">+</option>
+			<option value="resta">-</option>
+			<option value="multiplicacion">*</option>
+			<option value="division">/</option>
+		</select>
+		<input type="number" name="num2">
+		<button type="button" onClick="calcular()">Calcular
+	</form>
+</body>   
+
+</html>

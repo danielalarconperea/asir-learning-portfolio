@@ -1,0 +1,111 @@
+!S1
+en
+conf terminal
+hostname S1
+end
+show interfaces | include Ethernet
+show interface status 
+show interfaces trunk
+
+conf terminal
+interface range f0/21-22
+switchport mode trunk
+end
+
+! Para poder ver si el status esta en trunk
+show interfaces trunk
+
+conf terminal
+interface range f0/21-22
+shutdown
+channel-group 1 mode desirable
+no shutdown
+exit 
+interface port-channel 1
+switchport mode trunk
+end
+
+! Podemos ver que el grupo q tiene el protocolo PAgP
+show etherchannel summary
+
+conf terminal
+interface range g0/1-2
+shutdown
+channel-group 2 mode active
+no shutdown
+exit
+interface port-channel 2
+switchport mode trunk
+end
+
+! Para que trabajen los puertos con  Giga. tenemos que ponerlo como prioridad
+conf terminal
+spanning-tree vlan 1 root primary
+! o 
+! spanning-tree vlan 1 priority 24576 --Al bajarle la prioridad en relación al resto queda como puente principal
+
+
+!S2
+en
+conf terminal
+hostname S2
+end
+show interfaces | include Ethernet
+show interface status 
+show interfaces trunk
+
+conf terminal
+interface range g0/1-2
+shutdown
+channel-group 2 mode active
+no shutdown
+exit
+interface port-channel 2
+switchport mode trunk
+end
+
+! vemos el protocolo
+show etherchannel summary
+
+conf terminal
+interface range f0/23-24
+shutdown
+channel-group 3 mode passive
+no shutdown
+exit
+interface port-channel 3
+switchport mode trunk
+end
+
+
+
+
+!S3
+en
+conf terminal
+hostname S3
+end
+show interfaces | include Ethernet
+show interface status 
+show interfaces trunk
+
+conf terminal
+interface range f0/21-22
+switchport mode trunk
+shutdown
+channel-group 1 mode desirable
+no shutdown
+exit 
+interface port-channel 1
+switchport mode trunk
+
+conf terminal
+interface range f0/23-24
+shutdown
+! active para que se conecte a la pasive
+channel-group 3 mode active
+no shutdown
+exit
+interface port-channel 3
+switchport mode trunk
+end

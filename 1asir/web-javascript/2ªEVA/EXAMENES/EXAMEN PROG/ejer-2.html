@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Verificación de País</title>
+</head>
+<body>
+    <script>
+        function paises(){
+            var seleccion = document.formulario.select1.value;
+
+            if(seleccion === "España"){
+                alert("ha salido españa");
+            }
+            if(seleccion === "Francia"){
+                alert("ha salido francia");
+            }
+            if(seleccion === "Alemania"){
+                var Alemania;
+                alert("ha salido alemania");
+            }
+            if(seleccion === "Italia"){
+                alert("ha salido italia");
+            }
+            
+        }
+    </script>
+    <form name="formulario">
+        <label for="select1">Selecciona un pais:</label>
+        <select name="select1" id="select1">
+            <option value="España">España</option>
+            <option value="Francia">Francia</option>
+            <option value="Alemania">Alemania</option>
+            <option value="Italia">Italia</option>
+        </select>
+        <input type="button" value="Mostrar" onclick="paises()">
+    </form>
+</body>		
+</html>

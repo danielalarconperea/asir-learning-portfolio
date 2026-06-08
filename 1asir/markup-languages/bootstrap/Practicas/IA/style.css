@@ -1,0 +1,131 @@
+/* Estilos personalizados para complementar Bootstrap */
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+}
+
+.navbar-brand.text-danger {
+    color: #dc3545 !important;
+}
+
+.product-price {
+    color: #dc3545;
+}
+
+/* --- NUEVO: Estilos para los placeholders de imagen --- */
+.image-placeholder {
+    background-color: #e0e0e0; /* Fondo gris claro */
+    display: flex; /* Para centrar el texto */
+    align-items: center;
+    justify-content: center;
+    color: #6c757d; /* Color de texto grisáceo */
+    font-size: 0.9rem;
+    text-align: center;
+    width: 100%; /* Ocupar ancho disponible por defecto */
+    overflow: hidden; /* Evitar que el texto se desborde feo */
+    border: 1px solid #d8d8d8; /* Un borde sutil */
+}
+
+.image-placeholder span {
+    padding: 5px; /* Espacio interno para el texto */
+}
+
+/* Proporciones específicas para cada tipo de placeholder */
+.placeholder-banner {
+    aspect-ratio: 1200 / 350; /* Ajustado para que no sea tan alto */
+    /* Alternativa con altura mínima si aspect-ratio no funciona bien en carrusel */
+    /* min-height: 250px; */
+}
+
+.placeholder-ad-medium {
+     aspect-ratio: 500 / 150;
+}
+
+.placeholder-card-top {
+     aspect-ratio: 3 / 2; /* Proporción común para imágenes de producto */
+}
+
+.placeholder-main-product {
+     aspect-ratio: 3 / 2; /* Proporción 600x400 */
+     /* max-height: 450px; Si necesitas limitar la altura máxima */
+}
+
+.placeholder-thumbnail {
+     width: 80px;   /* Ancho fijo */
+     height: 60px;  /* Alto fijo */
+     flex-shrink: 0; /* Evita que se encoja en el flex container */
+     border: 1px solid #dee2e6; /* Borde como img-thumbnail */
+     /* Quitar width: 100% heredado */
+     width: auto !important;
+}
+
+.placeholder-ad-small {
+     aspect-ratio: 150 / 80;
+     max-width: 150px; /* Limitar ancho máximo */
+}
+
+ .placeholder-ad-contact {
+     aspect-ratio: 400 / 100;
+ }
+/* --- FIN NUEVO --- */
+
+
+/* Ajustes anteriores (mantenerlos) */
+.ad-banner {
+    border: 1px dashed #ced4da;
+    background-color: #f8f9fa;
+}
+.ad-banner img { /* Este selector ya no aplica a los divs */
+    max-width: 100%;
+    height: auto;
+}
+
+.ad-banner-fullwidth {
+     border: 1px solid #ffc107;
+}
+
+.border-dashed {
+    border: 1px dashed #dee2e6 !important;
+}
+
+footer {
+    width: 100%;
+}
+
+footer a {
+    text-decoration: none;
+}
+footer a:hover {
+    text-decoration: underline;
+}
+
+.btn-warning {
+    background-color: #ffae00;
+    border-color: #ffae00;
+    color: #333;
+}
+.btn-warning:hover {
+     background-color: #e69c00;
+     border-color: #e69c00;
+     color: #333;
+}
+
+.form-label .text-danger {
+    font-size: 0.9em;
+    vertical-align: super;
+}
+
+/* Sobrescribir estilo card-img-top si es necesario para divs */
+.card-img-top.image-placeholder {
+    border-top-left-radius: var(--bs-card-inner-border-radius);
+    border-top-right-radius: var(--bs-card-inner-border-radius);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border: none; /* Quitar el borde extra del placeholder si está en card */
+}

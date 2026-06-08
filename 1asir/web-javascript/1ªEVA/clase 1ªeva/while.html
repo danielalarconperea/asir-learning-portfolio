@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+</head>
+
+<body>
+<p>esta página contiene código de javascript</p>
+
+<script type="text/javascript">
+
+var edad = parseInt(prompt('Ingresa tu edad'));
+
+while (edad < 18) 
+{
+    document.write('Acceso denegado, edad: ' + edad + '<br>');
+    edad = edad + 1;
+}
+
+// El bloque "else" no se usa con "while", simplemente continúa aquí
+document.write('Ya puedes entrar');
+
+</script>
+</body>
+</html>

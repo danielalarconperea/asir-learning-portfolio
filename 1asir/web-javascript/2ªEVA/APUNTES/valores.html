@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplos JavaScript</title>
+    <style>
+        /* Estilos CSS para mejorar la apariencia */
+        .container {
+            padding: 20px;
+            margin: 10px;
+            border: 1px solid #ccc;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor para la selección de color -->
+    <div class="container">
+        <h3>Selector de Colores:</h3>
+        <form name="formColor">
+            <select name="selectColor" onchange="cambiarColor()">
+                <option value="#FF0000">Rojo</option>
+                <option value="#00FF00">Verde</option>
+                <option value="#0000FF">Azul</option>
+                <option value="#FF00FF">Rosa</option>
+                <option value="#FFFF00">Amarillo</option>
+            </select>
+        </form>
+    </div>
+
+    <!-- Contenedor para la selección de productos -->
+    <div class="container">
+        <h3>Selector de Productos:</h3>
+        <form name="formProductos">
+            <select name="selectProductos" onchange="mostrarDetalles()">
+                <option value="1000">Móvil</option>
+                <option value="1200">PC</option>
+                <option value="100">Pantalla</option>
+                <option value="50">Teclado</option>
+                <option value="10">Ratón</option>
+            </select>
+            <br><br>
+            Índice seleccionado: <input type="text" name="indice">
+            <br>
+            Producto seleccionado: <input type="text" name="producto">
+            <br>
+            Precio: $<input type="text" name="precio">
+        </form>
+    </div>
+
+    <!-- Sección adicional para demostrar más funcionalidades -->
+    <div class="container">
+        <h3>Otras Funcionalidades:</h3>
+        <button onclick="mostrarFechaHora()">Mostrar Fecha y Hora</button>
+        <p id="fechaHora"></p>
+        
+        <button onclick="toggleElemento()">Mostrar/Ocultar Secreto</button>
+        <p id="elementoSecreto" class="hidden">¡Sorpresa! 😄</p>
+        
+        <button onclick="cargarDatos()">Cargar Datos Externos</button>
+        <div id="datosExternos"></div>
+    </div>
+
+    <script>
+        // Función para cambiar el color de fondo
+        function cambiarColor() {
+            select1 = document.formColor.selectColor.selectedIndex;
+            color = document.formColor.selectColor.options[select1].value;
+            
+            document.body.style.backgroundColor = color;
+        }
+        function cambiarColorLetra(){
+            select = document.formColor.selectColor.selectedIndex;
+            color = selectColor.options[select].value;
+
+            document.body.style.color = color;
+        }
+        // Función para mostrar detalles del producto
+        function mostrarDetalles() {
+            const form = document.formProductos;
+            const select = form.selectProductos;
+            const indice = select.selectedIndex;
+            
+            form.indice.value = indice;
+            form.producto.value = select.options[indice].text;
+            form.precio.value = select.options[indice].value;
+        }
+
+        // Función para mostrar fecha y hora actual
+        function mostrarFechaHora() {
+            const ahora = new Date();
+            const opciones = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            
+            document.getElementById('fechaHora').textContent = 
+                ahora.toLocaleDateString('es-ES', opciones);
+        }
+
+        // Función para mostrar/ocultar elemento
+        function toggleElemento() {
+            const elemento = document.getElementById('elementoSecreto');
+            elemento.classList.toggle('hidden');
+        }
+
+        // Función para cargar datos externos (simulación)
+        function cargarDatos() {
+            const datos = [
+                { id: 1, nombre: "Dato 1", valor: 100 },
+                { id: 2, nombre: "Dato 2", valor: 200 },
+                { id: 3, nombre: "Dato 3", valor: 300 }
+            ];
+            
+            const contenedor = document.getElementById('datosExternos');
+            contenedor.innerHTML = datos.map(item => 
+                `<p>${item.nombre}: ${item.valor}</p>`
+            ).join('');
+        }
+
+        // Al cargar la página
+        window.onload = function() {
+            // Recuperar color guardado
+            const colorGuardado = localStorage.getItem('colorFondo');
+            if(colorGuardado) {
+                document.body.style.backgroundColor = colorGuardado;
+                document.formColor.selectColor.value = colorGuardado;
+            }
+            
+            // Mostrar detalles iniciales del producto
+            mostrarDetalles();
+        };
+
+        // Validación de formulario de ejemplo
+        function validarFormulario(event) {
+            event.preventDefault();
+            const input = document.getElementById('miInput');
+            if(input.value.length < 3) {
+                alert('El campo debe tener al menos 3 caracteres');
+                return false;
+            }
+            return true;
+        }
+
+        // Ejemplo de manipulación del DOM
+        function agregarElemento() {
+            const nuevoElemento = document.createElement('li');
+            nuevoElemento.textContent = 'Elemento nuevo';
+            document.getElementById('miLista').appendChild(nuevoElemento);
+        }
+
+        // Ejemplo de uso de promesas
+        function esperarSegundos(segundos) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(`¡Esperados ${segundos} segundos!`);
+                }, segundos * 1000);
+            });
+        }
+
+        // Ejemplo de uso de async/await
+        async function ejecutarEspera() {
+            const resultado = await esperarSegundos(2);
+            console.log(resultado);
+        }
+    </script>
+</body>
+</html>

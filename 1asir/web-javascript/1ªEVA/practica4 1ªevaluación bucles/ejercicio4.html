@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+</head>
+<body>
+<h1>Ejercicio 4</h1>
+<script type="text/javascript">
+var i, num, j, k;
+k=0;
+num=parseInt(prompt('dime un número y te digo si es perfecto'));
+for(i=1; i<num; i++){
+    if(num%i==0){
+        k+=i;
+    }
+}
+if(k==num){
+    document.write('el número '+num+' es perfecto'); 
+}else{
+    document.write('el número '+num+' no es perfecto');
+}
+</script>
+</body>
+</html>
+
+<!--Ejercicio 4: Comprobar si un número es perfecto
+Pide al usuario un número y verifica si es un número perfecto. 
+Un número es perfecto si es igual a la suma de sus divisores (excluyendo el propio número). 
+Ejemplo: 6 es perfecto porque 1 + 2 + 3 = 6.-->
+
+

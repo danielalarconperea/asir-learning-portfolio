@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+  <!-- Configuración básica del documento -->
+  <meta charset="UTF-8"/>
+  <title>Inicio de Sesión</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Inclusión de Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+  <!-- Inclusión de Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+  <!-- Inclusión de iconos Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Enlace a los estilos personalizados -->
+  <link rel="stylesheet" href="../css/estilos.css"/>
+
+  <!-- Icono de página -->
+  <link rel="icon" href="./IMG/icono pag.ico" type="icon">
+
+  <style>
+    body {
+      font-family: "TT Norms Pro", "Open Sans", Roboto, Arial, Helvetica, sans-serif, SimSun;
+      background-color: #f5f5f5;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .text-small {
+      font-size: 12px;
+    }
+    .text-smaller {
+      font-size: 11px;
+    }
+    .opacity-75 {
+      color: #666;
+    }
+    .section-title {
+      font-size: 1rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .footer-link-list a {
+      color: inherit;
+    }
+    .footer-link-list a:hover {
+      text-decoration: underline;
+    }
+    .register-container {
+      min-height: calc(100vh - 150px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 0;
+    }
+    .register-card {
+      max-width: 500px;
+      width: 100%;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff;
+    }
+    .btn-register {
+      background-color: #e01a2b;
+      border-color: #e01a2b;
+      color: white;
+      font-weight: bold;
+      padding: 0.75rem;
+    }
+    .btn-register:hover {
+      background-color: #c01725;
+      border-color: #c01725;
+      color: white;
+    }
+    .btn-social {
+      border: 1px solid #dee2e6;
+      padding: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-social i {
+      font-size: 1.2rem;
+    }
+    .btn-social span {
+      margin-left: 0.5rem;
+    }
+    .separator {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin: 1.5rem 0;
+    }
+    
+    .container {
+        max-width: 1650px;
+    }
+    .form-check-label {
+        font-size: 0.9rem;
+    }
+    .password-wrapper {
+      position: relative;
+    }
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #6c757d;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra de navegación -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+    <div class="container">
+
+      <!-- Logo de AliExpress -->
+      <a href="./index.html"><img src="./IMG/aliexpress titulo-Photoroom.png" alt="AliExpress" class="img-fluid" width="260"/></a>
+
+      <!-- Botón para menú colapsable en móviles -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>  
+      </button>
+
+      <!-- Contenido del navbar colapsable -->
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <!-- Formulario de búsqueda -->
+        <form class="input-group me-auto ms-lg-3" style="max-width: 1000px;">
+          <div class="form-control py-1 pe-1 border border-black rounded-pill">
+            <div class="row g-0">
+              <div class="col">
+                <!-- Input de búsqueda -->
+                <input class="form-control-plaintext ps-3 w-100" type="search" placeholder="fundas iphone 16 pro" aria-label="Buscar"/>
+              </div>
+              <div class="col-auto">
+                <!-- Botón para búsqueda por imagen -->
+                <button class="btn btn-outline-secondary border-0-secondary text-black border-0 rounded-5" type="submit"><i class="bi bi-image"></i></button>
+                <!-- Botón para búsqueda normal -->
+                <button class="btn btn-secondary border-0 bg-black border rounded-5" type="submit"><i class="bi bi-search px-2"></i></button>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Sección derecha del navbar -->
+        <div class="d-flex align-items-center">
+
+          <!-- Enlace para descargar la app -->
+          <div class="mx-3">
+            <a class="nav-link d-flex align-items-center p-0" href="#">
+              <i class="bi bi-qr-code-scan fs-3"></i>
+              <span class="d-none d-xl-block ms-1 text-nowrap lh-sm text-small">Descarga la app<br>de AliExpress</span>
+            </a>
+          </div>
+
+          <!-- Menú desplegable para idioma/país/moneda -->
+          <div class="me-3 dropdown">
+            <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+              <a class="nav-link d-flex align-items-center p-0" href="#">
+                <img src="IMG/bandera-españa.jpg" alt="Bandera ES" height="16px" class="me-1">
+                <span class="d-none d-xl-block text-nowrap lh-sm text-start text-small">Madrid/ES/<br><b>EUR</b><i class="bi bi-caret-down"></i></span>
+              </a>
+            </button>
+
+            <!-- Contenido del dropdown -->
+            <div class="dropdown-menu rounded-4" style="width: 300px;">
+              <div class="container px-3 py-2">
+                <span class="fs-5 fw-bold">Enviar a</span>
+
+                <!-- Selector de país -->
+                <div class="border border-secondary rounded-2 w-500 mt-2">
+                  <div class="dropdown">
+                    <button class="btn w-100 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="d-flex align-items-center">
+                        <img src="IMG/bandera-españa.jpg" alt="Bandera ES" height="15px" class="me-1">
+                        <span class="text-nowrap lh-sm text-start" style="font-size: 14px;">España</span>
+                        <i class="bi bi-caret-down ms-auto"></i>
+                      </div>
+                    </button>
+
+                    <!-- Lista de países -->
+                    <div class="dropdown-menu rounded-4 w-100">
+                      <div class="container px-3 py-2 overflow-y-auto" style="max-height: 300px;">
+
+                        <!-- Buscador dentro del dropdown -->
+                        <div class="rounded-3 mt-1 d-flex align-items-center sticky-top">
+                          <div class="row g-0 rounded-3 mb-1" style="background-color: #dedede;">
+                            <div class="col-auto">
+                              <button class="btn btn-outline-secondary border-0" type="submit"><i class="bi bi-search p-0"></i></button>
+                            </div>
+                            <div class="col">
+                              <input class="form-control-plaintext" type="search" placeholder="" aria-label="Buscar"/>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">Recommend</span></div>
+                        <hr class="p-0 m-0">
+                        <!-- Otras opciones de país -->
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-estados-unidos-de-américa.png" alt="Bandera ES" width="22.5px" class="me-1">Estados Unidos de América</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-españa.jpg" alt="Bandera ES" width="22.5px" class="me-1">España</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-francia.png" alt="Bandera ES" width="22.5px" class="me-1">Francia</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-reino-unido.png" alt="Bandera ES" width="22.5px" class="me-1">Reino Unido de Gran Bretaña e Irlanda del Norte</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-brasil.png" alt="Bandera ES" width="22.5px" class="me-1">Brasil</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-corea-del-sur.png" alt="Bandera ES" width="22.5px" class="me-1">República de Corea</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-estados-unidos-de-américa.png" alt="Bandera ES" width="22.5px" class="me-1">Estados Unidos de América</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-españa.jpg" alt="Bandera ES" width="22.5px" class="me-1">España</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-francia.png" alt="Bandera ES" width="22.5px" class="me-1">Francia</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-reino-unido.png" alt="Bandera ES" width="22.5px" class="me-1">Reino Unido de Gran Bretaña e Irlanda del Norte</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-brasil.png" alt="Bandera ES" width="22.5px" class="me-1">Brasil</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-corea-del-sur.png" alt="Bandera ES" width="22.5px" class="me-1">República de Corea</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-estados-unidos-de-américa.png" alt="Bandera ES" width="22.5px" class="me-1">Estados Unidos de América</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-españa.jpg" alt="Bandera ES" width="22.5px" class="me-1">España</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-francia.png" alt="Bandera ES" width="22.5px" class="me-1">Francia</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-reino-unido.png" alt="Bandera ES" width="22.5px" class="me-1">Reino Unido de Gran Bretaña e Irlanda del Norte</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-brasil.png" alt="Bandera ES" width="22.5px" class="me-1">Brasil</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-corea-del-sur.png" alt="Bandera ES" width="22.5px" class="me-1">República de Corea</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-estados-unidos-de-américa.png" alt="Bandera ES" width="22.5px" class="me-1">Estados Unidos de América</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-españa.jpg" alt="Bandera ES" width="22.5px" class="me-1">España</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-francia.png" alt="Bandera ES" width="22.5px" class="me-1">Francia</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-reino-unido.png" alt="Bandera ES" width="22.5px" class="me-1">Reino Unido de Gran Bretaña e Irlanda del Norte</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-brasil.png" alt="Bandera ES" width="22.5px" class="me-1">Brasil</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-corea-del-sur.png" alt="Bandera ES" width="22.5px" class="me-1">República de Corea</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Selector de provincias -->
+                <div class="border border-secondary rounded-2 w-500 mt-2">
+                  <div class="dropdown">
+                    <button class="btn w-100 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="d-flex align-items-center">
+                        <span class="text-nowrap lh-sm text-start" style="font-size: 14px;">Madrid</span>
+                        <i class="bi bi-caret-down ms-auto"></i>
+                      </div>
+                    </button>
+
+                    <!-- Lista de provincias -->
+                    <div class="dropdown-menu rounded-4 w-100">
+                      <div class="container px-3 py-2 overflow-y-auto" style="max-height: 300px;">
+
+                        <!-- Buscador dentro del dropdown -->
+                        <div class="rounded-3 mt-1 d-flex align-items-center sticky-top">
+                          <div class="row g-0 rounded-3 mb-1" style="background-color: #dedede;">
+                            <div class="col-auto">
+                              <button class="btn btn-outline-secondary border-0" type="submit"><i class="bi bi-search p-0"></i></button>
+                            </div>
+                            <div class="col">
+                              <input class="form-control-plaintext" type="search" placeholder="" aria-label="Buscar"/>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">A</span></div>
+                        <hr class="p-0 m-0">
+                        <!-- Otras opciones de provincias -->
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">A Coruña</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Alacant/Alicante</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Albacete</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Almería</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Asturias</div>
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">B</span></div>
+                        <hr class="p-0 m-0">
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Badajoz</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Balearic Islands</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Barcelona</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Burgos</div>
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">C</span></div>
+                        <hr class="p-0 m-0">
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cantabria                          </div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Castelló/Castellón                          </div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Ceuta</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Ciudad Real                          </div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cuenca</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cáceres</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cádiz</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Córdoba</div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                
+                <!-- Selector de ciudades -->
+                <div class="border border-secondary rounded-2 w-500 mt-2">
+                  <div class="dropdown">
+                    <button class="btn w-100 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="d-flex align-items-center">
+                        <span class="text-nowrap lh-sm text-start" style="font-size: 14px;">Madrid</span>
+                        <i class="bi bi-caret-down ms-auto"></i>
+                      </div>
+                    </button>
+
+                    <!-- Lista de ciudades -->
+                    <div class="dropdown-menu rounded-4 w-100">
+                      <div class="container px-3 py-2 overflow-y-auto" style="max-height: 300px;">
+
+                        <!-- Buscador dentro del dropdown -->
+                        <div class="rounded-3 mt-1 d-flex align-items-center sticky-top">
+                          <div class="row g-0 rounded-3 mb-1" style="background-color: #dedede;">
+                            <div class="col-auto">
+                              <button class="btn btn-outline-secondary border-0" type="submit"><i class="bi bi-search p-0"></i></button>
+                            </div>
+                            <div class="col">
+                              <input class="form-control-plaintext" type="search" placeholder="" aria-label="Buscar"/>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">A</span></div>
+                        <hr class="p-0 m-0">
+                        <!-- Otras opciones de ciudades -->
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Ajalvir</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Alameda del Valle</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Alcalá de Henares</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Alcobendas</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Alcorcón</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Aldea del Fresno</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Algete</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Alpedrete</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Ambite</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Anchuelo</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Aranjuez</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Arganda del Rey</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Arroyomolinos</div>
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">B</span></div>
+                        <hr class="p-0 m-0">
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Batres</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Becerril de la Sierra</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Belmonte de Tajo</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Berzosa del Lozoya</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Boadilla del Monte</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Braojos</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Brea de Tajo</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Brunete</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Buitrago del Lozoya</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Bustarviejo</div>
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">C</span></div>
+                        <hr class="p-0 m-0">
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cabanillas de la Sierra</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cadalso de los Vidrios</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Camarma de Esteruelas</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Campo Real</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Canencia</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Carabaña</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Casarrubuelos</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cenicientos</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cercedilla</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cervera de Buitrago</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Chapinería</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Chinchón</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Ciempozuelos</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cobeña</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Collado Mediano</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Collado Villalba</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Colmenar Viejo</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Colmenar de Oreja</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Colmenar del Arroyo</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Colmenarejo</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Corpa</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Coslada</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cubas de la Sagraºº</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Selector de idioma -->
+                <div class="mt-3"></div>
+                <span class="fs-5 fw-bold">Idioma</span>
+                <div class="border border-secondary rounded-2 w-500 mt-2">
+                  <div class="dropdown">
+                    <button class="btn w-100 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="d-flex align-items-center">
+                        <span class="text-nowrap lh-sm text-start" style="font-size: 14px;">Español</span>
+                        <i class="bi bi-caret-down ms-auto"></i>
+                      </div>
+                    </button>
+
+                    <!-- Lista de idioma -->
+                    <div class="dropdown-menu rounded-4 w-100">
+                      <div class="container px-3 py-2 overflow-y-auto" style="max-height: 300px;">
+
+                        <!-- Buscador dentro del dropdown -->
+                        <div class="rounded-3 mt-1 d-flex align-items-center sticky-top">
+                          <div class="row g-0 rounded-3 mb-1" style="background-color: #dedede;">
+                            <div class="col-auto">
+                              <button class="btn btn-outline-secondary border-0" type="submit"><i class="bi bi-search p-0"></i></button>
+                            </div>
+                            <div class="col">
+                              <input class="form-control-plaintext" type="search" placeholder="" aria-label="Buscar"/>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Otras opciones de idioma -->
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">English</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Русский</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Español</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Français</div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Selector de moneda -->
+                <div class="mt-3"></div>
+                <span class="fs-5 fw-bold">Moneda</span>
+                <div class="border border-secondary rounded-2 w-500 mt-2">
+                  <div class="dropdown">
+                    <button class="btn w-100 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="d-flex align-items-center">
+                        <span class="text-nowrap lh-sm text-start" style="font-size: 14px;">EUR (Euro)</span>
+                        <i class="bi bi-caret-down ms-auto"></i>
+                      </div>
+                    </button>
+
+                    <!-- Lista de moneda -->
+                    <div class="dropdown-menu rounded-4 w-100">
+                      <div class="container px-3 py-2 overflow-y-auto" style="max-height: 300px;">
+
+                        <!-- Buscador dentro del dropdown -->
+                        <div class="rounded-3 mt-1 d-flex align-items-center sticky-top">
+                          <div class="row g-0 rounded-3 mb-1" style="background-color: #dedede;">
+                            <div class="col-auto">
+                              <button class="btn btn-outline-secondary border-0" type="submit"><i class="bi bi-search p-0"></i></button>
+                            </div>
+                            <div class="col">
+                              <input class="form-control-plaintext" type="search" placeholder="" aria-label="Buscar"/>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Otras opciones de moneda -->
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">EUR (Euro)</div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="btn btn-secondary bg-black rounded-pill align-items-center text-center mt-3 w-100 fw-bold">Guardar</div>
+                
+
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Enlace para login o registro -->
+          <div class="me-3">
+            <a class="nav-link d-flex align-items-center p-0" href="#">
+              <i class="bi bi-person fs-3"></i>
+              <span class="d-none d-xl-block ms-1 text-nowrap lh-sm text-small">¡Bienvenido<br><b>Identifícate/Regístrate</b></span>
+            </a>
+          </div>
+
+          <!-- Enlace al carrito -->
+          <div>
+            <a class="nav-link d-flex align-items-center p-0" href="#">
+              <i class="bi bi-cart2 fs-3"></i>
+              <span class="d-none d-xl-block ms-1 text-nowrap fw-bold text-small">
+                <span class="border rounded-pill px-2 py-0 me-1 text-center text-white bg-black d-inline-block">0</span><br>Cesta
+              </span>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="register-container">
+    <div class="card register-card p-4 p-md-5 rounded-5" style="max-width: 500px; width: 100%; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); background-color: #ffffff;">
+      <div class="card-body">
+        <h2 class="card-title text-center mb-4 fw-bold">Crear una cuenta</h2> <form id="registerForm">
+          <div class="mb-3">
+            <label for="registerFirstName" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="registerFirstName" placeholder="Introduce tu nombre" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="registerLastName" class="form-label">Apellidos</label>
+            <input type="text" class="form-control" id="registerLastName" placeholder="Introduce tus apellidos" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="registerEmail" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="registerEmail" placeholder="Introduce tu email" required>
+          </div>
+
+          <div class="mb-3 password-wrapper">
+            <label for="registerPassword" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="registerPassword" placeholder="Crea una contraseña" required minlength="8">
+            <i class="bi bi-eye-slash toggle-password" id="togglePassword" style="top: 50px;"></i>
+            <div id="passwordHelpBlock" class="form-text text-small">
+              Tu contraseña debe tener al menos 8 caracteres, contener letras y números.
+            </div>
+          </div>
+
+          <div class="mb-3 password-wrapper">
+            <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirma tu contraseña" required>
+             <i class="bi bi-eye-slash toggle-password" id="toggleConfirmPassword" style="top: 50px;"></i>
+             <div id="passwordMatchFeedback" class="invalid-feedback">
+                Las contraseñas no coinciden.
+             </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="registerPhone" class="form-label">Número de teléfono <span class="text-muted text-small">(Opcional)</span></label>
+            <input type="tel" class="form-control" id="registerPhone" placeholder="Introduce tu número de teléfono">
+          </div>
+
+          <div class="mb-3">
+            <label for="registerBirthdate" class="form-label">Fecha de Nacimiento</label>
+            <input type="date" class="form-control" id="registerBirthdate">
+          </div>
+
+
+          <div class="mb-3">
+            <label class="form-label d-block">Género</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="registerGender" id="genderMaleReg" value="male">
+              <label class="form-check-label" for="genderMaleReg">Masculino</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="registerGender" id="genderFemaleReg" value="female">
+              <label class="form-check-label" for="genderFemaleReg">Femenino</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="registerGender" id="genderOtherReg" value="other">
+              <label class="form-check-label" for="genderOtherReg">Otro</label>
+            </div>
+             <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="registerGender" id="genderPreferNotReg" value="prefer_not_to_say" checked>
+              <label class="form-check-label" for="genderPreferNotReg">Prefiero no decirlo</label>
+            </div>
+          </div>
+
+          <div class="mb-4 form-check">
+            <input type="checkbox" class="form-check-input" id="acceptTermsReg" required>
+            <label class="form-check-label" for="acceptTermsReg">
+              He leído y acepto los <a href="#" class="link-danger">Términos de Servicio</a> y la <a href="#" class="link-danger">Política de Privacidad</a> de AliExpress.
+            </label>
+          </div>
+
+          <div class="d-grid mb-4">
+            <button type="submit" class="btn btn-register btn-lg">Registrarse</button> </div>
+
+          <div class="separator">O regístrate con</div> <div class="row g-2 mb-4">
+            <div class="col">
+              <button type="button" class="btn btn-social w-100">
+                <i class="bi bi-google text-danger"></i>
+                <span class="d-none d-sm-inline">Google</span>
+              </button>
+            </div>
+            <div class="col">
+              <button type="button" class="btn btn-social w-100">
+                <i class="bi bi-facebook text-primary"></i>
+                 <span class="d-none d-sm-inline">Facebook</span>
+              </button>
+            </div>
+             <div class="col">
+              <button type="button" class="btn btn-social w-100">
+                <i class="bi bi-apple text-dark"></i>
+                 <span class="d-none d-sm-inline">Apple</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="text-center text-small">
+            ¿Ya tienes una cuenta? <a href="#" class="fw-bold link-danger">Inicia sesión</a> </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div style="background-color: #eaeaea;">
+    <div class="container pt-4">
+      <div class="row">
+          <div class="col-md-6 mb-3">
+              <div class="section-title">Información AliExpress</div>
+              <ul class="list-unstyled footer-link-list">
+                  <a href="#" class="text-smaller opacity-75">Atención al cliente,</a>
+                  <a href="#" class="text-smaller opacity-75">Disputas,</a>
+                  <a href="#" class="text-smaller opacity-75">Política de devoluciones y reembolsos,</a>
+                  <a href="#" class="text-smaller opacity-75">Informar de una infracción IPR,</a>
+                  <a href="#" class="text-smaller opacity-75">Regulated Information,</a>
+                  <a href="#" class="text-smaller opacity-75">Integrity Compliance,</a>
+                  <a href="#" class="text-smaller opacity-75">Centro de Transparencia,</a>
+                  <a href="#" class="text-smaller opacity-75">Entrada de quejas sin iniciar sesión</a>
+              </ul>
+          
+
+
+              <div class="section-title">Buscar por categoría</div>
+              <ul class="list-unstyled footer-link-list">
+                <a href="#" class="text-smaller opacity-75">Lo más popular,</a>
+                <a href="#" class="text-smaller opacity-75">Producto,</a>
+                <a href="#" class="text-smaller opacity-75">Promoción,</a>
+                <a href="#" class="text-smaller opacity-75">Low Price,</a>
+                <a href="#" class="text-smaller opacity-75">Great Value,</a>
+                <a href="#" class="text-smaller opacity-75">Review</a>
+              </ul>
+          </div>
+
+          <div class="col-md-6 mb-3">
+              <div class="section-title">AliExpress en otros idiomas</div>
+                <ul class="list-unstyled footer-link-list" style="column-count: 2;">
+                  <a href="#" class="text-smaller opacity-75">Русский,</a>
+                  <a href="#" class="text-smaller opacity-75">Português,</a>
+                  <a href="#" class="text-smaller opacity-75">Español,</a>
+                  <a href="#" class="text-smaller opacity-75">Français,</a>
+                  <a href="#" class="text-smaller opacity-75">Deutsch,</a>
+                  <a href="#" class="text-smaller opacity-75">Italiano,</a>
+                  <a href="#" class="text-smaller opacity-75">Nederlands,</a>
+                  <a href="#" class="text-smaller opacity-75">Türk,</a>
+                  <a href="#" class="text-smaller opacity-75">日本語,</a>
+                  <a href="#" class="text-smaller opacity-75">한국어,</a>
+                  <a href="#" class="text-smaller opacity-75">ภาษาไทย,</a>
+                  <a href="#" class="text-smaller opacity-75">العربية,</a>
+                  <a href="#" class="text-smaller opacity-75">Polski</a>
+              </ul>
+      
+
+        
+              <div class="section-title">Alibaba Group</div>
+              <ul class="list-unstyled footer-link-list">
+                <a href="#" class="text-smaller opacity-75">Página del Grupo Alibaba,</a>
+                <a href="#" class="text-smaller opacity-75">AliExpress,</a>
+                <a href="#" class="text-smaller opacity-75">Alimama,</a>
+                <a href="#" class="text-smaller opacity-75">Alipay,</a>
+                <a href="#" class="text-smaller opacity-75">Fliggy,</a>
+                <a href="#" class="text-smaller opacity-75">Kuaizhilian,</a>
+                <a href="#" class="text-smaller opacity-75">Alibaba Cloud,</a>
+                <a href="#" class="text-smaller opacity-75">Alibaba International,</a>
+                <a href="#" class="text-smaller opacity-75">Altelecom,</a>
+                <a href="#" class="text-smaller opacity-75">DingTalk,</a>
+                <a href="#" class="text-smaller opacity-75">Juhuasuan,</a>
+                <a href="#" class="text-smaller opacity-75">Taobao Marketplace,</a>
+                <a href="#" class="text-smaller opacity-75">Tmall,</a>
+                <a href="#" class="text-smaller opacity-75">Taobao Global,</a>
+                <a href="#" class="text-smaller opacity-75">AliOS</a>
+              </ul>
+          </div>
+      </div>
+    </div>
+
+  </div>
+  <footer class="text-white py-1" style="background-color: black;">
+    <div class="container mt-1">
+      <p class="small">
+        Intellectual Property Protection - Privacy Policy - Mapa del sitio web - Términos de uso de AliExpress.com - Información para consumidores de la UE - Acuerdo de servicios de transacción para consumidores fuera de la UE/Reino Unido - Términos y Condiciones para Consumidores de la UE/EEE/Reino Unido - User Information Legal Enquiry Guide ©️ 2010-2025 AliExpress.com. Todos los derechos reservados.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

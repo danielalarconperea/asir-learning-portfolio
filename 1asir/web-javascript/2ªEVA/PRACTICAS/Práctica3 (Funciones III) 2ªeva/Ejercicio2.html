@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejercicio2</title>
+</head>
+<body>
+<script type="text/javascript">
+
+var ba = parseInt(prompt('dime la base')), exp = parseInt(prompt('dime al número que quiras elevarlo'));
+
+function Ejercicio2(base, exponente){
+
+    var resultado = 1, i, base, exponente;
+
+    for(i = 0; i < exponente; i++){
+        resultado *= base;
+    }
+    document.write(base+' elevado a '+exponente+' es igual a '+resultado);
+}
+
+Ejercicio2(ba, exp);
+
+</script>
+</body>
+</html>
+<!-- 
+Ejercicio 2: Calcular la potencia de un número
+Crea una función que reciba una base y un exponente, y devuelva el resultado de elevar la base al exponente utilizando un bucle (sin usar Math.pow).
+-->

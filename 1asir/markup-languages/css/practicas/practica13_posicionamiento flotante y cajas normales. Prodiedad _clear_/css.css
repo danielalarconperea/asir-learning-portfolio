@@ -1,0 +1,60 @@
+
+body {
+  margin: 0 20px;
+  background-color: hsl(23, 100%, 75%);
+  font-family: sans-serif;
+}
+
+h1 {
+  margin: 0px;
+}
+
+main {
+  display: block;
+  overflow: auto;
+  background-color: white;
+}
+
+section {
+  float: left;
+  width: 34rem;
+  border:  red 5px solid;
+  border-top: none;
+  margin: 10px;
+  background-color: hsl(194, 100%, 60%);
+}
+
+h2 {
+  margin: 0;
+  background-color: hsl(9, 100%, 60%);
+}
+
+article {
+  float: left;
+  width: 15rem;
+  border: hsl(88, 100%, 50%) 5px solid;
+  border-top: none;
+  margin: 10px;
+  background-color: hsl(144, 100%, 60%);
+}
+
+h3 {
+  margin: 1px;
+  padding-left: 5px;
+  background-color: hsl(82, 100%, 50%);
+  color: white;
+  font-size: 1.5rem;
+}
+
+p {
+  margin: 5px;
+}
+
+footer {
+  clear: both;
+}
+
+footer p {
+  margin: 10px 0;
+  font-size: 0.75rem;
+}

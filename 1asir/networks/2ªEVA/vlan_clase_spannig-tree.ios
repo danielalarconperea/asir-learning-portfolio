@@ -1,0 +1,32 @@
+!pc1 192.168.1.10
+!pc2 192.168.1.11
+
+!S3, al ruter primario:
+en
+conf t
+h S3
+exit
+show spanning-tree
+spanning-tree portfast default
+
+!S2, lo configuramos como nuevo ruter primario
+en
+conf t
+h S2
+spanning-tree vlan 1 root primary 
+spanning-tree portfast default
+
+!S1, lo configuramos como ruter secundario
+en
+conf t
+h S1
+spanning-tree vlan 1 root secondary
+spanning-tree portfast default
+
+!S2
+int g0/1
+spanning-tree
+spanning-tree cost 200000000
+shutdown
+int g0/2
+shutdown

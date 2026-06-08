@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Encuesta de Satisfacción</title>
+</head>
+<body>
+  <h1>Encuesta de Servicio</h1>
+  <form>
+    <p>¿Recomendaría nuestro servicio?</p>
+    <input type="radio" name="recomienda" id="si" value="si"> Sí<br>
+    <input type="radio" name="recomienda" id="no" value="no"> No<br><br>
+
+    <p>Servicios usados (marca al menos uno):</p>
+    <input type="checkbox" id="atencion"> Atención al cliente<br>
+    <input type="checkbox" id="productos"> Productos<br>
+    <input type="checkbox" id="soporte"> Soporte técnico<br><br>
+
+    <label for="valoracion">Valoración (1-5 estrellas):</label>
+    <input type="range" id="valoracion" min="1" max="5"><br><br>
+
+    <button type="button" onclick="validarEncuesta()">Enviar</button>
+  </form>
+  <p id="resultado"></p>
+</body>
+</html>

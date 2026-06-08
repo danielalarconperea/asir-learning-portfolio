@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Márgenes y Separaciones en CSS</title>
+    <style>
+        /* === Estilos generales === */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .contenedor {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        .ejemplo {
+            padding: 20px;
+            margin: 10px 0;
+            background-color: #e0e0e0;
+            border: 1px solid #999;
+            border-radius: 5px;
+        }
+
+        /* === Márgenes === */
+        .margen-simple {
+            margin: 20px; /* Márgenes iguales en todos los lados */
+            background-color: #ffcccb; /* Color de fondo para visualizar el espacio */
+        }
+
+        .margen-doble {
+            margin: 10px 30px; /* 10px arriba/abajo, 30px izquierda/derecha */
+            background-color: #add8e6; /* Color de fondo */
+        }
+
+        .margen-triple {
+            margin: 10px 20px 30px; /* 10px arriba, 20px izquierda/derecha, 30px abajo */
+            background-color: #ffd700; /* Color de fondo */
+        }
+
+        .margen-cuadruple {
+            margin: 10px 20px 30px 40px; /* 10px arriba, 20px derecha, 30px abajo, 40px izquierda */
+            background-color: #98fb98; /* Color de fondo */
+        }
+
+        .margen-negativo {
+            margin: -20px; /* Margen negativo (el elemento se superpone) */
+            background-color: #ffb6c1; /* Color de fondo */
+        }
+
+        /* === Relleno (Padding) === */
+        .relleno-simple {
+            padding: 20px; /* Relleno igual en todos los lados */
+            background-color: #c1e1c1; /* Color de fondo */
+        }
+
+        .relleno-doble {
+            padding: 10px 30px; /* 10px arriba/abajo, 30px izquierda/derecha */
+            background-color: #ffcc99; /* Color de fondo */
+        }
+
+        .relleno-triple {
+            padding: 10px 20px 30px; /* 10px arriba, 20px izquierda/derecha, 30px abajo */
+            background-color: #c6e2ff; /* Color de fondo */
+        }
+
+        .relleno-cuadruple {
+            padding: 10px 20px 30px 40px; /* 10px arriba, 20px derecha, 30px abajo, 40px izquierda */
+            background-color: #ffccff; /* Color de fondo */
+        }
+
+        /* === Espaciado entre elementos (Gap) === */
+        .contenedor-flex {
+            display: flex;
+            gap: 20px; /* Espacio entre elementos hijos */
+            background-color: #e6e6fa; /* Color de fondo */
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .contenedor-flex div {
+            background-color: #ffa07a; /* Color de fondo de los elementos hijos */
+            padding: 10px;
+            border-radius: 5px;
+            flex: 1;
+        }
+
+        /* === Espaciado en Grid === */
+        .contenedor-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px; /* Espacio entre celdas */
+            background-color: #d3d3d3; /* Color de fondo */
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .contenedor-grid div {
+            background-color: #87ceeb; /* Color de fondo de las celdas */
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        /* === Espaciado con Border-Spacing (Tablas) === */
+        .tabla-espaciada {
+            border-collapse: separate; /* Necesario para que funcione border-spacing */
+            border-spacing: 15px; /* Espacio entre celdas de la tabla */
+            margin: 20px auto;
+            background-color: #f0e68c; /* Color de fondo */
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .tabla-espaciada td {
+            background-color: #ffa07a; /* Color de fondo de las celdas */
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Márgenes y Separaciones en CSS</h1>
+
+        <!-- Ejemplo de márgenes -->
+        <h2>Márgenes</h2>
+        <div class="ejemplo">
+            <div class="margen-simple">Margen simple: 20px en todos los lados</div>
+            <div class="margen-doble">Margen doble: 10px arriba/abajo, 30px izquierda/derecha</div>
+            <div class="margen-triple">Margen triple: 10px arriba, 20px izquierda/derecha, 30px abajo</div>
+            <div class="margen-cuadruple">Margen cuádruple: 10px arriba, 20px derecha, 30px abajo, 40px izquierda</div>
+            <div class="margen-negativo">Margen negativo: -20px (el elemento se superpone)</div>
+        </div>
+
+        <!-- Ejemplo de relleno (padding) -->
+        <h2>Relleno (Padding)</h2>
+        <div class="ejemplo">
+            <div class="relleno-simple">Relleno simple: 20px en todos los lados</div>
+            <div class="relleno-doble">Relleno doble: 10px arriba/abajo, 30px izquierda/derecha</div>
+            <div class="relleno-triple">Relleno triple: 10px arriba, 20px izquierda/derecha, 30px abajo</div>
+            <div class="relleno-cuadruple">Relleno cuádruple: 10px arriba, 20px derecha, 30px abajo, 40px izquierda</div>
+        </div>
+
+        <!-- Ejemplo de espaciado entre elementos (gap) -->
+        <h2>Espaciado entre elementos (Gap)</h2>
+        <div class="contenedor-flex">
+            <div>Elemento 1</div>
+            <div>Elemento 2</div>
+            <div>Elemento 3</div>
+        </div>
+
+        <!-- Ejemplo de espaciado en Grid -->
+        <h2>Espaciado en Grid</h2>
+        <div class="contenedor-grid">
+            <div>Celda 1</div>
+            <div>Celda 2</div>
+            <div>Celda 3</div>
+        </div>
+
+        <!-- Ejemplo de espaciado en tablas (border-spacing) -->
+        <h2>Espaciado en Tablas (Border-Spacing)</h2>
+        <table class="tabla-espaciada">
+            <tr>
+                <td>Celda 1</td>
+                <td>Celda 2</td>
+            </tr>
+            <tr>
+                <td>Celda 3</td>
+                <td>Celda 4</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

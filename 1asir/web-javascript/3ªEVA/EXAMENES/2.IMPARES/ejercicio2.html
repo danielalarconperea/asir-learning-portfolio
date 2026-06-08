@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Planificador de Dieta</title>
+</head>
+<body>
+  <h1>Planificador de Dieta Personalizada</h1>
+  <form>
+    <label for="peso">Peso (kg):</label>
+    <input type="number" id="peso" min="30" max="300"><br><br>
+
+    <label for="altura">Altura (cm):</label>
+    <input type="number" id="altura" min="100" max="250"><br><br>
+
+    <label for="edad">Edad:</label>
+    <input type="number" id="edad" min="18" max="100"><br><br>
+
+    <label for="sexo">Sexo:</label>
+    <select id="sexo">
+      <option value="">Seleccione...</option>
+      <option value="masculino">Masculino</option>
+      <option value="femenino">Femenino</option>
+    </select><br><br>
+
+    <label for="actividad">Nivel de actividad (1-5):</label>
+    <input type="range" id="actividad" min="1" max="5"><br><br>
+
+    <p>Objetivos:</p>
+    <input type="checkbox" id="perder"> Perder peso<br>
+    <input type="checkbox" id="ganar"> Ganar músculo<br>
+    <input type="checkbox" id="mantener"> Mantener peso<br><br>
+
+    <button type="button" onclick="calcularDieta()">Calcular</button>
+  </form>
+  <p id="resultado"></p>
+</body>
+</html>

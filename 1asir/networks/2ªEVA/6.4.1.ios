@@ -1,0 +1,72 @@
+! Siga el procedimiento que se utilizó en actividades anteriores para configurar el Port Channel 1 como 
+! EtherChannel PAgP entre SWA y SWB. Ambas partes deben negociar el EtherChannel.
+!! Paso 1: Configure un EtherChannel PAgP.
+! SWA
+en 
+conf terminal
+h SWA
+interface range g0/1-2
+channel-group 1 mode desirable
+exit
+interface port-channel 1
+switchport mode trunk
+end
+
+! SWB
+en 
+conf terminal
+h SWB
+interface range g0/1-2
+channel-group 1 mode desirable
+exit
+interface port-channel 1
+switchport mode trunk
+end
+show channel-group summary
+
+!! Paso 2: Configure LACP EtherChannel.
+! SWA
+en
+conf terminal
+interface range fa0/21-22
+! Ponemos active en vez de desirable, para que el protocolo sea LACP en vez de PAgP.
+channel-group 2 mode active
+exit
+interface port-channel 2
+switchport mode trunk
+exit
+
+! SWC
+en 
+conf terminal
+h SWC
+interface range fa0/21-22
+channel-group 2 mode active
+exit
+interface port-channel 2
+switchport mode trunk
+end
+show channel-group summary
+
+!!Paso 3: Configure un LACP EtherChannel de respaldo
+! SWB
+en
+conf terminal
+interface range fa0/23-24
+! Ponemos passive en vez de active, para que el SWB este en espera y SWC inicie la negociacion de channel.
+channel-group 3 mode passive
+exit
+interface port-channel 3
+switchport mode trunk
+exit
+
+! SWC
+en 
+conf terminal
+interface range fa0/23-24
+channel-group 3 mode active
+exit
+interface port-channel 3
+switchport mode trunk
+end
+show channel-group summary

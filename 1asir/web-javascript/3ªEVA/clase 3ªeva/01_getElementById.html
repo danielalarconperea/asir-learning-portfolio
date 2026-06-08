@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Elegante</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+        
+        .calculadora {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #5e5cc7;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .input-grupo {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #5e5cc7;
+        }
+        
+        button {
+            background-color: #5e5cc7;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 1rem 0;
+            width: 100%;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background-color: #4a48a0;
+        }
+        
+        #resultado {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #f5f5f5;
+            font-weight: 500;
+            color: #333;
+            transition: all 0.3s;
+        }
+        
+        .resultado-activo {
+            background-color: #e8f0fe !important;
+            color: #5e5cc7 !important;
+            font-weight: 600 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculadora">
+        <h1>Calculadora de Suma</h1>
+        
+        <div class="input-grupo">
+            <label for="numero1">Primer número:</label>
+            <input type="number" id="numero1" required placeholder="Ingresa el primer número">
+        </div>
+        
+        <div class="input-grupo">
+            <label for="numero2">Segundo número:</label>
+            <input type="number" id="numero2" required placeholder="Ingresa el segundo número">
+        </div>
+        
+        <button onclick="CalcularSuma()">Calcular Suma</button>
+        
+        <div id="resultado">Aquí aparecerá el resultado</div>
+    </div>
+
+    <script>
+        function CalcularSuma(){
+            var num1 = parseFloat(document.getElementById('numero1').value);
+            var num2 = parseFloat(document.getElementById('numero2').value);
+            
+            if(isNaN(num1) || isNaN(num2)) {
+                document.getElementById('resultado').innerText = 'Por favor, ingresa números válidos';
+                document.getElementById('resultado').classList.remove('resultado-activo');
+                return;
+            }
+            
+            var suma = num1 + num2;
+            document.getElementById('resultado').innerText = 'La suma es: ' + suma;
+            document.getElementById('resultado').classList.add('resultado-activo');
+        }
+    </script>
+</body>
+</html>
+</html> 

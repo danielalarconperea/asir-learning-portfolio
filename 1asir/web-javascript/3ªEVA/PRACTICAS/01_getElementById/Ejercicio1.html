@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio1</title>
+    <style>
+       body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: rgb(98, 185, 251);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+        
+        .cuadro {
+            background-color: #ffffff;
+            padding: 2em;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #5e5cc7;
+            margin-bottom: 1.5em;
+            font-weight: 600;
+        }
+        
+        button {
+            background-color: #5e5cc7;
+            color: white;
+            border: none;
+            padding: 1em 2em;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 1em 0;
+            width: 100%;
+            font-weight: 600;
+        }
+        
+        #mensajeSecreto {
+            margin-top: 1.5em;
+            border-radius: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="cuadro">
+        <h1>Descubre el Mensaje Secreto</h1>
+        <button onclick="mostrarMensaje()">Mostrar mensaje</button>
+        <p id="mensajeSecreto" style="display: none;">Este contenido será reemplazado</p>
+    </div>
+    <script>
+        function mostrarMensaje(){
+            var elemento = document.getElementById('mensajeSecreto');
+
+            elemento.innerHTML = '<p>¡Has descubierto el mensaje secreto!</p>';
+
+            elemento.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+<!-- 
+Ejercicio 1: Mostrar un mensaje oculto
+Diseña una página HTML que tenga un título principal y un párrafo oculto 
+(puedes usar style="display: none;" para ocultarlo inicialmente). 
+También incluye un botón que diga "Mostrar mensaje".
+
+Cuando el usuario haga clic en el botón, el párrafo debe aparecer (cambiando su estilo para que sea visible) 
+y su contenido debe actualizarse con este mensaje: "¡Has descubierto el mensaje secreto!".
+
+Requisitos:
+
+-Usa getElementById para seleccionar tanto el botón como el párrafo.
+
+-Cambia las propiedades de estilo del párrafo (style.display) para hacerlo visible.
+
+-Modifica también su contenido usando innerHTML. -->

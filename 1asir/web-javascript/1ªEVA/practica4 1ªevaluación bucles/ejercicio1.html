@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+</head>
+<body>
+<h1>Ejercicio 1</h1>
+<script type="text/javascript">
+var contador_par, contador_impar, i, num;
+contador_impar=0;
+contador_par=0;
+num=parseInt(prompt('dime un número y te digo cuantos números pares y cuantos impares hay desde el 1'));
+for(i=1; i<=num; i++){
+    if(i%2==0){
+        contador_par++;
+    }else{
+        contador_impar++
+    }
+}
+document.write('hay '+contador_impar+' números impares y '+contador_par+' números pares');
+</script>
+</body>
+</html>
+
+<!-- Ejercicio 1: Contar números pares e impares (count o algo)
+Pide al usuario un número límite (prompt) y, usando un bucle, cuenta cuántos números son pares y 
+cuántos impares desde 1 hasta ese número(par impar).-->
+
+

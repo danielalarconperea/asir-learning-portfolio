@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+</head>
+
+<body>
+<p>esta página contiene código de javascript</p>
+
+<script type="text/javascript">
+var i = 0;
+var suma = 0; // Inicializamos la variable suma
+var numero = parseInt(prompt('Dime un número que quieras sumar')); // Correcta captura del número
+
+
+
+
+
+do {
+    i++; // i++ es lo mismo que i = i + 1
+    document.write(i + '<br>');
+    suma = suma + i; // Corregido: suma += i para agregar el valor de i a suma
+} while (i < numero); // Usamos la variable numero para la condición del bucle
+
+document.write('La suma total es: ' + suma); // Muestra la suma total al final
+
+</script>
+</body>
+</html>

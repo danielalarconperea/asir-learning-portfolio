@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuración de Tema de Blog</title>
+</head>
+<body>
+    <script>
+        function colorFondo(){
+            var color = document.form1.color1.selectedIndex;
+            var fondo = document.form1.color1.options[color].value;
+            
+            document.body.style.backgroundColor = color;
+        }
+    </script>
+    <h2>Configuración de Tema de Blog</h2>
+    <form name="form1">
+        <label name="color1">Título del Blog:</label>
+        <input type="text" name="color1"><br>
+        <label>Fondo:</label>
+        <input type="radio" value="#E52020">Rojo
+        <input type="radio" value="#A0C878">Verde
+        <input type="radio" value="#3674B5">Azul
+        <br>
+        <label>Texto:</label>
+        <input type="radio" value="#F5F5F5">Blanco
+        <input type="radio" value="#1D1616">Negro
+        <input type="radio" value="#FFEB00">Amarillo
+        <br>
+        <button type="button" onclick="colorFondo()">Aplicar Estilos:</button>
+    </form>
+</body>		
+</html>

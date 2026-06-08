@@ -1,0 +1,170 @@
+!A continuación encontrarás una guía paso a paso para configurar en Packet Tracer un escenario de DHCPv6 (tanto con estado como sin estado) y SLAAC en routers Cisco. El ejemplo se basa en la topología que muestras en la imagen, donde tenemos varias redes IPv6 y queremos que los PCs obtengan su configuración automáticamente.
+!! 1. Habilitar IPv6 en los routers
+
+! 1. Entra al **modo de configuración global** de cada router y habilita el enrutamiento IPv6:
+
+ipv6 unicast-routing
+
+
+! 2. **Asigna direcciones IPv6 a las interfaces** correspondientes. Por ejemplo, si en el Router0 la interfaz G0/0/0 conecta con la red 2001:B:B:B::/64, haz algo así:
+
+interface g0/0/0
+ipv6 address 2001:B:B:B::1/64
+ipv6 address FE80::1 link-local
+no shutdown
+
+interface g0/0/1
+ipv6 address 2001:C:C:C::1/64
+ipv6 address FE80::1 link-local
+no shutdown
+
+interface g0/0/2
+ipv6 address 2001:A:A:A::1/64
+ipv6 address FE80::1 link-local
+no shutdown
+
+! 3. Repite lo mismo en el Router1, si forma parte de la topología, asignando direcciones a sus interfaces según el esquema de red que hayas definido.
+
+!! 2. Configurar DHCPv6 **con estado** (Stateful)
+
+! Supongamos que en el Router0 queremos configurar DHCPv6 con estado para la red 2001:B:B:B::/64. El objetivo es que el PC de esa red reciba **dirección IPv6, DNS y dominio** por DHCPv6.
+
+! 1. **Crear el pool DHCPv6**:
+
+!ipv6 dhcp pool DHCPv6_STATEFUL
+!address prefix 2001:B:B:B::/64  <-- Prefijo que asignará direcciones
+!dns-server 2001:8888::         <-- DNS IPv6 (ejemplo)
+!domain-name Salesianos.com     <-- Dominio (ejemplo)
+
+ipv6 dhcp pool DHCPv6_STATEFUL
+address prefix 2001:B:B:B::/64 
+dns-server 2001:8888::         
+domain-name Salesianos.com
+
+
+! 2. **Activar el DHCPv6 stateful en la interfaz** que conecta al cliente (por ejemplo, G0/0/0):
+!   - Primero, indicamos que se use DHCPv6 con estado, para lo cual se debe activar la bandera “managed-config-flag”:
+
+interface g0/0/0
+ipv6 nd managed-config-flag
+
+!   - Luego, enlazamos la interfaz con el pool DHCPv6 que acabamos de crear:
+
+ipv6 dhcp server DHCPv6_STATEFUL
+
+! 3. Con esto, el **Router0** está listo para ofrecer direcciones IPv6 de manera **con estado** a los clientes en la red 2001:B:B:B::/64.
+
+! 4. **En el PC** (p.ej. PC0):
+!   - En la pestaña **Desktop** → **IP Configuration**,
+!   - Selecciona en la sección de IPv6 “**DHCP**” (o “**DHCPv6**” según la versión de Packet Tracer),
+!   - Verifica que el PC reciba una dirección en el rango 2001:B:B:B::/64, la DNS 2001:8888:: y el dominio “Salesianos.com”.
+
+!! 3. Configurar SLAAC + DHCPv6 **sin estado** (Stateless)
+
+! Para la red 2001:A:A:A::/64 (por ejemplo, la interfaz G0/0/2 del Router0) vamos a suponer que quieres usar **SLAAC** para la dirección IPv6 pero **DHCPv6 sin estado** para DNS y dominio.
+
+! 1. **Crear el pool DHCPv6** para la parte de información adicional (DNS, dominio), sin especificar un prefijo, porque la dirección la dará SLAAC:
+  
+ipv6 dhcp pool DHCPv6_STATELESS
+dns-server 2001:4444::
+domain-name Salesianos.es
+
+! 2. **Configurar la interfaz G0/0/2** (o la que corresponda a la red 2001:A:A:A::/64):
+!   - Indicamos que el router envíe la información “other-config-flag” (DHCP sin estado), pero no la “managed-config-flag”:
+
+interface g0/0/2
+ipv6 nd other-config-flag
+
+!   - Vinculamos esta interfaz con el pool DHCPv6 creado para la parte de DNS:
+
+ipv6 dhcp server DHCPv6_STATELESS
+
+!   - Asignamos la dirección IPv6 al router:
+
+ipv6 address 2001:A:A:A::1/64
+ipv6 address FE80::1 link-local
+
+! 3. En la **PC** de esa red (p.ej. PC2):
+!   - En **Desktop** → **IP Configuration**,
+!   - Selecciona en IPv6 “**Autoconfiguration (SLAAC)**” o “**DHCPv6**” sin estado (depende de la versión de Packet Tracer; a veces basta con “Auto”),
+!   - Verifica que la dirección IPv6 se forme por **SLAAC** (con el prefijo 2001:A:A:A::/64 y la EUI-64 en la parte final),
+!   - Y que el PC obtenga la configuración de **DNS** y **dominio** desde el router (por DHCPv6 sin estado).
+
+
+!! 4. Configurar SLAAC puro (sin DHCP)
+
+!En la red 2001:C:C:C::/64 (por ejemplo, interfaz G0/0/1 del Router0) supongamos que solo quieres SLAAC (sin DHCP). Entonces:
+
+! 1. **En la interfaz** G0/0/1 (o la que corresponda):
+
+interface g0/0/1
+ipv6 address 2001:C:C:C::1/64
+ipv6 address FE80::1 link-local
+no shutdown
+
+! 2. Asegúrate de **no configurar** ni `ipv6 dhcp server` ni las banderas “other-config-flag” o “managed-config-flag”. Por defecto, el router enviará el RA (Router Advertisement) con SLAAC habilitado.
+
+! 3. En el **PC** de esa red, configúralo en modo **Autoconfiguration** (SLAAC). Debería recibir una dirección `2001:C:C:C::xxxx`.
+
+
+!! 5. Verificación de la conectividad
+
+! 1. Desde cada PC, abre la ventana de **Command Prompt** (en la pestaña Desktop) y ejecuta:
+
+C:\> ipconfig /all
+
+!   Verifica la dirección IPv6 obtenida, el DNS y el dominio (si aplica).
+
+! 2. Prueba conectividad con **ping**:
+
+C:\> ping 2001:A:A:A::1
+C:\> ping 2001:B:B:B::1
+C:\> ping 2001:C:C:C::1
+
+!   Y si hay enrutamiento entre routers, prueba pings entre PCs de distintas redes.
+
+! 3. Si quieres probar la resolución DNS (cuando se configure un servidor DNS real o simulado), podrías hacer pruebas específicas; sin embargo, en Packet Tracer muchas veces se limita a la verificación de la dirección DNS en la configuración del PC.
+
+
+!! 6. Resumen de comandos clave en el router
+
+!- **Habilitar IPv6**:  
+
+ipv6 unicast-routing
+
+!- **Crear pool DHCPv6**:  
+
+ipv6 dhcp pool <NOMBRE_POOL>
+address prefix 2001:XXXX:XXXX:XXXX::/64
+dns-server 2001:XXXX::  (opcional)
+domain-name <DOMINIO>   (opcional)
+
+!- **Asignar pool a una interfaz**:  
+
+interface <interfaz>
+ipv6 dhcp server <NOMBRE_POOL>
+
+!- **Flags de DHCPv6**:
+!  - **Stateless**:  
+
+ipv6 nd other-config-flag
+
+!  - **Stateful**:  
+
+ipv6 nd managed-config-flag
+
+!- **Asignar direcciones a la interfaz**:  
+
+interface <interfaz>
+ipv6 address 2001:XXXX:XXXX:XXXX::1/64
+ipv6 address FE80::1 link-local
+
+
+!! 7. Consejos finales
+
+!- Asegúrate de que cada **red** (subred /64) tenga una **interfaz** en el router con dirección global unicast y link-local configurada.
+!- Habilita el **enrutamiento estático o dinámico** (según el escenario) para que los routers puedan llegar a las otras redes (si hay más de un router).
+!- En los PCs, revisa que en “**Config**” o “**Desktop → IP Configuration**” esté seleccionado el modo adecuado (SLAAC, DHCPv6, etc.).
+!- Verifica que las banderas **Managed** u **Other** estén configuradas solo cuando corresponda. No las combines incorrectamente (ej. no pongas las dos a la vez si no es necesario).
+
+!Con estos pasos deberías tener un escenario funcional de DHCPv6 **con estado**, **sin estado** y SLAAC puro en Cisco Packet Tracer. ¡Éxito con la práctica!

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio2</title>
+    <style>     
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: rgb(98, 185, 251);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+        
+        .cuadro {
+            background-color: #ffffff;
+            padding: 2em;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #5e5cc7;
+            margin-bottom: 1.5em;
+            font-weight: 600;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        input {
+            width: 375px;
+            padding: 0.8em;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        
+        button {
+            background-color: #5e5cc7;
+            color: white;
+            border: none;
+            padding: 1em 2em;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 1em 0;
+            width: 100%;
+            font-weight: 600;
+        }
+        
+        #mensaje {
+            margin-top: 1.5em;
+            border-radius: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="cuadro">
+        <h1>Cambiar fondo del cuadro de texto</h1>
+        <button onclick="cambiarFondo()">Cambiar fondo</button>
+        <label for="">Introduce texto:</label>
+        <input type="text" id="texto">
+        <p id="mensaje"></p>
+    </div>
+    <script>
+        function cambiarFondo(){
+            var texto = document.getElementById('texto');
+            texto.style.backgroundColor = 'yellow';
+
+            var elemento = document.getElementById('mensaje'); 
+            elemento.innerHTML = '<p>"¡El color del fondo ha cambiado!</p>';
+        }
+    </script>
+</body>
+</html>
+<!-- 
+Ejercicio 2: Cambiar el fondo de un cuadro de texto
+Crea una página HTML con un cuadro de texto <input> donde los usuarios puedan escribir algo, 
+junto con un botón que diga "Cambiar fondo".
+Cuando el usuario haga clic en el botón, cambia el color de fondo del cuadro de texto a amarillo 
+y muestra debajo del cuadro de texto un mensaje que diga: "¡El color del fondo ha cambiado!". 
+Usa getElementById para seleccionar tanto el cuadro de texto como la etiqueta donde se mostrará el mensaje.
+
+Requisitos:
+
+- Usa un <input> de tipo texto, un <button> y una etiqueta <p> vacía debajo del cuadro.
+
+- Cambia la propiedad style.backgroundColor del cuadro de texto al hacer clic en el botón.
+
+- Actualiza la etiqueta <p> con un mensaje usando innerHTML.
+ -->

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario con Validación</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        form {
+            background-color: #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        div {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #cccccc;
+            border-radius: 3px;
+        }
+        .error {
+            color: red;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Formulario con Validación</h1>
+    <form id="miFormulario">
+        <div>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre">
+            <span id="errorNombre" class="error"></span>
+        </div>
+        <div>
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password">
+            <span id="errorPassword" class="error"></span>
+        </div>
+        <div>
+            <label>
+                <input type="checkbox" id="terminos" name="terminos">
+                Acepto los términos y condiciones
+            </label>
+            <span id="errorTerminos" class="error"></span>
+        </div>
+        <div>
+            <label>Género:</label>
+            <label><input type="radio" name="genero" value="masculino"> Masculino</label>
+            <label><input type="radio" name="genero" value="femenino"> Femenino</label>
+            <label><input type="radio" name="genero" value="otro"> Otro</label>
+            <span id="errorGenero" class="error"></span>
+        </div>
+        <div>
+            <label for="pais">País:</label>
+            <select id="pais" name="pais">
+                <option value="">Selecciona un país</option>
+                <option value="espana">España</option>
+                <option value="mexico">México</option>
+                <option value="argentina">Argentina</option>
+                
+            </select>
+            <span id="errorPais" class="error"></span>
+        </div>
+        <div>
+            <label for="comentarios">Comentarios:</label>
+            <textarea id="comentarios" name="comentarios"></textarea>
+            <span id="errorComentarios" class="error"></span>
+        </div>
+
+        <!-- Botón para validar -->
+        <button type="button" onclick="validarFormulario()">Enviar</button>
+    </form>
+<script>
+    function validarFormulario(){
+        formularioValido = true
+
+        nombre = document.getElementById('nombre')
+        errorNombre = document.getElementById('errorNombre')
+
+        if(nombre.value.trim() == ''){
+            errorNombre.textContent = 'Por favor, ingrese su nombre';
+            formularioValido = false;
+        }else if(nombre.value.trim().length < 3){
+            errorNombre.textContent = 'Por favor, ingrese un nombre de al menos 3 caracteres';
+            formularioValido = false;
+        }else{
+            errorNombre.textContent = '';
+        }
+
+        password = document.getElementById('password')
+        errorPassword = document.getElementById('errorPassword')
+
+        if(password.value.trim() == ''){
+            errorPassword.textContent = 'Por favor, ingrese su contraseña';
+            formularioValido = false;
+        }else if(password.value.length < 8){
+            errorPassword.textContent = 'Por favor, ingrese una contraseña de al menos 8 caracteres';
+            formularioValido = false;
+        }else{
+            errorPassword.textContent = '';
+        }
+
+        terminos = document.getElementById('terminos')
+        errorTerminos = document.getElementById('errorTerminos')
+
+        if(!terminos.checked){
+            errorTerminos.textContent = 'Por favor, acepte los terminos y condiciones';
+            formularioValido = false;
+        }else{
+            errorTerminos.textContent = '';
+        }
+
+        generos = document.getElementsByName('genero')
+        errorGenero = document.getElementById('errorGenero')
+        generoSeleccionado = false
+        for(i=0; i < generos.length; i++){
+            if(generos[i].checked){
+                generoSeleccionado = true;
+                break
+            }
+        }
+        if(!generoSeleccionado){
+            errorGenero.textContent = 'Por favor, seleccione un género';
+            formularioValido = false;
+        }else{
+            errorGenero.textContent = '';
+        }
+
+        pais = document.getElementById('pais')
+        errorPais = document.getElementById('errorPais')
+        paisSeleccionado = false
+        
+        if(pais[0].selected){
+            errorPais.textContent = 'Por favor, seleccione un país';
+            formularioValido = false;
+        }else{
+            errorPais.textContent = '';
+        }
+
+        comentarios = document.getElementById('comentarios')
+        errorComentarios = document.getElementById('errorComentarios')
+
+        if(comentarios.value.trim() == ''){
+            errorComentarios.textContent = 'Por favor, ingrese un comentario';
+            formularioValido = false;
+        }else if(comentarios.value.length < 20){
+            errorComentarios.textContent = 'Por favor, ingrese un comentario de al menos 20 caracteres';
+            formularioValido = false;
+        }else{
+            errorComentarios.textContent = '';
+        }
+        
+        if (formularioValido) {
+                alert("Formulario enviado correctamente");
+        }
+    }
+</script>
+</body>
+</html>
+    
+    

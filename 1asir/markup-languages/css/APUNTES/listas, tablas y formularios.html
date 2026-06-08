@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listas, Tablas y Formularios en CSS</title>
+    <style>
+        /* === Estilos generales === */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .contenedor {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        .ejemplo {
+            padding: 20px;
+            margin: 10px 0;
+            background-color: #e0e0e0;
+            border: 1px solid #999;
+            border-radius: 5px;
+        }
+
+        /* === Listas === */
+        .lista-personalizada {
+            list-style-type: none; /* Elimina las viñetas por defecto */
+            padding-left: 0;
+        }
+
+        .lista-personalizada li {
+            background-color: #87ceeb;
+            margin: 5px 0;
+            padding: 10px;
+            border-left: 5px solid #333; /* Borde lateral */
+            transition: background-color 0.3s ease; /* Transición suave */
+        }
+
+        .lista-personalizada li:hover {
+            background-color: #ffcccb; /* Cambio de color al pasar el mouse */
+        }
+
+        .lista-iconos {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .lista-iconos li {
+            background-color: #98fb98;
+            margin: 5px 0;
+            padding: 10px 10px 10px 40px; /* Espacio para el icono */
+            position: relative;
+        }
+
+        .lista-iconos li::before {
+            content: "✔"; /* Icono personalizado */
+            position: absolute;
+            left: 10px;
+            color: #333;
+        }
+
+        /* === Tablas === */
+        .tabla-avanzada {
+            width: 100%;
+            border-collapse: collapse; /* Fusionar bordes de celdas */
+            margin: 20px 0;
+        }
+
+        .tabla-avanzada th, .tabla-avanzada td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .tabla-avanzada th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .tabla-avanzada tr:nth-child(even) {
+            background-color: #f2f2f2; /* Filas pares con fondo gris */
+        }
+
+        .tabla-avanzada tr:hover {
+            background-color: #ffcccb; /* Cambio de color al pasar el mouse */
+        }
+
+        .tabla-avanzada td:hover {
+            background-color: #add8e6; /* Cambio de color en la celda al pasar el mouse */
+        }
+
+        /* === Formularios === */
+        .formulario-ejemplo {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Espacio entre elementos */
+        }
+
+        .formulario-ejemplo input[type="text"],
+        .formulario-ejemplo input[type="email"],
+        .formulario-ejemplo textarea,
+        .formulario-ejemplo select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .formulario-ejemplo input[type="text"]:focus,
+        .formulario-ejemplo input[type="email"]:focus,
+        .formulario-ejemplo textarea:focus,
+        .formulario-ejemplo select:focus {
+            border-color: #0066cc; /* Cambio de color al enfocar */
+            outline: none; /* Elimina el contorno por defecto */
+            box-shadow: 0 0 5px rgba(0, 102, 204, 0.5); /* Sombra al enfocar */
+        }
+
+        .formulario-ejemplo button {
+            padding: 10px 20px;
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Transición suave */
+        }
+
+        .formulario-ejemplo button:hover {
+            background-color: #004499; /* Cambio de color al pasar el mouse */
+        }
+
+        .formulario-ejemplo label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .formulario-ejemplo .campo-obligatorio::after {
+            content: " *";
+            color: red; /* Indicador de campo obligatorio */
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Listas, Tablas y Formularios en CSS</h1>
+
+        <!-- Listas -->
+        <h2>Listas Personalizadas</h2>
+        <div class="ejemplo">
+            <ul class="lista-personalizada">
+                <li>Elemento 1</li>
+                <li>Elemento 2</li>
+                <li>Elemento 3</li>
+            </ul>
+        </div>
+
+        <h2>Listas con Iconos</h2>
+        <div class="ejemplo">
+            <ul class="lista-iconos">
+                <li>Elemento 1</li>
+                <li>Elemento 2</li>
+                <li>Elemento 3</li>
+            </ul>
+        </div>
+
+        <!-- Tablas -->
+        <h2>Tablas Avanzadas</h2>
+        <div class="ejemplo">
+            <table class="tabla-avanzada">
+                <thead>
+                    <tr>
+                        <th>Columna 1</th>
+                        <th>Columna 2</th>
+                        <th>Columna 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Fila 1, Celda 1</td>
+                        <td>Fila 1, Celda 2</td>
+                        <td>Fila 1, Celda 3</td>
+                    </tr>
+                    <tr>
+                        <td>Fila 2, Celda 1</td>
+                        <td>Fila 2, Celda 2</td>
+                        <td>Fila 2, Celda 3</td>
+                    </tr>
+                    <tr>
+                        <td>Fila 3, Celda 1</td>
+                        <td>Fila 3, Celda 2</td>
+                        <td>Fila 3, Celda 3</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Formularios -->
+        <h2>Formularios Estilizados</h2>
+        <div class="ejemplo">
+            <form class="formulario-ejemplo">
+                <label for="nombre" class="campo-obligatorio">Nombre:</label>
+                <input type="text" id="nombre" placeholder="Ingresa tu nombre" required>
+
+                <label for="email" class="campo-obligatorio">Email:</label>
+                <input type="email" id="email" placeholder="Ingresa tu email" required>
+
+                <label for="pais">País:</label>
+                <select id="pais">
+                    <option value="es">España</option>
+                    <option value="mx">México</option>
+                    <option value="ar">Argentina</option>
+                </select>
+
+                <label for="mensaje">Mensaje:</label>
+                <textarea id="mensaje" placeholder="Escribe tu mensaje"></textarea>
+
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

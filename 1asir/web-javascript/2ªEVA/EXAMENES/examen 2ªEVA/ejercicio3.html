@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Personalización de Perfil de Usuario</title>
+<script type="text/javascript">
+    
+    
+    function color_fondo(){
+        var indice = document.formulario.seleccion.selectedIndex;
+        
+        var color = document.formulario.seleccion.options[indice].value;
+        if (color == 'Rojo'){
+            document.body.style.backgroundColor = '#ff0000';
+        }else if(color == 'Verde'){
+            document.body.style.backgroundColor = '#00ff00';
+        }else if(color == 'Azul'){
+            document.body.style.backgroundColor = '#0000ff';
+        }
+    } 
+    function color_letras(){
+        var nombre_usu = document.formulario.nombre.value
+        if (document.formulario.colortexto[0].checked){
+            document.write(nombre_usu)
+            document.body.style.color = '#ffffff';
+        }if (document.formulario.colortexto[1].checked){
+            document.write(nombre_usu)
+            document.body.style.color = '#000000';
+        }if (document.formulario.colortexto[2].checked){
+            document.write(nombre_usu)
+            document.body.style.color = '#ffff00';
+        }
+    }
+
+
+</script>
+</head>
+<body>
+    <h2>Personalización de Perfil de Usuario</h2>
+    <form name="formulario">
+        <label for="nameInput">Nombre:</label>
+        <input name="nombre" type="text">
+        <br>
+        <label>Color de Fondo:</label>
+        <select name="seleccion" onchange="color_fondo()">
+            <option value="Rojo">Rojo</option>
+            <option value="Verde">Verde</option>
+            <option value="Azul">Azul</option>
+        </select>
+        <br>
+        <label>Color de Texto:</label>
+        <input name="colortexto" type="checkbox"> Blanco
+        <input name="colortexto" type="checkbox"> Negro
+        <input name="colortexto" type="checkbox"> Amarillo
+        <br>
+        <button type="button" onclick="color_letras()">Aplicar Estilos</button>
+    </form>
+</body>	

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Planificador de Dieta</title>
+  <style>
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+      text-align: center;
+      display: block;
+      align-content: center;
+      height: 100vh;
+    }
+    form{
+      border: 1px solid rgba(0, 0, 0, 0.137);
+      padding: 2em;
+      width: 20em;
+      margin: auto;
+      text-align: left;
+      border-radius: 20px;
+      box-shadow: 4px 6px 15px rgba(0, 0, 0, 0.426);
+    }
+  </style>
+</head>
+<body>
+  <h1>Planificador de Dieta Personalizada</h1>
+  <form>
+    <label for="peso">Peso (kg):</label>
+    <input type="number" id="peso" min="30" max="300"><br><br>
+
+    <label for="altura">Altura (cm):</label>
+    <input type="number" id="altura" min="100" max="250"><br><br>
+
+    <label for="edad">Edad:</label>
+    <input type="number" id="edad" min="18" max="100"><br><br>
+
+    <label for="sexo">Sexo:</label>
+    <select id="sexo">
+      <option value="">Seleccione...</option>
+      <option value="masculino">Masculino</option>
+      <option value="femenino">Femenino</option>
+    </select><br><br>
+
+    <label for="actividad">Nivel de actividad (1-5):</label>
+    <input type="range" id="actividad" min="1" max="5"><br><br>
+
+    <p>Objetivos:</p>
+    <input type="checkbox" name="Objetivo" id="perder"> Perder peso<br>
+    <input type="checkbox" name="Objetivo" id="ganar"> Ganar músculo<br>
+    <input type="checkbox" name="Objetivo" id="mantener"> Mantener peso<br><br>
+
+    <button type="button" onclick="calcularDieta()">Calcular</button>
+  </form>
+  <p id="resultado"></p>
+  <script>
+    function calcularDieta(){
+      var pesoinput = document.getElementById('peso');
+      var peso = parseFloat(pesoinput.value);
+      var alturainput = document.getElementById('altura');
+      var altura = parseFloat(alturainput.value);
+      var edadinput = document.getElementById('edad');
+      var edad = parseFloat(edadinput.value);
+
+      var sexo = document.getElementById('sexo');
+      var actividad = document.getElementById('actividad');
+      var Objetivos = document.getElementsByName('Objetivo');
+      
+      var resultado = document.getElementById('resultado');
+      var error = '';
+      var ObjetivoSeleccionado = false;
+      var formularioValido = true;
+
+      if(isNaN(peso)){
+        error += 'Rellene el campo peso<br>';
+        formularioValido = false;
+      }else if(peso < 30 || peso > 300){
+        error += 'El campo peso debe estar entre 30kg y 300kg<br>';
+        formularioValido = false;
+      }
+      if(isNaN(altura)){
+        error += 'Rellene el campo altura<br>';
+        formularioValido = false;
+      }else if(altura < 100 || altura > 250){
+        error += 'El campo altura debe estar entre 100cm y 250cm<br>';
+        formularioValido = false;
+      }
+      if(isNaN(edad)){
+        error += 'Rellene el campo edad<br>';
+        formularioValido = false;
+      }else if(edad < 18 || edad > 100){
+        error += 'El campo edad debe estar entre 18 y 100 años<br>';
+        formularioValido = false;
+      }
+      if(sexo[0].selected){
+        error += 'Seleccione un sexo<br>';
+        formularioValido = false;
+      }
+      if(actividad.value < 1 || actividad.value > 5){
+        error += 'El campo actividad debe estar entre 1 y 5<br>';
+        formularioValido = false;
+      }
+      for(var i=0; i < Objetivos.length; i++){
+        if(Objetivos[i].checked){
+          ObjetivoSeleccionado = true;
+          break;
+        }
+      }if(!ObjetivoSeleccionado){
+        error += 'Seleccione al menos un objetivo<br>';
+        formularioValido = false;
+      }
+      if(formularioValido){
+        var IMC = peso / ((altura/100)**2)
+        if(IMC < 18.5){
+          resultado.innerHTML = 'Bajo peso: IMC menor a 18.5';
+        }else if(IMC >= 18.5 && IMC <= 24.9){
+          resultado.innerHTML = 'Peso Normal: IMC entre 18.5 y 24.9';
+        }else if(IMC >= 25 && IMC <= 29.9){
+          resultado.innerHTML = 'Sobrepeso: IMC entre 25 y 29.9';
+        }if(IMC >= 30){
+          resultado.innerHTML = 'Obesidad: IMC mayor a 30';
+        }
+        resultado.style.color = 'green';
+      }else{
+        resultado.innerHTML = error;
+        resultado.style.color = 'red';
+      }
+    }
+  </script>
+</body>
+</html>

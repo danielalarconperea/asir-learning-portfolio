@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejercicio1</title>
+</head>
+<body>
+<script type="text/javascript">
+
+function contar (){
+    var contador=0, inicio = parseInt(prompt('dime el número de inicio del rango')), fin = parseInt(prompt('dime el número de fin del rango'));
+    for(i=inicio; i<=fin; i++){
+        if(i%2 ==0){
+            document.write('El número '+i+' es par <br>');
+            contador++;
+        }
+    }
+    document.write('<br>---------------------------------------------<br><br>');
+    document.write('Hay '+contador+' números pares en este rango');
+    }
+contar();
+
+</script>
+</body>
+</html>
+<!-- 
+Contar números pares en un rango
+Crea una función que reciba dos números, inicio y fin de un rango, 
+y devuelva cuántos números pares hay en ese rango. 
+La función debe usar un bucle para recorrer el rango.
+-->

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuración de Tema de Blog</title>
+    <style>
+        #tituloBlog {
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <h2>Configuración de Tema de Blog</h2>
+    <form name="form1">
+        <label for="titulo">Título del Blog:</label>
+        <input type="text" id="titulo" name="titulo"><br>
+        
+        <label>Fondo:</label>
+        <input type="radio" name="fondo" value="#E52020">Rojo
+        <input type="radio" name="fondo" value="#A0C878">Verde
+        <input type="radio" name="fondo" value="#3674B5">Azul
+        <br>
+        
+        <label>Texto:</label>
+        <input type="radio" name="texto" value="#F5F5F5">Blanco
+        <input type="radio" name="texto" value="#1D1616">Negro
+        <input type="radio" name="texto" value="#FFEB00">Amarillo
+        <br>
+        
+        <button type="button" onclick="aplicarEstilos()">Aplicar Estilos</button>
+    </form>
+
+    <div id="tituloBlog"></div>
+
+    <script>
+        function aplicarEstilos() {
+            var titulo = document.getElementById('titulo').value;
+            var fondo = document.querySelector('input[name="fondo"]:checked').value;
+            var texto = document.querySelector('input[name="texto"]:checked').value;
+
+            var tituloBlog = document.getElementById('tituloBlog');
+            tituloBlog.textContent = titulo;
+            tituloBlog.style.backgroundColor = fondo;
+            tituloBlog.style.color = texto;
+        }
+    </script>
+</body>
+</html>

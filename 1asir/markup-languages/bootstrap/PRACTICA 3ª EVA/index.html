@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+  <!-- Configuración básica del documento -->
+  <meta charset="UTF-8"/>
+  <title>Réplica AliExpress</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Inclusión de Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+  <!-- Inclusión de Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+  <!-- Inclusión de iconos Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Enlace a los estilos personalizados -->
+  <link rel="stylesheet" href="../css/estilos.css"/>
+
+  <!-- Icono de página -->
+  <link rel="icon" href="./IMG/icono pag.ico" type="icon">
+
+  <style>
+    body{
+      font-family: "TT Norms Pro", "Open Sans", Roboto, Arial, Helvetica, sans-serif, SimSun;
+    }
+    .contenedor-imagen-bienvenida1, .contenedor-imagen-bienvenida2, .contenedor-imagen-bienvenida3 {
+        transition: transform 0.3s ease-in-out;
+    }
+    .seccion-roja:hover .contenedor-imagen-bienvenida1 {
+        transform: translateY(-20px) rotate(7deg);
+    }
+    .seccion-roja:hover .contenedor-imagen-bienvenida2 {
+        transform: translateY(-20px) rotate(-16deg);
+    }
+    .seccion-roja:hover .contenedor-imagen-bienvenida3 {
+        transform: translateY(-20px) rotate(11deg);
+    }
+    
+    .rotar-10 {
+        transform: rotate(10deg);
+    }
+    .rotar-15 {
+        transform: rotate(15deg);
+    }
+    .rotar-neg-20 {
+        transform: rotate(-20deg);
+    }
+    .container {
+        max-width: 1650px;
+    }
+    .card:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease-in-out;
+    }
+    .tarjetas:hover {
+      background-color: #f2f2f2;
+      transition: background-color 0.3s ease-in-out;
+    }
+    .estrella{
+      font-size: 12px;
+    }
+    .ofertas:hover .botones{
+      display: flex;
+    }
+    .botones {
+      display: none;
+    }
+    .ofertas:hover{
+      border: #dee2e6 solid 1px;
+      border-color: #dee2e6;
+      border-radius: 15px;
+      position: absolute;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .text-small {
+      font-size: 12px;
+    }
+    .text-smaller {
+      font-size: 11px;
+    }
+    .opacity-75 {
+      color: #666;
+    }
+    .section-title {
+      font-size: 1rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .footer-link-list a {
+      color: inherit;
+    }
+    .footer-link-list a:hover {
+      text-decoration: underline;
+    }
+</style>
+ 
+</head>
+
+<body>
+
+  <!-- Barra de navegación -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+    <div class="container">
+
+      <!-- Logo de AliExpress -->
+      <a href="./index.html"><img src="./IMG/aliexpress titulo-Photoroom.png" alt="AliExpress" class="img-fluid" width="260"/></a>
+
+      <!-- Botón para menú colapsable en móviles -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>  
+      </button>
+
+      <!-- Contenido del navbar colapsable -->
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <!-- Formulario de búsqueda -->
+        <form class="input-group me-auto ms-lg-3" style="max-width: 1000px;">
+          <div class="form-control py-1 pe-1 border border-black rounded-pill">
+            <div class="row g-0">
+              <div class="col">
+                <!-- Input de búsqueda -->
+                <input class="form-control-plaintext ps-3 w-100" type="search" placeholder="fundas iphone 16 pro" aria-label="Buscar"/>
+              </div>
+              <div class="col-auto">
+                <!-- Botón para búsqueda por imagen -->
+                <button class="btn btn-outline-secondary border-0-secondary text-black border-0 rounded-5" type="submit"><i class="bi bi-image"></i></button>
+                <!-- Botón para búsqueda normal -->
+                <button class="btn btn-secondary border-0 bg-black border rounded-5" type="submit"><i class="bi bi-search px-2"></i></button>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Sección derecha del navbar -->
+        <div class="d-flex align-items-center">
+
+          <!-- Enlace para descargar la app -->
+          <div class="mx-3">
+            <a class="nav-link d-flex align-items-center p-0" href="#">
+              <i class="bi bi-qr-code-scan fs-3"></i>
+              <span class="d-none d-xl-block ms-1 text-nowrap lh-sm text-small">Descarga la app<br>de AliExpress</span>
+            </a>
+          </div>
+
+          <!-- Menú desplegable para idioma/país/moneda -->
+          <div class="me-3 dropdown">
+            <button class="btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+              <a class="nav-link d-flex align-items-center p-0" href="#">
+                <img src="IMG/bandera-españa.jpg" alt="Bandera ES" height="16px" class="me-1">
+                <span class="d-none d-xl-block text-nowrap lh-sm text-start text-small">Madrid/ES/<br><b>EUR</b><i class="bi bi-caret-down"></i></span>
+              </a>
+            </button>
+
+            <!-- Contenido del dropdown -->
+            <div class="dropdown-menu rounded-4" style="width: 300px;">
+              <div class="container px-3 py-2">
+                <span class="fs-5 fw-bold">Enviar a</span>
+
+                <!-- Selector de país -->
+                <div class="border border-secondary rounded-2 w-500 mt-2">
+                  <div class="dropdown">
+                    <button class="btn w-100 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="d-flex align-items-center">
+                        <img src="IMG/bandera-españa.jpg" alt="Bandera ES" height="15px" class="me-1">
+                        <span class="text-nowrap lh-sm text-start" style="font-size: 14px;">España</span>
+                        <i class="bi bi-caret-down ms-auto"></i>
+                      </div>
+                    </button>
+
+                    <!-- Lista de países -->
+                    <div class="dropdown-menu rounded-4 w-100">
+                      <div class="container px-3 py-2 overflow-y-auto" style="max-height: 300px;">
+
+                        <!-- Buscador dentro del dropdown -->
+                        <div class="rounded-3 mt-1 d-flex align-items-center sticky-top">
+                          <div class="row g-0 rounded-3 mb-1" style="background-color: #dedede;">
+                            <div class="col-auto">
+                              <button class="btn btn-outline-secondary border-0" type="submit"><i class="bi bi-search p-0"></i></button>
+                            </div>
+                            <div class="col">
+                              <input class="form-control-plaintext" type="search" placeholder="" aria-label="Buscar"/>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">Recommend</span></div>
+                        <hr class="p-0 m-0">
+                        <!-- Otras opciones de país -->
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-estados-unidos-de-américa.png" alt="Bandera ES" width="22.5px" class="me-1">Estados Unidos de América</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-españa.jpg" alt="Bandera ES" width="22.5px" class="me-1">España</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-francia.png" alt="Bandera ES" width="22.5px" class="me-1">Francia</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-reino-unido.png" alt="Bandera ES" width="22.5px" class="me-1">Reino Unido de Gran Bretaña e Irlanda del Norte</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-brasil.png" alt="Bandera ES" width="22.5px" class="me-1">Brasil</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-corea-del-sur.png" alt="Bandera ES" width="22.5px" class="me-1">República de Corea</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-estados-unidos-de-américa.png" alt="Bandera ES" width="22.5px" class="me-1">Estados Unidos de América</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-españa.jpg" alt="Bandera ES" width="22.5px" class="me-1">España</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-francia.png" alt="Bandera ES" width="22.5px" class="me-1">Francia</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-reino-unido.png" alt="Bandera ES" width="22.5px" class="me-1">Reino Unido de Gran Bretaña e Irlanda del Norte</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-brasil.png" alt="Bandera ES" width="22.5px" class="me-1">Brasil</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-corea-del-sur.png" alt="Bandera ES" width="22.5px" class="me-1">República de Corea</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-estados-unidos-de-américa.png" alt="Bandera ES" width="22.5px" class="me-1">Estados Unidos de América</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-españa.jpg" alt="Bandera ES" width="22.5px" class="me-1">España</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-francia.png" alt="Bandera ES" width="22.5px" class="me-1">Francia</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-reino-unido.png" alt="Bandera ES" width="22.5px" class="me-1">Reino Unido de Gran Bretaña e Irlanda del Norte</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-brasil.png" alt="Bandera ES" width="22.5px" class="me-1">Brasil</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-corea-del-sur.png" alt="Bandera ES" width="22.5px" class="me-1">República de Corea</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-estados-unidos-de-américa.png" alt="Bandera ES" width="22.5px" class="me-1">Estados Unidos de América</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-españa.jpg" alt="Bandera ES" width="22.5px" class="me-1">España</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-francia.png" alt="Bandera ES" width="22.5px" class="me-1">Francia</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-reino-unido.png" alt="Bandera ES" width="22.5px" class="me-1">Reino Unido de Gran Bretaña e Irlanda del Norte</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-brasil.png" alt="Bandera ES" width="22.5px" class="me-1">Brasil</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;"><img src="IMG/bandera-corea-del-sur.png" alt="Bandera ES" width="22.5px" class="me-1">República de Corea</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Selector de provincias -->
+                <div class="border border-secondary rounded-2 w-500 mt-2">
+                  <div class="dropdown">
+                    <button class="btn w-100 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="d-flex align-items-center">
+                        <span class="text-nowrap lh-sm text-start" style="font-size: 14px;">Madrid</span>
+                        <i class="bi bi-caret-down ms-auto"></i>
+                      </div>
+                    </button>
+
+                    <!-- Lista de provincias -->
+                    <div class="dropdown-menu rounded-4 w-100">
+                      <div class="container px-3 py-2 overflow-y-auto" style="max-height: 300px;">
+
+                        <!-- Buscador dentro del dropdown -->
+                        <div class="rounded-3 mt-1 d-flex align-items-center sticky-top">
+                          <div class="row g-0 rounded-3 mb-1" style="background-color: #dedede;">
+                            <div class="col-auto">
+                              <button class="btn btn-outline-secondary border-0" type="submit"><i class="bi bi-search p-0"></i></button>
+                            </div>
+                            <div class="col">
+                              <input class="form-control-plaintext" type="search" placeholder="" aria-label="Buscar"/>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">A</span></div>
+                        <hr class="p-0 m-0">
+                        <!-- Otras opciones de provincias -->
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">A Coruña</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Alacant/Alicante</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Albacete</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Almería</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Asturias</div>
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">B</span></div>
+                        <hr class="p-0 m-0">
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Badajoz</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Balearic Islands</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Barcelona</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Burgos</div>
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">C</span></div>
+                        <hr class="p-0 m-0">
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cantabria                          </div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Castelló/Castellón                          </div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Ceuta</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Ciudad Real                          </div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cuenca</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cáceres</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cádiz</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Córdoba</div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                
+                <!-- Selector de ciudades -->
+                <div class="border border-secondary rounded-2 w-500 mt-2">
+                  <div class="dropdown">
+                    <button class="btn w-100 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="d-flex align-items-center">
+                        <span class="text-nowrap lh-sm text-start" style="font-size: 14px;">Madrid</span>
+                        <i class="bi bi-caret-down ms-auto"></i>
+                      </div>
+                    </button>
+
+                    <!-- Lista de ciudades -->
+                    <div class="dropdown-menu rounded-4 w-100">
+                      <div class="container px-3 py-2 overflow-y-auto" style="max-height: 300px;">
+
+                        <!-- Buscador dentro del dropdown -->
+                        <div class="rounded-3 mt-1 d-flex align-items-center sticky-top">
+                          <div class="row g-0 rounded-3 mb-1" style="background-color: #dedede;">
+                            <div class="col-auto">
+                              <button class="btn btn-outline-secondary border-0" type="submit"><i class="bi bi-search p-0"></i></button>
+                            </div>
+                            <div class="col">
+                              <input class="form-control-plaintext" type="search" placeholder="" aria-label="Buscar"/>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">A</span></div>
+                        <hr class="p-0 m-0">
+                        <!-- Otras opciones de ciudades -->
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Ajalvir</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Alameda del Valle</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Alcalá de Henares</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Alcobendas</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Alcorcón</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Aldea del Fresno</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Algete</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Alpedrete</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Ambite</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Anchuelo</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Aranjuez</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Arganda del Rey</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Arroyomolinos</div>
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">B</span></div>
+                        <hr class="p-0 m-0">
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Batres</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Becerril de la Sierra</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Belmonte de Tajo</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Berzosa del Lozoya</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Boadilla del Monte</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Braojos</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Brea de Tajo</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Brunete</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Buitrago del Lozoya</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Bustarviejo</div>
+                        <div class="mt-1 d-flex align-items-center"><span class="fw-bold py-2" style="font-size: 13px;">C</span></div>
+                        <hr class="p-0 m-0">
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cabanillas de la Sierra</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cadalso de los Vidrios</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Camarma de Esteruelas</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Campo Real</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Canencia</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Carabaña</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Casarrubuelos</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cenicientos</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cercedilla</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cervera de Buitrago</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Chapinería</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Chinchón</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Ciempozuelos</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cobeña</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Collado Mediano</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Collado Villalba</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Colmenar Viejo</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Colmenar de Oreja</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Colmenar del Arroyo</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Colmenarejo</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Corpa</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Coslada</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Cubas de la Sagraºº</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Selector de idioma -->
+                <div class="mt-3"></div>
+                <span class="fs-5 fw-bold">Idioma</span>
+                <div class="border border-secondary rounded-2 w-500 mt-2">
+                  <div class="dropdown">
+                    <button class="btn w-100 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="d-flex align-items-center">
+                        <span class="text-nowrap lh-sm text-start" style="font-size: 14px;">Español</span>
+                        <i class="bi bi-caret-down ms-auto"></i>
+                      </div>
+                    </button>
+
+                    <!-- Lista de idioma -->
+                    <div class="dropdown-menu rounded-4 w-100">
+                      <div class="container px-3 py-2 overflow-y-auto" style="max-height: 300px;">
+
+                        <!-- Buscador dentro del dropdown -->
+                        <div class="rounded-3 mt-1 d-flex align-items-center sticky-top">
+                          <div class="row g-0 rounded-3 mb-1" style="background-color: #dedede;">
+                            <div class="col-auto">
+                              <button class="btn btn-outline-secondary border-0" type="submit"><i class="bi bi-search p-0"></i></button>
+                            </div>
+                            <div class="col">
+                              <input class="form-control-plaintext" type="search" placeholder="" aria-label="Buscar"/>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Otras opciones de idioma -->
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">English</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Русский</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Español</div>
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">Français</div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Selector de moneda -->
+                <div class="mt-3"></div>
+                <span class="fs-5 fw-bold">Moneda</span>
+                <div class="border border-secondary rounded-2 w-500 mt-2">
+                  <div class="dropdown">
+                    <button class="btn w-100 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <div class="d-flex align-items-center">
+                        <span class="text-nowrap lh-sm text-start" style="font-size: 14px;">EUR (Euro)</span>
+                        <i class="bi bi-caret-down ms-auto"></i>
+                      </div>
+                    </button>
+
+                    <!-- Lista de moneda -->
+                    <div class="dropdown-menu rounded-4 w-100">
+                      <div class="container px-3 py-2 overflow-y-auto" style="max-height: 300px;">
+
+                        <!-- Buscador dentro del dropdown -->
+                        <div class="rounded-3 mt-1 d-flex align-items-center sticky-top">
+                          <div class="row g-0 rounded-3 mb-1" style="background-color: #dedede;">
+                            <div class="col-auto">
+                              <button class="btn btn-outline-secondary border-0" type="submit"><i class="bi bi-search p-0"></i></button>
+                            </div>
+                            <div class="col">
+                              <input class="form-control-plaintext" type="search" placeholder="" aria-label="Buscar"/>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Otras opciones de moneda -->
+                        <div class="dropdown-item rounded-2 mt-1 d-flex align-items-center p-1 text-truncate" style="font-size: 14px;">EUR (Euro)</div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="btn btn-secondary bg-black rounded-pill align-items-center text-center mt-3 w-100 fw-bold">Guardar</div>
+                
+
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Enlace para login o registro -->
+          <div class="me-3">
+            <a class="nav-link d-flex align-items-center p-0" href="./iniciar sesión.html">
+              <i class="bi bi-person fs-3"></i>
+              <span class="d-none d-xl-block ms-1 text-nowrap lh-sm text-small">¡Bienvenido<br><b>Identifícate/Regístrate</b></span>
+            </a>
+          </div>
+
+          <!-- Enlace al carrito -->
+          <div>
+            <a class="nav-link d-flex align-items-center p-0" href="#">
+              <i class="bi bi-cart2 fs-3"></i>
+              <span class="d-none d-xl-block ms-1 text-nowrap fw-bold text-small">
+                <span class="border rounded-pill px-2 py-0 me-1 text-center text-white bg-black d-inline-block">0</span><br>Cesta
+              </span>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- Carrusel de anuncio -->
+  <div id="carouselExampleIndicators" class="carousel slide p-0 m-0" data-bs-ride="carousel"> <!-- data-bs-ride="carousel" -->
+    <div class="carousel-indicators m-0">
+      <button type="button" style="width: 40px; height: 4px;" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" style="width: 40px; height: 4px;" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    </div>
+    <div class="carousel-inner" style="background-color: #cff8da;">
+      <div class="carousel-item active" style="background-color: #cff8da;"> 
+        <div class="container px-4">
+          <div class="row" style="min-height: 405px;">
+            
+            <div class="col mt-5">
+              <span class="fs-5 fw-bold d-block" style="word-spacing: 1px;">La Promo Termina: 20 abr., 23:59 CET</span>
+              <span class="fs-2 fw-bold d-block my-3 text-success" style="word-spacing: 1px;">HASTA <span class="fw-bolder" style="color: #fe5ac6;">-60%</span> DTO. <i class="bi bi-arrow-right-circle-fill"></i></span>
+              
+
+              <div class="row g-3 mb-3 mt-auto">
+        
+                <div class="col-md-4 col-sm-6 col-12 h-100">
+                  <div class="" style="background-color: #cee0fe; padding: 1px 1px 9px 1px; height: 141px;">
+                    <div class="text-center h-100 m-1 align-items-center justify-content-center d-flex flex-column" style="background-color: #ffffff;"> 
+                      <span class="d-block fs-4 fw-bold mb-0" style="color: #1e6458;">-3€</span>
+                      <span class="d-block small mb-0" style="color: #1e645890;">pedidos +29€</span>
+                      <span class="small fw-bold mb-0" style="color: #1e6458;">Código: ASEOS03</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 h-100">
+                  <div class="" style="background-color: #ebd1ff; padding: 1px;">
+                    <div class="row g-0 m-1">
+                      <div class="col-6 d-flex align-items-center justify-content-center">
+                        <img src="./IMG/ofertas top.webp" alt="" class="img-fluid" style="min-width: 100px;">
+                      </div>
+                      <div class="col-6 d-flex flex-column justify-content-center p-1">
+                        <span class="d-block fs-7 fw-bold text-center align-items-top mb-auto me-auto" style="color: #753c80;">Ofertas top</span>
+                        <div class="fs-7 fw-bold text-start" style="color: #753c80;">
+                          <span class="text-light p-1 m-1" style="background-color: #504960;">1,07€</span>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-12 h-100">
+                  <div class="" style="background-color: #ffeacf; padding: 1px;">
+                    <div class="row g-0 m-1">
+                      <div class="col-6 d-flex align-items-center justify-content-center">
+                        <img src="./IMG/deporte y ocio.webp" alt="" class="img-fluid" style="min-width: 100px;">
+                      </div>
+                      <div class="col-6 d-flex flex-column justify-content-center p-1">
+                        <span class="d-block fs-7 fw-bold text-center align-items-top mb-auto me-auto" style="color: #b86e49;">Deporte y ocio</span>
+                        <div class="fs-7 fw-bold text-start" style="color: #753c80;">
+                          <span class="text-light p-1 m-1" style="background-color: #504960;">26,17€</span>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+                  
+              </div> 
+            
+            </div>
+            <!-- Imagen de conejo-fondo -->
+            <div class="col-auto d-none d-lg-flex h-auto align-items-end"> 
+              <img src="./IMG/conejo-fondo.png" alt="" class="img-fluid mt-auto" width="400px"> 
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección de Bienvenida -->
+      <div class="carousel-item container-fluid p-4 p-md-5 position-relative overflow-hidden seccion-roja" style="min-height: 405px; background-color: #e01a2b;">
+        <div class="row align-items-center justify-content-center mx-auto g-5" style="max-width: 1320px;">
+            <!-- Imagen de fondo -->
+            <div class="col-lg-3 col-12 text-center mb-5 mb-md-0 d-flex justify-content-center">
+              <div class="contenedor-imagen-bienvenida1 d-inline-block position-relative rotar-10 mb-md-0 mb-5" style="min-width: 300px; min-height: 260px; top: 90px;">
+                <span class="position-absolute z-1 bg-light text-black px-2 py-1 small fw-bolder" style="left: 0px; top: 0px;">0,76€</span>
+                <span class="discount-circle position-absolute z-2 bg-danger text-white rounded-circle d-flex align-items-center justify-content-center fs-1 fw-bold border border-5 border-white" style="top: -70px; right: -70px; width: 140px; height: 140px;">-59%</span>
+                <img src="./IMG/bienvenida_1.webp" alt="" class="d-block img-fluid border border-5 border-light" style="width: 367px; cursor: pointer;"/>
+              </div>
+            </div>
+            <!-- Texto de bienvenida -->
+            <div class="col-lg-4 col-12 text-center text-white pt-5 pt-lg-0 mx-auto z-3">
+              <h2 class="fw-bold fs-1 mb-1">Dto. Bienvenida</h2> <p class="mb-4 fs-4">Especial para nuevo comprador</p> 
+              <button class="btn btn-dark bg-black fw-bold border-0 rounded-0" style="padding: 0.6rem 2.5rem;">Comprar</button>
+            </div>
+            <!-- Imagen de fondo -->
+            <div class="col-lg-3 col-12 text-center mb-5">
+                <div class="position-relative d-flex justify-content-center align-items-center" style="min-height: 260px;">
+                    <div class="contenedor-imagen-bienvenida3 d-inline-block position-relative position-absolute rotar-15 z-2 position-absolute start-50" style="max-width: 240px; top: 100px;">
+                      <span class="position-absolute z-1 bg-light text-black px-2 py-1 small fw-bolder" style="left: 0px; top: 0px;">7,55€</span>
+                      <img src="./IMG/bienvenida_3 (2).webp" alt="" class="d-block img-fluid border border-5 border-light" style="max-width: 287px; cursor: pointer;"/>
+                    </div>
+                    <div class="contenedor-imagen-bienvenida2 d-inline-block position-relative position-absolute rotar-neg-20 z-2  position-absolute end-50"  style="max-width: 250px; top: 80px;">
+                      <span class="position-absolute z-1 bg-light text-black px-2 py-1 small fw-bolder" style="left: 0px; top: 0px;">1,91€</span>
+                      <img src="./IMG/bienvenida_2.webp" alt="" class="d-block img-fluid border border-5 border-light" style="max-width: 294px; cursor: pointer;"/>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <section class="d-flex align-items-center" style="background-color: #f5f5f5; height: 48px;">
+    <div class="container">
+      <div class="row text-center text-md-start" style="color: #510d0a; font-size: 14px;"> 
+        <div class="col-md-4 d-flex justify-content-center align-items-center mb-3 mb-md-0"> 
+          <i class="bi bi-truck-front-fill"></i> <span class="fw-bold">&nbsp;Envío gratis</span> <span class="d-none d-lg-flex">&nbsp;En todos los artículos Choice</span>
+        </div>
+
+        <div class="col-md-4 d-flex justify-content-center align-items-center mb-3 mb-md-0">
+          <i class="bi bi-box-seam-fill"></i> <span class="fw-bold">&nbsp;Entrega rápida</span> <span class="d-none d-lg-flex">&nbsp;Reembolso por fallo de entrega</span>
+        </div>
+
+        <div class="col-md-4 d-flex justify-content-center align-items-center mb-3 mb-md-0">
+          <i class="bi bi-arrow-return-left"></i> <span class="fw-bold">&nbsp;Devoluciones gratis</span> <span class="d-none d-lg-flex">&nbsp;En millones de artículos</span>
+        </div>
+
+      </div> 
+    </div> 
+  </section>
+
+
+
+
+  <!-- Sección de Ofertas del día -->
+  <section class="py-5">
+    <div class="container">
+      <h2 class="mb-4 fw-bold text-center">Ofertas de hoy</h2>
+      <div class="row g-4">
+        <!-- Tarjeta 1 -->
+        <div class="col-12 col-lg-4 mb-4">
+          <div class="tarjetas border p-4">
+            <div class="row text-center p-3">
+              <div class="fw-bold fs-4">Pack de ofertas</div>
+                <div class="my-2">
+                  <span class="fw-bold border rounded-pill fs-6 p-2" style="background-color: #fff6de;">
+                    <i class="bi bi-bag-check-fill mx-1 fs-5" style="color: #f97c06;"></i>3+ desde 2,39€<i class="bi bi-caret-right ms-3 me-1 fs-6"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="row g-3">
+                <div class="col-6"><a href="./ProductoAjolote.html" style="text-decoration: none;">
+                  <div class="bg-white card h-100 p-2 border-0 rounded-0">
+                    <img src="./IMG/pack ofertas 1.webp" class="card-img-top rounded-0" alt="Producto 1"/>
+                    <div class="card-body py-2 px-0">
+                      <h5 class="card-title fs-6 text-truncate">Axolotl-juguetes de Peluche de 30cm para niños, muñecos de animales de Peluche Kawaii Axolotl, juego suave, regalo de cumpleaños para niños, regalo de Navidad
+                      </h5>
+                      <p class="card-text pb-0 mb-0">
+                        <span class="fw-bold fs-5 text-danger">6,29€</span><span class="opacity-50 ms-2 text-decoration-line-through">18,91€</span>
+                      </p>
+                      <i class="bi bi-star-fill text-warning me-1 text-small"></i><span class="fw-bold" style="font-size: 14px;">4.6</span> <span class="opacity-50 mx-1">|</span> <span class="fs-7">1000+ vendidos</span>
+                    </div>
+                  </div></a>
+                </div>
+                <div class="col-6">
+                  <div class="bg-white card h-100 p-2 border-0 rounded-0">
+                      <img src="./IMG/pack ofertas 2.webp" class="card-img-top rounded-0" alt="Producto 1"/>
+                      <div class="card-body py-2 px-0">
+                        <h5 class="card-title fs-6 text-truncate">Juguete de peluche de pitón Artificial, serpiente larga, amarillo, naranja, verde, juguete de peluche de pitón, decorar la casa, decoraciones navideñas</h5>
+                        <p class="card-text pb-0 mb-0">
+                          <span class="fw-bold fs-5 text-danger">2,94€</span><span class="opacity-50 ms-2 text-decoration-line-through">6,74€</span>
+                        </p>
+                        <i class="bi bi-star-fill text-warning me-1 text-small"></i><span class="fw-bold" style="font-size: 14px;">4.6</span> <span class="opacity-50 mx-1">|</span> <span class="fs-7">1000+ vendidos</span>
+                      </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+          
+        </div>
+        <!-- Tarjeta 2 -->
+        <div class="col-12 col-lg-4 mb-4">
+          <div class="tarjetas border p-4">
+            <div class="row text-center p-3">
+              <div class="fw-bold fs-4">SuperOfertas</div>
+                <div class="my-2">
+                  <span class="fw-bold border rounded-pill fs-6 p-2" style="background-color: #feecec;">
+                    <i class="bbi bi-clock-fill ms-1 me-2 fs-5" style="color: #f74e5a"></i>Acaba en: 21:51:50<i class="bi bi-caret-right ms-3 me-1 fs-6"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="bg-white card h-100 p-2 border-0 rounded-0">
+                    <img src="./IMG/superofertas 1.webp" class="card-img-top rounded-0" alt="Producto 1"/>
+                    <div class="card-body pt-2 pb-0 px-0">
+                      <h5 class="card-title fs-6 text-truncate">4 Piezas Decoración De Gatitos En Miniatura Juego De Animales Figura De Animal De Jardín De Hadas Topper De Pastel De Gatos De Polivinilo Escritorio Accesorios</h5>
+                      <p class="card-text pb-0 mb-0">
+                        <span class="fw-bold fs-5">6,87€</span><span class="opacity-50 ms-2 text-decoration-line-through">14,74€</span>
+                      </p>
+                      <div class="mt-2">
+                        <span class="text-white bg-danger" style="padding: 0px 3px 3px 3px;">-53%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="bg-white card h-100 p-2 border-0 rounded-0">
+                    <img src="./IMG/superofertas 2.webp" class="card-img-top rounded-0" alt="Producto 1"/>
+                    <div class="card-body pt-2 pb-0 px-0">
+                      <h5 class="card-title fs-6 text-truncate">Set de 4 pinzas profesionales, ideal para eliminar pelos sueltos de las cejas</h5>
+                      <p class="card-text pb-0 mb-0">
+                        <span class="fw-bold fs-5">5,14€</span><span class="opacity-50 ms-2 text-decoration-line-through">13,11€</span>
+                      </p> <div class="mt-2">
+                        <span class="text-white bg-danger" style="padding: 0px 3px 3px 3px;">-60%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+          
+        </div>
+        <!-- Tarjeta 3 -->
+        <div class="col-12 col-lg-4 mb-4">
+          <div class="tarjetas border p-4">
+            <div class="row text-center p-3">
+              <div class="fs-4"><img src="./IMG/big save t.avif" alt="" width="100px"></div>
+                <div class="my-2">
+                  <span class="fw-bold border rounded-pill fs-6 p-2" style="background-color: #fff6de;">
+                    <i class="bi bi-bag-check-fill mx-1 fs-5" style="color: #f97c06;"></i>3+ desde 2,39€<i class="bi bi-caret-right mx-1 fs-6"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="bg-white card h-100 p-2 border-0 rounded-0">
+                    <img src="./IMG/big save 1.webp" class="card-img-top rounded-0" alt="Producto 1"/>
+                    <div class="card-body py-2 px-0">
+                      <h5 class="card-title fs-6 text-truncate">Bridas de nailon para el hogar y la Oficina, cintas ajustables con autosujeción, lazo de sujeción, de plástico reutilizable, 1000 piezas</h5>
+                      <p class="card-text pb-0 mb-0">
+                        <span class="fw-bold fs-5">0,99€</span><span class="opacity-50 ms-2 text-decoration-line-through">1,45€</span>
+                      </p>
+                      <span class="text-danger">Ahorras <span class="fw-bold">0,46€</span></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="bg-white card h-100 p-2 border-0 rounded-0">
+                      <img src="./IMG/big save 2.webp" class="card-img-top rounded-0" alt="Producto 1"/>
+                      <div class="card-body py-2 px-0">
+                        <h5 class="card-title fs-6 text-truncate">NNBILI-Cable de carga súper rápida de 120W, pantalla Digital en tiempo Real, Cable de datos USB A a tipo C para teléfonos iPhone y Android Universal</h5>
+                        <p class="card-text pb-0 mb-0">
+                          <span class="fw-bold fs-5">1,59€</span><span class="opacity-50 ms-2 text-decoration-line-through">4,02€</span>
+                        </p>
+                        <span class="text-danger">Ahorras <span class="fw-bold">2,43€</span></span>
+                      </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección "Seguro que te gusta" -->
+  <section class="container">
+      <h2 class="mb-4 fw-bold text-center">Seguro que te gusta</h2>
+      <div class="row g-1 mb-5 pb-3">
+
+        <!-- Producto 1 -->
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
+          <div class="ofertas py-3 ps-3 bg-white">
+            <img src="./IMG/producto1.webp" alt="Packs de ofertas" class="img-fluid rounded-3" width="235px"/>
+            
+              <div>
+                  <span class="d-block text-truncate mt-1" style="font-size: 14px;">CHRLCK-camisetas de secado rápido ...</span>
+                  
+                  <div class="d-flex align-items-center">
+                      <div>
+                        <i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i>
+                      </div>
+                      <span class="ms-2 opacity-50 text-small">10.000+ vendidos</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <h4 class="mb-0 me-2 fw-bolder" style="font-size: 20px;">3,45€</h4>
+                    <span class="opacity-50 text-decoration-line-through">8,41€</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                      <span class="text-danger fst-italic fw-bold text-small">Dto. Bienvenida</span><span class="mx-1 text-danger">•</span>
+                      <span class="badge bg-danger" style="background-color: #dc3545; font-size: 10px;">Ahorros</span><span class="mx-1 text-danger">•</span>
+                      <span class="text-danger fw-bolder text-small">-58%</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                       <span class="badge me-1" style="background-color: #ffc107; color: #212529; font-size: 10px;">Choice</span>
+                      <span style="font-size: 14px;">Envío gratis</span>
+                  </div>
+                  <div class="botones mt-2">
+                      <button class="btn btn-dark rounded-pill fw-bolder me-2" style="background-color: #212529; font-size: 12px;">Previsualizar</button>
+                      <button class="btn btn-dark rounded-pill fw-bolder" style="background-color: #212529; font-size: 12px;">Artículos similares</button>
+                  </div>
+              </div>
+            
+          </div>
+        </div>
+        
+        <!-- Producto 2 -->
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
+          <div class="ofertas py-3 ps-3 bg-white">
+            <img src="./IMG/producto 2.webp" alt="Packs de ofertas" class="img-fluid rounded-3" width="235px"/>
+            
+              <div>
+                  <span class="d-block text-truncate mt-1" style="font-size: 14px;">CHRLCK-camisetas de secado rápido ...</span>
+                  
+                  <div class="d-flex align-items-center">
+                      <div>
+                        <i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i>
+                      </div>
+                      <span class="ms-2 opacity-50 text-small">10.000+ vendidos</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <h4 class="mb-0 me-2 fw-bolder" style="font-size: 20px;">3,45€</h4>
+                    <span class="opacity-50 text-decoration-line-through">8,41€</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                      <span class="text-danger fst-italic fw-bold text-small">Dto. Bienvenida</span><span class="mx-1 text-danger">•</span>
+                      <span class="badge bg-danger" style="background-color: #dc3545; font-size: 10px;">Ahorros</span><span class="mx-1 text-danger">•</span>
+                      <span class="text-danger fw-bolder text-small">-58%</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                       <span class="badge me-1" style="background-color: #ffc107; color: #212529; font-size: 10px;">Choice</span>
+                      <span style="font-size: 14px;">Envío gratis</span>
+                  </div>
+                  <div class="botones mt-2">
+                      <button class="btn btn-dark rounded-pill fw-bolder me-2" style="background-color: #212529; font-size: 12px;">Previsualizar</button>
+                      <button class="btn btn-dark rounded-pill fw-bolder" style="background-color: #212529; font-size: 12px;">Artículos similares</button>
+                  </div>
+              </div>
+            
+          </div>
+        </div>
+
+        <!-- Producto 3 -->
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
+          <div class="ofertas py-3 ps-3 bg-white">
+            <img src="./IMG/producto 3.webp" alt="Packs de ofertas" class="img-fluid rounded-3" width="235px"/>
+            
+              <div>
+                  <span class="d-block text-truncate mt-1" style="font-size: 14px;">CHRLCK-camisetas de secado rápido ...</span>
+                  
+                  <div class="d-flex align-items-center">
+                      <div>
+                        <i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i>
+                      </div>
+                      <span class="ms-2 opacity-50 text-small">10.000+ vendidos</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <h4 class="mb-0 me-2 fw-bolder" style="font-size: 20px;">3,45€</h4>
+                    <span class="opacity-50 text-decoration-line-through">8,41€</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                      <span class="text-danger fst-italic fw-bold text-small">Dto. Bienvenida</span><span class="mx-1 text-danger">•</span>
+                      <span class="badge bg-danger" style="background-color: #dc3545; font-size: 10px;">Ahorros</span><span class="mx-1 text-danger">•</span>
+                      <span class="text-danger fw-bolder text-small">-58%</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                       <span class="badge me-1" style="background-color: #ffc107; color: #212529; font-size: 10px;">Choice</span>
+                      <span style="font-size: 14px;">Envío gratis</span>
+                  </div>
+                  <div class="botones mt-2">
+                      <button class="btn btn-dark rounded-pill fw-bolder me-2" style="background-color: #212529; font-size: 12px;">Previsualizar</button>
+                      <button class="btn btn-dark rounded-pill fw-bolder" style="background-color: #212529; font-size: 12px;">Artículos similares</button>
+                  </div>
+              </div>
+            
+          </div>
+        </div>
+
+          
+        <!-- Producto 4 -->
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
+          <div class="ofertas py-3 ps-3 bg-white">
+            <img src="./IMG/producto 4.webp" alt="Packs de ofertas" class="img-fluid rounded-3" width="235px"/>
+            
+              <div>
+                  <span class="d-block text-truncate mt-1" style="font-size: 14px;">CHRLCK-camisetas de secado rápido ...</span>
+                  
+                  <div class="d-flex align-items-center">
+                      <div>
+                        <i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i>
+                      </div>
+                      <span class="ms-2 opacity-50 text-small">10.000+ vendidos</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <h4 class="mb-0 me-2 fw-bolder" style="font-size: 20px;">3,45€</h4>
+                    <span class="opacity-50 text-decoration-line-through">8,41€</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                      <span class="text-danger fst-italic fw-bold text-small">Dto. Bienvenida</span><span class="mx-1 text-danger">•</span>
+                      <span class="badge bg-danger" style="background-color: #dc3545; font-size: 10px;">Ahorros</span><span class="mx-1 text-danger">•</span>
+                      <span class="text-danger fw-bolder text-small">-58%</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                       <span class="badge me-1" style="background-color: #ffc107; color: #212529; font-size: 10px;">Choice</span>
+                      <span style="font-size: 14px;">Envío gratis</span>
+                  </div>
+                  <div class="botones mt-2">
+                      <button class="btn btn-dark rounded-pill fw-bolder me-2" style="background-color: #212529; font-size: 12px;">Previsualizar</button>
+                      <button class="btn btn-dark rounded-pill fw-bolder" style="background-color: #212529; font-size: 12px;">Artículos similares</button>
+                  </div>
+              </div>
+            
+          </div>
+        </div>
+
+        <!-- Producto 5 -->
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
+          <div class="ofertas py-3 ps-3 bg-white">
+            <img src="./IMG/producto 5.webp" alt="Packs de ofertas" class="img-fluid rounded-3" width="235px"/>
+            
+              <div>
+                  <span class="d-block text-truncate mt-1" style="font-size: 14px;">CHRLCK-camisetas de secado rápido ...</span>
+                  
+                  <div class="d-flex align-items-center">
+                      <div>
+                        <i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i>
+                      </div>
+                      <span class="ms-2 opacity-50 text-small">10.000+ vendidos</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <h4 class="mb-0 me-2 fw-bolder" style="font-size: 20px;">3,45€</h4>
+                    <span class="opacity-50 text-decoration-line-through">8,41€</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                      <span class="text-danger fst-italic fw-bold text-small">Dto. Bienvenida</span><span class="mx-1 text-danger">•</span>
+                      <span class="badge bg-danger" style="background-color: #dc3545; font-size: 10px;">Ahorros</span><span class="mx-1 text-danger">•</span>
+                      <span class="text-danger fw-bolder text-small">-58%</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                       <span class="badge me-1" style="background-color: #ffc107; color: #212529; font-size: 10px;">Choice</span>
+                      <span style="font-size: 14px;">Envío gratis</span>
+                  </div>
+                  <div class="botones mt-2">
+                      <button class="btn btn-dark rounded-pill fw-bolder me-2" style="background-color: #212529; font-size: 12px;">Previsualizar</button>
+                      <button class="btn btn-dark rounded-pill fw-bolder" style="background-color: #212529; font-size: 12px;">Artículos similares</button>
+                  </div>
+              </div>
+            
+          </div>
+        </div>
+
+        <!-- Producto 6 -->
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
+          <div class="ofertas py-3 ps-3 bg-white">
+            <img src="./IMG/producto 6.webp" alt="Packs de ofertas" class="img-fluid rounded-3" width="235px"/>
+            
+              <div>
+                  <span class="d-block text-truncate mt-1" style="font-size: 14px;">CHRLCK-camisetas de secado rápido ...</span>
+                  
+                  <div class="d-flex align-items-center">
+                      <div>
+                        <i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i>
+                      </div>
+                      <span class="ms-2 opacity-50 text-small">10.000+ vendidos</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <h4 class="mb-0 me-2 fw-bolder" style="font-size: 20px;">3,45€</h4>
+                    <span class="opacity-50 text-decoration-line-through">8,41€</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                      <span class="text-danger fst-italic fw-bold text-small">Dto. Bienvenida</span><span class="mx-1 text-danger">•</span>
+                      <span class="badge bg-danger" style="background-color: #dc3545; font-size: 10px;">Ahorros</span><span class="mx-1 text-danger">•</span>
+                      <span class="text-danger fw-bolder text-small">-58%</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                       <span class="badge me-1" style="background-color: #ffc107; color: #212529; font-size: 10px;">Choice</span>
+                      <span style="font-size: 14px;">Envío gratis</span>
+                  </div>
+                  <div class="botones mt-2">
+                      <button class="btn btn-dark rounded-pill fw-bolder me-2" style="background-color: #212529; font-size: 12px;">Previsualizar</button>
+                      <button class="btn btn-dark rounded-pill fw-bolder" style="background-color: #212529; font-size: 12px;">Artículos similares</button>
+                  </div>
+              </div>
+            
+          </div>
+        </div>
+
+        <!-- Producto 7 -->
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
+          <div class="ofertas py-3 ps-3 bg-white">
+            <img src="./IMG/producto 7.webp" alt="Packs de ofertas" class="img-fluid rounded-3" width="235px"/>
+            
+              <div>
+                  <span class="d-block text-truncate mt-1" style="font-size: 14px;">CHRLCK-camisetas de secado rápido ...</span>
+                  
+                  <div class="d-flex align-items-center">
+                      <div>
+                        <i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i>
+                      </div>
+                      <span class="ms-2 opacity-50 text-small">10.000+ vendidos</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <h4 class="mb-0 me-2 fw-bolder" style="font-size: 20px;">3,45€</h4>
+                    <span class="opacity-50 text-decoration-line-through">8,41€</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                      <span class="text-danger fst-italic fw-bold text-small">Dto. Bienvenida</span><span class="mx-1 text-danger">•</span>
+                      <span class="badge bg-danger" style="background-color: #dc3545; font-size: 10px;">Ahorros</span><span class="mx-1 text-danger">•</span>
+                      <span class="text-danger fw-bolder text-small">-58%</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                       <span class="badge me-1" style="background-color: #ffc107; color: #212529; font-size: 10px;">Choice</span>
+                      <span style="font-size: 14px;">Envío gratis</span>
+                  </div>
+                  <div class="botones mt-2">
+                      <button class="btn btn-dark rounded-pill fw-bolder me-2" style="background-color: #212529; font-size: 12px;">Previsualizar</button>
+                      <button class="btn btn-dark rounded-pill fw-bolder" style="background-color: #212529; font-size: 12px;">Artículos similares</button>
+                  </div>
+              </div>
+            
+          </div>
+        </div>
+
+        <!-- Producto 8 -->
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
+          <div class="ofertas py-3 ps-3 bg-white">
+            <img src="./IMG/producto 8.webp" alt="Packs de ofertas" class="img-fluid rounded-3" width="235px"/>
+            
+              <div>
+                  <span class="d-block text-truncate mt-1" style="font-size: 14px;">CHRLCK-camisetas de secado rápido ...</span>
+                  
+                  <div class="d-flex align-items-center">
+                      <div>
+                        <i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i>
+                      </div>
+                      <span class="ms-2 opacity-50 text-small">10.000+ vendidos</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <h4 class="mb-0 me-2 fw-bolder" style="font-size: 20px;">3,45€</h4>
+                    <span class="opacity-50 text-decoration-line-through">8,41€</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                      <span class="text-danger fst-italic fw-bold text-small">Dto. Bienvenida</span><span class="mx-1 text-danger">•</span>
+                      <span class="badge bg-danger" style="background-color: #dc3545; font-size: 10px;">Ahorros</span><span class="mx-1 text-danger">•</span>
+                      <span class="text-danger fw-bolder text-small">-58%</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                       <span class="badge me-1" style="background-color: #ffc107; color: #212529; font-size: 10px;">Choice</span>
+                      <span style="font-size: 14px;">Envío gratis</span>
+                  </div>
+                  <div class="botones mt-2">
+                      <button class="btn btn-dark rounded-pill fw-bolder me-2" style="background-color: #212529; font-size: 12px;">Previsualizar</button>
+                      <button class="btn btn-dark rounded-pill fw-bolder" style="background-color: #212529; font-size: 12px;">Artículos similares</button>
+                  </div>
+              </div>
+            
+          </div>
+        </div>
+
+        <!-- Producto 9 -->
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
+          <div class="ofertas py-3 ps-3 bg-white">
+            <img src="./IMG/producto 9.webp" alt="Packs de ofertas" class="img-fluid rounded-3" width="235px"/>
+            
+              <div>
+                  <span class="d-block text-truncate mt-1" style="font-size: 14px;">CHRLCK-camisetas de secado rápido ...</span>
+                  
+                  <div class="d-flex align-items-center">
+                      <div>
+                        <i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i>
+                      </div>
+                      <span class="ms-2 opacity-50 text-small">10.000+ vendidos</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <h4 class="mb-0 me-2 fw-bolder" style="font-size: 20px;">3,45€</h4>
+                    <span class="opacity-50 text-decoration-line-through">8,41€</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                      <span class="text-danger fst-italic fw-bold text-small">Dto. Bienvenida</span><span class="mx-1 text-danger">•</span>
+                      <span class="badge bg-danger" style="background-color: #dc3545; font-size: 10px;">Ahorros</span><span class="mx-1 text-danger">•</span>
+                      <span class="text-danger fw-bolder text-small">-58%</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                       <span class="badge me-1" style="background-color: #ffc107; color: #212529; font-size: 10px;">Choice</span>
+                      <span style="font-size: 14px;">Envío gratis</span>
+                  </div>
+                  <div class="botones mt-2">
+                      <button class="btn btn-dark rounded-pill fw-bolder me-2" style="background-color: #212529; font-size: 12px;">Previsualizar</button>
+                      <button class="btn btn-dark rounded-pill fw-bolder" style="background-color: #212529; font-size: 12px;">Artículos similares</button>
+                  </div>
+              </div>
+            
+          </div>
+        </div>
+
+        <!-- Producto 10 -->
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
+          <div class="ofertas py-3 ps-3 bg-white">
+            <img src="./IMG/producto 10.webp" alt="Packs de ofertas" class="img-fluid rounded-3" width="235px"/>
+            
+              <div>
+                  <span class="d-block text-truncate mt-1" style="font-size: 14px;">CHRLCK-camisetas de secado rápido ...</span>
+                  
+                  <div class="d-flex align-items-center">
+                      <div>
+                        <i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i>
+                      </div>
+                      <span class="ms-2 opacity-50 text-small">10.000+ vendidos</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <h4 class="mb-0 me-2 fw-bolder" style="font-size: 20px;">3,45€</h4>
+                    <span class="opacity-50 text-decoration-line-through">8,41€</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                      <span class="text-danger fst-italic fw-bold text-small">Dto. Bienvenida</span><span class="mx-1 text-danger">•</span>
+                      <span class="badge bg-danger" style="background-color: #dc3545; font-size: 10px;">Ahorros</span><span class="mx-1 text-danger">•</span>
+                      <span class="text-danger fw-bolder text-small">-58%</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                       <span class="badge me-1" style="background-color: #ffc107; color: #212529; font-size: 10px;">Choice</span>
+                      <span style="font-size: 14px;">Envío gratis</span>
+                  </div>
+                  <div class="botones mt-2">
+                      <button class="btn btn-dark rounded-pill fw-bolder me-2" style="background-color: #212529; font-size: 12px;">Previsualizar</button>
+                      <button class="btn btn-dark rounded-pill fw-bolder" style="background-color: #212529; font-size: 12px;">Artículos similares</button>
+                  </div>
+              </div>
+            
+          </div>
+        </div>
+
+        <!-- Producto 11 -->
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
+          <div class="ofertas py-3 ps-3 bg-white">
+            <img src="./IMG/producto 11.webp" alt="Packs de ofertas" class="img-fluid rounded-3" width="235px"/>
+            
+              <div>
+                  <span class="d-block text-truncate mt-1" style="font-size: 14px;">CHRLCK-camisetas de secado rápido ...</span>
+                  
+                  <div class="d-flex align-items-center">
+                      <div>
+                        <i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i>
+                      </div>
+                      <span class="ms-2 opacity-50 text-small">10.000+ vendidos</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <h4 class="mb-0 me-2 fw-bolder" style="font-size: 20px;">3,45€</h4>
+                    <span class="opacity-50 text-decoration-line-through">8,41€</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                      <span class="text-danger fst-italic fw-bold text-small">Dto. Bienvenida</span><span class="mx-1 text-danger">•</span>
+                      <span class="badge bg-danger" style="background-color: #dc3545; font-size: 10px;">Ahorros</span><span class="mx-1 text-danger">•</span>
+                      <span class="text-danger fw-bolder text-small">-58%</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                       <span class="badge me-1" style="background-color: #ffc107; color: #212529; font-size: 10px;">Choice</span>
+                      <span style="font-size: 14px;">Envío gratis</span>
+                  </div>
+                  <div class="botones mt-2">
+                      <button class="btn btn-dark rounded-pill fw-bolder me-2" style="background-color: #212529; font-size: 12px;">Previsualizar</button>
+                      <button class="btn btn-dark rounded-pill fw-bolder" style="background-color: #212529; font-size: 12px;">Artículos similares</button>
+                  </div>
+              </div>
+            
+          </div>
+        </div>
+
+        <!-- Producto 12 -->
+        <div class="col-12 col-md-6 col-lg-4 col-xl-3 col-xxl-2">
+          <div class="ofertas py-3 ps-3 bg-white">
+            <img src="./IMG/producto 12.webp" alt="Packs de ofertas" class="img-fluid rounded-3" width="235px"/>
+            
+              <div>
+                  <span class="d-block text-truncate mt-1" style="font-size: 14px;">CHRLCK-camisetas de secado rápido ...</span>
+                  
+                  <div class="d-flex align-items-center">
+                      <div>
+                        <i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i><i class="estrella bi bi-star-fill"></i>
+                      </div>
+                      <span class="ms-2 opacity-50 text-small">10.000+ vendidos</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <h4 class="mb-0 me-2 fw-bolder" style="font-size: 20px;">3,45€</h4>
+                    <span class="opacity-50 text-decoration-line-through">8,41€</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                      <span class="text-danger fst-italic fw-bold text-small">Dto. Bienvenida</span><span class="mx-1 text-danger">•</span>
+                      <span class="badge bg-danger" style="background-color: #dc3545; font-size: 10px;">Ahorros</span><span class="mx-1 text-danger">•</span>
+                      <span class="text-danger fw-bolder text-small">-58%</span>
+                  </div>
+                  <div class="d-flex align-items-center mb-1">
+                       <span class="badge me-1" style="background-color: #ffc107; color: #212529; font-size: 10px;">Choice</span>
+                      <span style="font-size: 14px;">Envío gratis</span>
+                  </div>
+                  <div class="botones mt-2">
+                      <button class="btn btn-dark rounded-pill fw-bolder me-2" style="background-color: #212529; font-size: 12px;">Previsualizar</button>
+                      <button class="btn btn-dark rounded-pill fw-bolder" style="background-color: #212529; font-size: 12px;">Artículos similares</button>
+                  </div>
+              </div>
+            
+          </div>
+        </div>
+
+
+
+
+      </div>
+  </section>
+
+
+  <div style="background-color: #eaeaea;">
+    <div class="container pt-4">
+
+      <div class="row mb-4">
+          <div class="col">
+              <h1 class="fw-bold" style="font-size: 1.3rem; margin-bottom: 0;">AliExpress: Tu mejor opción para compras online</h1>
+          </div>
+      </div>
+
+      <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h2 style="font-size: 1rem; font-weight: bold; margin-bottom: 0;">¿Qué es AliExpress?</h2>
+                  <span style="font-size: 1.2rem; cursor: pointer;">▼</span> </div>
+              <p class="opacity-75 text-small">
+                  AliExpress es una plataforma internacional de comercio electrónico B2C perteneciente al grupo Alibaba. Dedicada a ofrecer a los consumidores de todo el mundo una gran variedad de productos de calidad a precios asequibles. Desde electrónica de consumo y ropa hasta productos para el hogar y belleza, AliExpress tiene algo para todos. La plataforma conecta a compradores con vendedores de todo el mundo, ofreciendo una experiencia de compra segura y conveniente. Con millones de productos disponibles y opciones de envío a nivel mundial, AliExpress se ha convertido en un destino popular para quienes buscan productos únicos y a precios competitivos.
+              </p>
+      </div>
+
+      <div class="row mb-4">
+          <div class="col">
+              <span class="text-small fw-bold me-2">Ver más</span>
+              <a href="#" class="text-small me-2 fw-bold">norma alexa</a>
+              <span class="opacity-75 text-small me-2">|</span>
+              <a href="#" class="text-small me-2 fw-bold">valor electrico</a>
+              <span class="opacity-75 text-small me-2">|</span>
+              <a href="#" class="text-small me-2 fw-bold">botas tacon mujer</a>
+              <span class="opacity-75 text-small me-2">|</span>
+              <a href="#" class="text-small me-2 fw-bold">cabecero cama 150</a>
+                <span class="opacity-75 text-small me-2">|</span>
+              <a href="#" class="text-small me-2 fw-bold">cable ethernet</a>
+                <span class="opacity-75 text-small me-2">|</span>
+              <a href="#" class="text-small me-2 fw-bold">cepillo alisador</a>
+                <span class="opacity-75 text-small me-2">|</span>
+              <a href="#" class="text-small me-2 fw-bold">chaleco acolchado mujer</a>
+                <span class="opacity-75 text-small me-2">|</span>
+              <a href="#" class="text-small me-2 fw-bold">chaqueta cuero hombre</a>
+              <span class="opacity-75 text-small me-2">|</span>
+              <a href="#" class="text-small me-2 fw-bold">chaqueta vaquera hombre</a>
+              <span class="opacity-75 text-small me-2">|</span>
+              <a href="#" class="text-small me-2 fw-bold">colchón hinchable</a>
+                <span class="opacity-75 text-small me-2">|</span>
+              <a href="#" class="text-small fw-bold">cepillo facial ultrasonico</a>
+          </div>
+      </div>
+
+
+      <div class="row mb-4">
+          <div class="col-md-2 col-sm-6 mb-3">
+              <div class="section-title">Atención al cliente</div>
+              <ul class="list-unstyled footer-link-list">
+                  <li><a href="#" class="text-small opacity-75">Centro de Ayuda</a></li>
+                  <li><a href="#" class="text-small opacity-75">Servicio de atención al cliente</a></li>
+                  <li><a href="#" class="text-small opacity-75">Para compradores fuera de la UE</a></li>
+                  <li><a href="#" class="text-small opacity-75">Normas para el usuario (UE)</a></li>
+                  <li><a href="#" class="text-small opacity-75">Términos y condiciones (UE)</a></li>
+                  <li><a href="#" class="text-small opacity-75">Encuesta de satisfacción del cliente (UE)</a></li>
+                    <li><a href="#" class="text-small opacity-75">Información aduanera (UE)</a></li>
+              </ul>
+              </div>
+
+          <div class="col-md-2 col-sm-6 mb-3">
+              <div class="section-title">Guía de compra</div>
+              <ul class="list-unstyled footer-link-list">
+                  <li><a href="#" class="text-small opacity-75">Crear una cuenta</a></li>
+                  <li><a href="#" class="text-small opacity-75">Pago</a></li>
+                  <li><a href="#" class="text-small opacity-75">Envío</a></li>
+                  <li><a href="#" class="text-small opacity-75">Protección del comprador</a></li>
+              </ul>
+          </div>
+
+          <div class="col-md-2 col-sm-6 mb-3">
+              <div class="section-title">Colabora con nosotros</div>
+              <ul class="list-unstyled footer-link-list">
+                  <li><a href="#" class="text-small opacity-75">Colaboraciones</a></li>
+                  <li><a href="#" class="text-small opacity-75">Programa de Afiliados</a></li>
+                  <li><a href="#" class="text-small opacity-75">Centro de dropshipping</a></li>
+                  <li><a href="#" class="text-small opacity-75">Hazte socio con nosotros</a></li>
+                  <li><a href="#" class="text-small opacity-75">Vendedores chinos</a></li>
+                    <li><a href="#" class="text-small opacity-75">Programa de vendedores</a></li>
+              </ul>
+              </div>
+
+          <div class="col-md-3 col-sm-6 mb-3">
+              <div class="section-title">Pagar con</div>
+              <div class="d-flex flex-wrap align-items-center">
+                  <img src="./IMG/visa.avif" alt="Visa" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">
+                  <img src="./IMG/mastercard.avif" alt="Mastercard" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">
+                  <img src="./IMG/pay in.avif" alt="Pay in Instalments" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">
+                  <img src="./IMG/paypal.avif" alt="paypal" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">
+                  <img src="./IMG/bizum.avif" alt="bizum" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">
+                  <img src="./IMG/google pay.avif" alt="Google Pay" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">
+                  <img src="./IMG/pay after.avif" alt="Pay after delivery" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">                
+                  <img src="./IMG/apple pay.avif" alt="Apple Pay" style="height: 25px; margin-right: 5px; margin-bottom: 5px;">
+              </div>
+              </div>
+
+          <div class="col-md-3 col-sm-6 mb-3">
+              <div class="section-title">No te olvides de seguirnos en:</div>
+              <div class="d-flex">
+                  <a href="#" class="me-2"><i class="bi bi-facebook me-2" style="font-size: 25px;"></i></a>
+                  <a href="#" class="me-2"><i class="bi bi-twitter me-2" style="font-size: 25px;"></i></a>
+                  <a href="#" class="me-2"><i class="bi bi-instagram me-2" style="font-size: 25px;"></i></a>
+                  <a href="#" class="me-2"><i class="bi bi-messenger me-2" style="font-size: 25px;"></i></a>
+                  <a href="#" class="me-2"><i class="bi bi-whatsapp me-2" style="font-size: 25px;"></i></a>
+              </div>
+              </div>
+      </div>
+
+      <div class="row">
+          <div class="col-md-6 mb-3">
+              <div class="section-title">Información AliExpress</div>
+              <ul class="list-unstyled footer-link-list">
+                  <a href="#" class="text-smaller opacity-75">Atención al cliente,</a>
+                  <a href="#" class="text-smaller opacity-75">Disputas,</a>
+                  <a href="#" class="text-smaller opacity-75">Política de devoluciones y reembolsos,</a>
+                  <a href="#" class="text-smaller opacity-75">Informar de una infracción IPR,</a>
+                  <a href="#" class="text-smaller opacity-75">Regulated Information,</a>
+                  <a href="#" class="text-smaller opacity-75">Integrity Compliance,</a>
+                  <a href="#" class="text-smaller opacity-75">Centro de Transparencia,</a>
+                  <a href="#" class="text-smaller opacity-75">Entrada de quejas sin iniciar sesión</a>
+              </ul>
+          
+
+
+              <div class="section-title">Buscar por categoría</div>
+              <ul class="list-unstyled footer-link-list">
+                <a href="#" class="text-smaller opacity-75">Lo más popular,</a>
+                <a href="#" class="text-smaller opacity-75">Producto,</a>
+                <a href="#" class="text-smaller opacity-75">Promoción,</a>
+                <a href="#" class="text-smaller opacity-75">Low Price,</a>
+                <a href="#" class="text-smaller opacity-75">Great Value,</a>
+                <a href="#" class="text-smaller opacity-75">Review</a>
+              </ul>
+          </div>
+
+          <div class="col-md-6 mb-3">
+              <div class="section-title">AliExpress en otros idiomas</div>
+                <ul class="list-unstyled footer-link-list" style="column-count: 2;">
+                  <a href="#" class="text-smaller opacity-75">Русский,</a>
+                  <a href="#" class="text-smaller opacity-75">Português,</a>
+                  <a href="#" class="text-smaller opacity-75">Español,</a>
+                  <a href="#" class="text-smaller opacity-75">Français,</a>
+                  <a href="#" class="text-smaller opacity-75">Deutsch,</a>
+                  <a href="#" class="text-smaller opacity-75">Italiano,</a>
+                  <a href="#" class="text-smaller opacity-75">Nederlands,</a>
+                  <a href="#" class="text-smaller opacity-75">Türk,</a>
+                  <a href="#" class="text-smaller opacity-75">日本語,</a>
+                  <a href="#" class="text-smaller opacity-75">한국어,</a>
+                  <a href="#" class="text-smaller opacity-75">ภาษาไทย,</a>
+                  <a href="#" class="text-smaller opacity-75">العربية,</a>
+                  <a href="#" class="text-smaller opacity-75">Polski</a>
+              </ul>
+      
+
+        
+              <div class="section-title">Alibaba Group</div>
+              <ul class="list-unstyled footer-link-list">
+                <a href="#" class="text-smaller opacity-75">Página del Grupo Alibaba,</a>
+                <a href="#" class="text-smaller opacity-75">AliExpress,</a>
+                <a href="#" class="text-smaller opacity-75">Alimama,</a>
+                <a href="#" class="text-smaller opacity-75">Alipay,</a>
+                <a href="#" class="text-smaller opacity-75">Fliggy,</a>
+                <a href="#" class="text-smaller opacity-75">Kuaizhilian,</a>
+                <a href="#" class="text-smaller opacity-75">Alibaba Cloud,</a>
+                <a href="#" class="text-smaller opacity-75">Alibaba International,</a>
+                <a href="#" class="text-smaller opacity-75">Altelecom,</a>
+                <a href="#" class="text-smaller opacity-75">DingTalk,</a>
+                <a href="#" class="text-smaller opacity-75">Juhuasuan,</a>
+                <a href="#" class="text-smaller opacity-75">Taobao Marketplace,</a>
+                <a href="#" class="text-smaller opacity-75">Tmall,</a>
+                <a href="#" class="text-smaller opacity-75">Taobao Global,</a>
+                <a href="#" class="text-smaller opacity-75">AliOS</a>
+              </ul>
+          </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Pie de página -->
+  <footer class="text-white py-1" style="background-color: black;">
+    <div class="container mt-1">
+      <p class="small">
+        Intellectual Property Protection - Privacy Policy - Mapa del sitio web - Términos de uso de AliExpress.com - Información para consumidores de la UE - Acuerdo de servicios de transacción para consumidores fuera de la UE/Reino Unido - Términos y Condiciones para Consumidores de la UE/EEE/Reino Unido - User Information Legal Enquiry Guide ©️ 2010-2025 AliExpress.com. Todos los derechos reservados.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

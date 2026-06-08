@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=, initial-scale=1.0">
+<title>Document</title>
+</head>
+<body>
+<script>
+function cambiarColor(){
+    indice = document.form1.select1.selectedIndex; // Posición elegida
+    color = document.form1.select1.options[indice].value;
+    if (color=='claro'){
+        document.body.style.backgroundColor='#FFFF00';
+        document.body.style.color = '#0055FF';
+    }
+    else if (color=='oscuro'){
+        document.body.style.backgroundColor = '#000000';
+        document.body.style.color = '#FFFFFF';
+    }
+    // Cabiamos el color de fondo del cuerpo del documento
+    
+    document.body.style.color = color_fuente;
+}
+</script>
+<form name="form1">
+   <select size="1" name="select1" onchange="cambiarColor()">
+    <option value="claro">Claro</option>
+    <option value="oscuro">Oscuro</option>
+</select>
+<p>El término wikinota (palabra que proviene del hawaiano wiki, 'rápido') alude al nombre que recibe una comunidad virtual, cuyas páginas son editadas directamente desde el navegador, donde los mismos usuarios crean, modifican, corrigen o eliminan contenidos que, habitualmente, son compartidos por cualquier otro usuario. No tiene por que ser necesariamente un sitio en la web, puesto que hay wikis instalables para uso en el escritorio de un computador u ordenador personal o que pueden portarse en un llavero USB que lleven un entorno LAMP como, por ejemplo, XAMPP.</p>
+</form>
+</body>
+</html>
+<!--
+ 2. Menú desplegable para seleccionar un tema de color:
+        · Oscuro es fondo nego letras blancas.
+        · Claro es fondo amarillo letras azules. 
+-->

@@ -1,0 +1,44 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+}
+.uno{
+    display: flex;
+}
+.ficha{
+    display: flex;
+    flex-direction: column;
+    border: black 2px solid;
+    margin: 10px;
+    padding: 0;
+    flex-basis: 25%;
+}
+.encabezado{
+    display: flex;
+    background-color: #b1b1b1;
+}
+.p1{
+    margin: 0;
+    padding: 0;
+    font-size: 8ex;
+    border-bottom: black 2px solid;
+    border-right: black 2px solid;
+    border-radius: 0 0 15px 0;
+
+}
+.p2{
+    margin: 0;
+    padding: 0px;
+    text-transform: capitalize;
+    margin: auto;
+    text-align: left;
+    justify-content: center;
+    font-weight: bold;
+    font-size: x-large;
+    flex-grow: 2;
+}
+.p3{
+    margin: 0;
+    padding: 0;
+    text-align: justify;
+    margin: 4px;
+}

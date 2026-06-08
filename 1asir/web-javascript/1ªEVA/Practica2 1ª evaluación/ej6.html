@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+</head>
+<body><h1>EJERCICIO 6</h1>
+<!--6.-Crea un programa que pida al usuario la categoría del producto (puede ser "móvil", "portátil" o "tablet"), 
+    la cantidad de productos que va a comprar y si tiene un código de descuento (ingresando "sí" o "no"). 
+    Aplica las siguientes reglas:
+
+    -Si la categoría es "móvil" y compra más de 3 unidades, aplica un descuento del 10%.
+    -Si la categoría es "portátil" o "tablet" y compra 2 o más unidades, aplica un descuento del 15%.
+    -Si tiene un código de descuento y compra al menos 1 producto, aplica un 20% de descuento (este descuento tiene prioridad sobre los otros).
+    -Si no cumple ninguna de las condiciones anteriores, no hay descuento.
+-->
+<script type="text/javascript">
+
+var categoria = prompt('Dime la categoría del producto');
+var cantidad = parseInt(prompt('Dime la cantidad de productos que va a comprar'));
+var codigo = prompt('¿tiene código de descuento? (si/no)');
+
+if (codigo == 'si' && cantidad >= 1) 
+{
+    document.write('Tienes un descuento del 20%');
+} else if (categoria == 'móvil' && cantidad >= 3) 
+{
+    document.write('Tienes un descuento del 10%');
+} else if ((categoria == 'portátil' || categoria == 'tablet') && cantidad >= 2) 
+{
+    document.write('Tienes un descuento del 15%');
+} else {
+    document.write('No tienes descuento');
+}
+
+</script>
+</body>
+</html>

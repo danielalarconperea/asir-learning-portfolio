@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Ejemplo del uso de formularios</title>
+</head>
+<body>
+    <form action="/submit" method="post">
+        <fieldset>
+            <legend>Formulario Completo</legend>
+    
+            <label>Nombre:</label>
+            <input type="text" name="nombre" value="Daniel"><br><br>
+    
+            <label>Correo Electrónico:</label>
+            <input type="email" name="email" size="25" placeholder="escribetucorreo@example.com" required><br><br>
+    
+            <label>Edad:</label>
+            <input type="number" name="edad" min="1" max="100"><br><br>
+    
+            <label>Fecha de Nacimiento:</label>
+            <input type="date" name="fecha-nacimiento"><br><br>
+    
+            <label>Hora de la Reunión:</label>
+            <input type="time" name="hora-reunion"><br><br>
+    
+            <label>Selecciona el mes:</label>
+            <input type="month" name="mes"><br><br>
+    
+            <label>Selecciona la semana:</label>
+            <input type="week" name="semana"><br><br>
+    
+            <label>Elige tu color favorito:</label>
+            <input type="color" name="color-favorito" value="#ff0000"><br><br>
+    
+            <label>Teléfono:</label>
+            <input type="tel" name="telefono" placeholder="+34 666 666 666"><br><br>
+    
+            <label>Subir Archivo:</label>
+            <input type="file" name="archivo"><br><br>
+    
+            <label>Intereses:</label><br>
+            <input type="checkbox" name="intereses" value="musica">Música<br>
+            <input type="checkbox" name="intereses" value="deportes">Deportes<br>
+            <input type="checkbox" name="intereses" value="viajes">Viajes<br>
+            <input type="checkbox" name="intereses" value="cine">Cine<br>
+            <input type="checkbox" name="intereses" value="lectura">Lectura<br>
+            <input type="checkbox" name="intereses" value="gastronomia">Gastronomía<br>
+            <input type="checkbox" name="intereses" value="arte">Arte<br>
+            <input type="checkbox" name="intereses" value="tecnologia">Tecnología<br>
+            <input type="checkbox" name="intereses" value="moda">Moda<br>
+            <input type="checkbox" name="intereses" value="fotografia">Fotografía<br>
+            <input type="checkbox" name="intereses" value="jardineria">Jardinería<br>
+            <input type="checkbox" name="intereses" value="musica">Música<br><br>
+    
+            <label>Género:</label><br>
+            <input type="radio" name="genero" value="hombre">
+            <label>Hombre</label><br>
+            <input type="radio" name="genero" value="mujer">
+            <label>Mujer</label><br><br>
+    
+            <label>País:</label>
+            <select name="pais">
+                <option>España</option>
+                <option>México</option>
+                <option>Argentina</option>
+                <option>Estados Unidos</option>
+                <option>Francia</option>
+                <option>Alemania</option>
+                <option>Italia</option>
+                <option>Japón</option>
+                <option>China</option>
+                <option>Canadá</option>
+                <option>Brasil</option>
+                <option>Australia</option>
+                <option>India</option>
+                <option>Reino Unido</option>
+                <option>Portugal</option>
+            </select><br><br>
+    
+            <label>Comentarios:</label><br>
+            <textarea name="comentarios" rows="4" cols="50" placeholder="comenta aquí tus comentarios"></textarea><br><br>
+
+            <label>Volumen:</label>
+            <input type="range" name="volumen" min="0" max="100"><br><br>
+    
+            <input type="submit" value="Enviar">
+            <input type="reset" value="Restablecer">
+        </fieldset>
+    </form>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+</head>
+<body><h1>EJERCICIO 4</h1>
+<p>4.-Crea un programa que pida al usuario su edad y el precio de una compra. 
+    Si la edad es menor de 18 o mayor de 65, aplica un descuento del 10% sobre el precio. 
+    Muestra el precio final con el descuento aplicado si corresponde, y si no, muestra el precio sin descuento.
+</p>
+<script type="text/javascript">
+
+var descuento;
+var edad = prompt('dime tú edad');
+var precio = prompt('dime el precio de la compra');
+
+if (edad >= 65 || edad <= 18)
+{
+    descuento = precio * 0.90;
+    document.write('el precio final con el descuento es: '+ descuento);
+}
+else
+{
+    document.write('el precio sin descuento es: '+ precio);
+}
+</script>
+</body>
+</html>

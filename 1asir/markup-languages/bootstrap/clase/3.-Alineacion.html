@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Ejemplos Bootstrap</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie-edge">
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <style type="text/css">
+            .conborde{
+                border:1px solid black;
+            }
+            .uno{
+                background-color: mediumturquoise;
+            }
+            .dos{
+                background-color: greenyellow;
+            }
+            .tres{
+                background-color: hotpink;
+            }
+            .cuatro{
+                background-color: red;
+            }
+            .cinco{
+                background-color: coral;
+            }
+            .seis{
+                background-color: blueviolet;
+            }
+            
+
+        </style>
+
+    </head>
+
+    <body>
+        <h3><p class="fixed-top tres">Texto fijado arriba  </p></h3>
+
+        <br>
+        <h3>Alineacion dentro de una columna: </h3>
+        <div class="container uno">
+            
+            <div class="row">
+                <div class="col dos">
+                    <div>
+                        <span class="float-start">
+                            Texto hacia la izquierda verde  
+                        </span>
+                        <span class="float-end  ">
+                            Texto hacia la derecha verde
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col tres">
+                        <div>
+                            <span class="float-start">
+                                Texto hacia la izquierda rosa
+                            </span>
+                            <span class="float-end">
+                                Texto hacia la derecha rosa
+                            </span>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+        <br>
+        <h3>Alineacion para distintas dimensiones:</h3>
+        <div class="container uno">
+
+            
+            <div class="row d-block cuatro">
+                <div class="float-sm-start">Uno</div><br>
+                <div class="float-md-start">Dos</div><br>
+                <div class="float-lg-start">Tres</div><br>
+                <div class="float-xl-start">Cuatro</div><br>
+                <div class="float-none">Cinco</div>
+            </div>
+
+        </div>
+
+        <br>
+        <h3>Alineacion horizontal:</h3>
+        <div class="container uno">
+            <h3>Alinear contenido al centro:</h3>
+            <div class="row justify-content-center cinco">
+                <div class="col-4 seis">4</div><br>
+                <div class="col-4 seis">4</div><br>
+            </div>
+
+            <h3>Alinear contenido a la izquierda (por defecto):</h3>
+            <div class="row justify-content-start cinco">
+                <div class="col-4 seis">4</div><br>
+                <div class="col-4 seis">4</div><br>
+            </div>
+
+            <h3>Alinear contenido a la derecha:</h3>
+            <div class="row justify-content-end cinco">
+                <div class="col-4 seis">4</div><br>
+                <div class="col-4 seis">4</div><br>
+            </div>
+
+            <h3>Alinear contenido distribuido 1:</h3>
+            <div class="row justify-content-between cinco">
+                <div class="col-3 seis">3</div><br>
+                <div class="col-3 seis">3</div><br>
+                <div class="col-3 seis">3</div><br>
+            </div>
+            
+            <h3>Alinear contenido distribuido 2:</h3>
+            <div class="row justify-content-around cinco">
+                <div class="col-3 seis">3</div><br>
+                <div class="col-3 seis">3</div><br>
+                <div class="col-3 seis">3</div><br>
+            </div>
+        </div>
+        
+        <br>
+        <h3>Alineacion Vertical:</h3>
+        <div class="container uno">
+            <div class="row cinco" style="height: 200px">
+                    <div class="col-3 align-self-end seis">Alineada al final</div><br>
+                    <div class="col-3 align-self-start seis">Alineada al inicio (por defecto)</div><br>
+                    <div class="col-3 align-self-center seis">Alineada al centro</div><br>
+            </div>
+        </div>
+
+        
+    </body>
+
+</html>

@@ -1,0 +1,6 @@
+body es sans-serif, justificado
+h2 es monospace
+p tiene interlineado y el texto tiene indentación
+strong tiene color
+em tiene color de fondo y color de letra
+span tiene color y esta en cursiva

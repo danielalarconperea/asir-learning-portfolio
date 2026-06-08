@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+</head>
+
+<body>
+<p>esta página contiene código de javascript</p>
+
+<script type="text/javascript">
+
+// Solicitar las tres notas al usuario
+var nota1 = parseFloat(prompt("Introduce la primera nota:"));
+if (nota1 > 10)
+{
+    document.write("error");
+    brake
+} 
+var nota2 = parseFloat(prompt("Introduce la segunda nota:"));
+if (nota2 > 10)
+{
+    document.write("error");
+    brake
+} 
+var nota3 = parseFloat(prompt("Introduce la tercera nota:"));
+if (nota3 > 10)
+{
+    document.write("error");
+    brake
+} 
+
+// Calcular la media
+var media = (nota1 + nota2 + nota3) / 3;
+
+// Mostrar la media
+alert("La media de tus notas es: " + media);
+
+// Determinar si has aprobado
+if (media >= 5) 
+{
+    document.write("¡Has aprobado!");
+} 
+else 
+{
+    document.write("Lo siento, has suspendido.");
+}
+
+</script>
+</body>
+</html>

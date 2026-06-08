@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>margin </title>
+<style>
+      fieldset{
+            margin: auto;
+            width: 400px;
+            height: 100%;
+            background-color: rgb(119, 224, 90);
+            padding: 0px 20px 20px 10px;
+            border: 3px solid red;
+      }
+      .input{
+            width: 100%;
+            padding: 3px;
+            margin: 10px 0px 25px 0px;
+            background-color: #bfbfbf;
+      }
+      ul{ 
+            list-style-type: none; 
+            padding-left: 0; 
+      }
+      .checkbox{
+            margin: auto;
+            padding: 0px 0px 0px 60px;
+      }        
+      .clase{
+            padding: 40px 0px 0px 0px;
+      }
+</style>
+</head> 
+<body> 
+<form action="mailto:xxx@gmail.com" method="post" enctype="text/plain">
+    <fieldset>
+         <h2>Rellenar formulario completo:</h2>
+         <ul>
+              <li>
+                   <label id="Nombre" for="Nombre">Nombre:</label>
+                   <input class="input" id="Nombre" type="text"required width="300px">
+             </li>
+             <li>
+                   <label id="primer" for="primer">Primer Apellido:</label>
+                   <input class="input" id="primer" type="text"required width="300px">
+             </li>
+             <li>
+                   <label id="Segundo" for="Segundo">Segundo Apellido:</label>
+                   <input class="input" id="Segundo" type="text" required width="300px">
+             </li>
+             <li>
+                   <label id="mail" for="mail">E-mail de contacto:</label>
+                   <input class="input" id="mail" type="text" name="mail" placeholder="xxx@gmail.com" required>
+             </li>
+             <li>
+                   <label id="Mensaje" for="Mensaje">Mensaje:<span>*describe tu consulta</span></label>
+                   <textarea class="input" id="Mensaje" name="Mensaje" cols="30" rows="10" placeholder="Escribe tu mensaje..."></textarea>
+            </li>
+            <li>
+                  <div class="checkbox">
+                       <input id="check" type="checkbox" required >
+                       <a href="#">He leido y acepto la politica de privacidad</a>
+                  </div>
+            </li>
+            <li class="clase"><center>
+                  <label for="contactar"></label>
+                  <button style="background-color: rgb(0, 225, 255) ;" type="submit">CONTACTAR</button>
+            </center></li>
+            <li class="clase"><center>
+                  <label for="reset"></label>
+                  <button style="background-color: rgb(255, 0, 76) ;" type="submit">Reiniciar</button>
+            </center></li>
+      </ul>
+   </fieldset>
+</form>
+
+</body>
+</html>

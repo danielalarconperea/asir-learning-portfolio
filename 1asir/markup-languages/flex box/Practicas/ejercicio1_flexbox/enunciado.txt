@@ -1,0 +1,15 @@
+Crea una galería de imágenes flexible utilizando Flexbox. La galería debe contener 6 imágenes y cumplir los siguientes requisitos:
+
+Las imágenes deben estar contenidas en un contenedor flex.
+
+El contenedor debe adaptarse automáticamente al ancho de la pantalla, manteniendo un máximo de 3 imágenes por fila.
+
+El contenedor debe tener un ancho máximo de 800px y estar centrado en la página.
+
+Cada imagen debe tener un ancho mínimo de 200px y un margen de 10px.
+
+Las imágenes deben distribuirse uniformemente en el espacio disponible.
+
+El diseño debe ser responsive sin utilizar media queries.
+
+Utiliza las siguientes propiedades de Flexbox: display: flex, flex-direction, y flex-wrap.

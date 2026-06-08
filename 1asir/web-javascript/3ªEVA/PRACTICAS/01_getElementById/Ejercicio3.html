@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio3</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: rgb(98, 185, 251);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+        
+        .cuadro {
+            background-color: #ffffff;
+            padding: 2em;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #5e5cc7;
+            margin-bottom: 1.5em;
+            font-weight: 600;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        input {
+            width: 375px;
+            padding: 0.8em;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        
+        select{
+            width: 90px;
+            padding: 0.8em;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        
+        button {
+            background-color: #5e5cc7;
+            color: white;
+            border: none;
+            padding: 1em 2em;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 1em 0;
+            width: 100%;
+            font-weight: 600;
+        }
+        
+        #mensaje {
+            margin-top: 1.5em;
+            border-radius: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="cuadro">
+        <h1>Calculadora de Descuento</h1>
+
+        <label for="Precio">Precio original:</label>
+        <input type="number" id="precio">
+        <br><br>
+        <label for="descuento">porcentaje de descuento:</label>
+        <select id="descuento">
+            <option value="10">10%</option>
+            <option value="20">20%</option>
+            <option value="30">30%</option>
+            <option value="40">40%</option>
+            <option value="50">50%</option>
+        </select>
+        <br><br>
+        <button onclick="calcular()">calcular</button>
+        <p id="mensaje"></p>    
+    </div>
+    <script>
+        function calcular(){
+            var precio_original = parseFloat(document.getElementById('precio').value);
+            var porcentaje = parseFloat(document.getElementById('descuento').value);
+            var resultado_descuento = precio_original * (1 - (porcentaje / 100));
+
+            var elemento = document.getElementById('mensaje'); 
+            elemento.innerHTML = '<p>El original es de: ' + precio_original + '</p><p>El descuento aplicado es de: ' + porcentaje + '</p><p>¡El precio final es de: ' + resultado_descuento.toFixed(2) + '!</p>';
+        }
+    </script>
+</body>
+</html>
+<!-- 
+Ejercicio 3: Calculadora de descuento
+Enunciado:
+Crea una página HTML con un formulario que simule una calculadora de descuento para una tienda en línea. 
+El formulario debe contener los siguientes elementos:
+
+- Un campo de entrada (<input>) para el precio original del producto.
+- Un menú desplegable (<select>) para elegir el porcentaje de descuento (opciones: 10%, 20%, 30%, 40%, 50%).
+- Un botón para calcular el precio final.
+- Un párrafo vacío donde se mostrará el resultado.
+
+Cuando el usuario ingrese el precio, seleccione el descuento y haga clic en el botón "Calcular", el programa debe:
+
+1.- Obtener el precio y el porcentaje de descuento utilizando getElementById.
+2.- Calcular el precio final después del descuento.
+3.- Mostrar en el párrafo de resultado un mensaje que incluya el precio original, el descuento aplicado y el precio final.
+
+Requisitos:
+
+- Utiliza getElementById para obtener los valores del formulario.
+- Realiza el cálculo del descuento y el precio final.
+ -->

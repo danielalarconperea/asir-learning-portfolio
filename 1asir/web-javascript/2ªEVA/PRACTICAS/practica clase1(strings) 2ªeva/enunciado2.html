@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script type="text/javascript">
+
+var texto = 'Este es un ejemplo', contadorvocales = 0;
+
+for(i = 0; i< texto.length; i++){
+    if(texto.toLowerCase().charAt(i)=='a' || texto.toLowerCase().charAt(i)=='e' || texto.toLowerCase().charAt(i)=='i' || texto.toLowerCase().charAt(i)=='o' || texto.toLowerCase().charAt(i)=='u'){
+        contadorvocales += 1;
+    }
+}
+document.write('la frase tiene '+contadorvocales+' vocales.'+'<br><br>');
+
+frase = 'Este es otro ejemplo';
+vocales = 'aeiouAEIOU';
+contador = 0;
+
+for(i=0; i<frase.length; i++){
+    if(vocales.includes(frase.charAt(i))==true){
+        contador++;
+    }
+}
+document.write('la frase tiene '+contador+' vocales.');
+
+</script>
+<!-- Contar vocales en una cadena:
+Escribe un programa que cuente la cantidad de vocales en una cadena. -->
+</body>
+</html>

@@ -1,0 +1,516 @@
+# Como configurar la contraseña en la consola
+
+'Pasos:'
+1- Ingresar al switch
+2- Acceder a la configuracion global
+3- Acceder a la linea 0 de la consola
+4- Colocar el comando 'password' seguido de la contraseña
+5- Logeamos para que se guarde la contraseña
+6- Salimos
+7- Y para cifrar la clave colocamos el comando 'service password-encryption'
+
+'Comando:'
+configure terminal
+line console 0
+password cisco
+login
+exit
+service password-encryption
+
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# Como configurar la contraseña del modo privilegiado
+
+'Pasos:'
+1- Ingresamos al switch
+2- Ingresamos a la configuracion global
+3- Colocamos el siguiente comando 'enable password' seguido de la contraseña
+4- Luego colocamos el siguiente comando 'enable secret' seguido de la contraseña secreta
+
+'Comando:'
+configure terminal
+enable password cisco
+enable secret cisco
+
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# Como crear las vlan y asignarles ip
+
+'Pasos:'
+1- Entrar en configuracion de terminal
+2- Nombrar la vlan y el número de esta
+3- Ingresar al interface de la vlan
+4- Asignarle ip con su respectiva máscara
+
+'Comando:'
+'CORE ( config )#' vlan 10
+'CORE ( config )#' int Vlan 10
+'CORE ( config-if )#' ip address (ip correspondiente) (máscara correspondiente)
+ 
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# Como hacer un banner
+
+'Pasos:'
+1- Ingresar en la configuracion de terminal
+2- Ingresar el comando del banner
+3- Escribir lo que mostrará el banner
+
+'Comandos:'
+configure terminal
+banner motd # "Aqui ingrese el mensaje que quiere mostrar"
+
+#///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# Como configurar el Etherchannel o channel-group
+
+'Pasos:'
+1- Seleccionar los puetos identicos y juntarlos en un grupo
+2- Crear los puertos troncales
+3- Entrar a la interface del puerto troncal
+4- Asignar las vlan que pasan por esos puertos
+5- Asignar la vlan nativa que pasa por el troncal
+
+'Comandos:'
+int range (seleccionar los puertos)
+channel-group (Nº de grupo) mode (tipo de modo dependiendo si es LACP o PAgP)
+
+
+int port-channel (Nº de grupo)
+switchport mode trunk
+switchport trunk allowed vlan .....
+switchport trunk native vlan ...
+
+#///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# Configurar el spanning-tree
+
+'Pasos:'
+1- Entrar en configuracion de terminal
+2- Seleccionar el modo del spanning-tree
+3- Asiganar las vlans para el spanning-tree
+
+'Comando:'
+spanning-tree portfast default --> (esto hace que la negociación sea más rápida, evitando la pérdica de paquetes o tiempo)
+spanning-tree vlan x,x,x root secondary
+
+#///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#Como configurar el SSH:
+
+'Pasos:'
+1-Creamos usuarios para Ingresar
+2-Asignamos una clave de acceso
+3-Asignarle un nombre al dominio
+4-Aclaramos que usaremos  SSH version 2
+5-Encriptar las claves
+6-Inrgesar a la línea vty para la cantidad de usuarios
+7-Importamos la configuracion SSH anterior
+8-Indicar el acceso de forma local
+
+'Comandos:'
+username admin password cisco -> #Creamos el usuario y le asignamos una clave
+ip domain-name terra.com -> #Asignamos el nombre del dominio
+crypto key generate rsa -> # Encriptamos las claves
+1024
+ip SSH version 2 -> #Declaramos la version de SSH que usaremos
+
+line vty 0 1 -> # Asignamos la cantidad de usuarios
+transport input SSH -> # Transportamos la configuración SSH anterior
+login local -> #Especificamos que se accede de manera local
+
+#//////////////////////////////////////////////////////////////
+
+# Como colocar conotraseñas de vty
+
+'Pasos:'
+1- Ingresamos a loa configuracion global del switch
+2- Ingresamos al rango de las lineas vty
+3- Colocamos el comando 'password' seguido de la clave
+4- Nos logeamos para guardar la clave
+5- Salimos
+6- Y para cifrar la clave colocamos el comando 'service password-encryption'
+
+'Comandos:'
+line vty 0 15
+password cisco
+login
+exit
+service password-encryption
+
+#///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# Como cofigurar el HSRP
+'Pasos:'
+1- Seleccionar el interfaz
+2- Configurar la ip con su respectiva máscara del interface
+3- Configurar la version de standby (en este caso es la version 2)
+4- Configurar la direccion IP de la puerta de enlace virtual predeterminada especificando el número de grupo HSRP
+5- Designar el router activo para el grupo HSRP (La prioridad es de mayor a menor)
+6- Por las dudas reiniciar los router
+
+'Comandos:'
+interface g0/1
+ip addres XXX.XXX.XXX.XXX MMM.MMM.MMM.MMM
+standby version 2
+standby 1 ip 192.168.1.254
+standby 1 priority 150
+standby 1 preempt
+
+#///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# Como configurar DHCP
+
+'Pasos:'
+1- Excluir direcciones de DHCP (esto servira para que que el dhcp no asigne estas direcciones ip a los equipos)
+2- Crear un DHCP pool
+3- Ingresar al pool
+4- Colocar la ip (network)
+5- Colocar el default-router
+6- Colocacr el dns-server
+7- Colocar el nombre del dominio
+
+'Comandos:'
+ip dhcp excluded-address (XXX.XXX.XXX XXX.XXX.XXX)
+ip dhcp pool x -> donde 'x' es el nombre del pool
+network 'XXX.XXX.XXX  MMM.MMM.MMM'
+default-router 'XXX.XXX.XXX'
+dns-server 'XXX.XXX.XXX'
+domain-name 
+
+#////////////////////////////////////////////////////////////////
+
+# Como configurar DHCP v4 ejemplo
+
+'Comandos:'
+ip dhcp excluded-address (XXX.XXX.XXX XXX.XXX.XXX)
+ip dhcp pool vlan10
+ network 172.16.115.0 255.255.255.0
+ default-router 172.16.115.1
+ dns-server 210.128.128.10
+ domain-name salesianos.com
+
+#////////////////////////////////////////////////////////////////
+
+# Como configurar DHCP v6 
+
+'Pasos:'
+1- Crear un DHCP pool ipv6 (en caso de ser necesario)
+2- Asignarle un prefijo de direccion (addres prefix)
+3- Asignar el dns-server
+4- Asignar el nombre del dominio
+5- Ingresar en las interfaces
+6- Avilitar el ipv6
+7- Asignar una direccion ipv6 de enlace local
+8- Asignar la direccion ipv6
+9- Colocar la flag (managed o other, la managed apunta la direccion ip que le da al equipo y la other no lo apunta. La managed usarla para redes grandes y la other para redes pequeñas) 
+10- Indicar el servidor DHCP al que pertenece
+
+'Comandos:'
+ipv6 dhcp pool CON_ESTADO
+ address prefix 2001:D::0/64 lifetime 172800 86400
+ dns-server 2001::3333
+ domain-name salesianos.org
+
+'Como configurar el interface con un DHCP'
+ interface GigabitEthernet1/0/3
+ no switchport
+ no ip address
+ duplex auto
+ speed auto
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:E::1/64
+ ipv6 nd managed-config-flag
+ ipv6 enable
+ ipv6 dhcp server CON_ESTADO
+
+#///////////////////////////////////////////////////////////////
+
+#Pasos para implementar DHCP Snooping
+
+'Pasos:'
+1-Habilitar el DHCP Snooping
+2-Seleccionar el interfaz en el que va a implementar el DHCP
+3-Habilitar el modo 'trust' del dhcp Snooping
+4-En los interfaces que no son de confianza limitar la cantidad de mensajes de descubrimiento DHCP
+5-Habilitar la inspeccion DHCP (en las vlan)
+
+'Comandos:'
+ip dhcp snooping
+interface f0/1
+ip dhcp snooping trust
+exit
+interface range f0/5-24
+ip dhcp snooping limit rate 6
+exit
+ip dhcp snooping vlan 5,10,50-52
+end 
+
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#Como configurar el DAI
+
+'Pasos:'
+1- Habilitar la deteccion de DHCP
+2- Habilitar la deteccion de DHCP en las vlan seleccionadas
+3- Habilitar el DAI en los vlans seleccionados
+4- Configurar las inerfaces de confianza para la deteccion de DHCP y la inspeccions de ARP
+
+'Comandos:'
+ip dhcp snooping
+ip dhcp snooping vlan X
+ip arp inspection vlan X
+interface X
+ip dhcp snooping trust
+ip arp inspection trust
+
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# Como configurar el BPDUGUARD
+
+'Pasos:'
+1- Ingresar en una interfaz
+2- Usar el comando de spanning-tree bpduguard enable
+3- Salir a la configuracion global
+4- Habilitar el comando de spanning-tree portfast bpduguard default (esto habilita el bpduguard en todos los puertos)
+
+'Comandos:'
+interface fa X
+spanning-tree bpduguard enable
+exit
+
+# Tambien se puede hacer en la configuracion global aplicando la seguridad en todos los puertos
+
+'Comandos:'
+spanning-tree portfast bpduguard default
+end
+
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# Configurar seguridad extra a los switches
+
+'Pasos principales:'
+1-Ingresar a la interface
+2-Activar el pueto como swtich o troncal (ya que solo en esos tipos de puertos se puede colocar seguridad)
+3-Activar la seguridad del puerto
+
+'Comandos:'
+int f0/1
+switchport mode access
+switchport port-security
+
+#///////////////////////////////////////////////////////////////
+
+# Como mitigar los ataques de salto de VLAN
+
+'Pasos:'
+1- Ingresar a una interface que queramos convertila en troncal
+2- Asignarle el modo trancal a la interfaz
+3- Decirle que el puerto no es negociable (desabilitar las negociaciones DTP)
+4- Asiganle la vlan nativa que pasará por el troncal
+
+'Comandos:'
+int range fa0/17 - 20
+switchport mode trunk
+switchport nonegotiate
+switchport trunk nativa vlan x
+exit
+
+#///////////////////////////////////////////////////////////////
+
+'Como asiganar un número máximo de MACs aprendidas:'
+1-Realizamos los pasos explicados anteriormente pero le agregamos un paso extra
+
+'Comandos:'
+int f0/1
+switchport mode access
+switchport port-security
+switchport port-security maximun 'x' (donde x será la cantidad máxima de MACs que puede aprender el switch)
+
+#///////////////////////////////////////////////////////////////
+
+'Como limitar MAC específicas:'
+1- Realizamos los pasos principales explicados anteriormente
+2- En vez de hacer un límite de MAC aprendidas colocamos manualmente la MAC del dsipositivo
+Esto permite que solo sol equipos con las MACs especificadas pueden acceder
+
+'Comandos:'
+int f0/1
+switchport mode access
+switchport port-security
+switchport port-security mac-addres 'x' (donde x es la MAC)
+
+#///////////////////////////////////////////////////////////////
+
+'Como hacer que el switch aprenda de manera dinámica las MACs:'
+1- Realizamos la configuracion principal
+
+'Comandos:'
+int f0/1
+switchport mode access
+switchport port-security
+switchport port-security mac-address sticky
+
+#///////////////////////////////////////////////////////////////
+
+'Como hacer que las direcciones tengan un límite de tiempo:'
+1- Realizaremos la configuracion principal realizada anteriormente
+2- Usaremos un nuevo comando llamado "aging"
+3- Le asignaremos los parámetros para que las MACs aprendidas caduquen luego del tiempo especificando
+4- El comando sería: switchport port-security aging {static | time 'time' | type {absolute | inactivity}}
+
+'Comandos:'
+int f0/1
+switchport mode access
+switchport port-security
+switchport port-security aging time 10 (aquí le asignamos 10 minutos de tiempo)
+switchport port-security aging type inactivity (aquí pasodo los 10min de inactividad la MAC desaparece)
+
+'Modos de violacion de Port Security'
+Tiene 3 modos:
+1-SHUTDOWN: El puerto se apaga luego se que aparezca una violacion y el contador de violaciones aumenta 1
+2-RESTRICT: El puerto descarta los paquetes con direcciones de origen MAC desconocidas incrementanod el contador de violaciones y envía un mensaje de syslog
+3-PROTECT: Modo menos seguro. El puerto descarta los paquetes con direcciones de origen MAC desconocidas
+
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# Como configurar rutas estáticas del siguiente salto IPv4
+
+'Pasos:'
+1- Ingresamos al router
+2- Entramos en la configuracion global del router
+3- Colocamos el comando 'ip route'
+4- Colocamos la ip de nuestra red con su máscara
+5- Le indicamos la ip siguiente / la ip del siguiente salto
+
+'Comandos:'
+ip route (direccion ip) (mascara) (ip siguiente)
+
+'Ej:'
+ip route 172.16.1.0 255.255.255.0 172.160.2.0
+
+#///////////////////////////////////////////////////////////////
+
+# Como configurar rutas estáticas del siguiente salto IPv6
+
+'Pasos:'
+1- Ingresamos al router
+2- Entramos en la configuracion global del router
+3- Colocamos el comando 'ipv6 route'
+4- Colocamos la ip de nuestra red con su máscara
+5- Le indicamos la ip siguiente / la ip del siguiente salto
+
+'Comandos:'
+ipv6 route (direccion ipv6 con su mascara) (ipv6 del siguiente salto)
+
+'Ej:'
+ipv6 route 2001:db8:acad:1::/64 2001:db8:acad:2::2
+
+#///////////////////////////////////////////////////////////////
+
+# Como configurar rutas estáticas conectada directamente IPv4
+
+'Pasos:'
+1- Ingresar al route
+2- Entrar en la configuracion global del router
+3- Colocar el comando 'ip route'
+4- Colocar la red con la máscara que se desea enrutar
+5- Colocar el interface por donde tiene que salir para llegar al destino
+
+'Comandos:'
+ip route (dirección ip) (máscara) (interfaz de salida)
+
+'Ej:'
+ip route 172.16.0.1 255.255.255.0 s0/1/0
+
+#///////////////////////////////////////////////////////////////
+
+# Como configurar rutas estáticas conectada directamente IPv6
+
+'Pasos:'
+1- Ingresar al route
+2- Entrar en la configuracion global del router
+3- Colocar el comando 'ipv6 route'
+4- Colocar la direccion ipv6 con su máscara
+5- Colocar el interface por donde tiene que salir para llegar al destino
+
+'Comandos:'
+ipv6 route (direccion ipv6 con máscara incluida) (interfaz de salida)
+
+'Ej:'
+ipv6 route 2001:db8:acad:1::/64 s0/1/0
+
+#///////////////////////////////////////////////////////////////
+
+# Como configurar rutas estáticas totalmente especificadas IPv4
+
+'Pasos:'
+1- Ingresar al route
+2- Entrar en la configuracion global del router
+3- Colocar el comando 'ip route'
+4- Colocar la red con la máscara que se desea enrutar
+5- Colocar el interface por donde tiene que salir para llegar al destino
+6- Colocar la ip del siguiente salto
+
+'Comandos:'
+ip route (dirección ip) (máscara) (interfaz de salida) (ip del siguiente salto)
+
+'Ej:'
+ip route 172.16.1.0 255.255.255.0 G0/0/1 172.16.2.2
+
+#///////////////////////////////////////////////////////////////
+
+# Como configurar rutas estáticas totalmente especificadas IPv6
+
+'Pasos:'
+1- Ingresar al route
+2- Entrar en la configuracion global del router
+3- Colocar el comando 'ipv6 route'
+4- Colocar la direccion ipv6 con su máscara
+5- Colocar el interface por donde tiene que salir para llegar al destino
+6- Colocar la direccion IPv6 link-local
+
+'Comandos:'
+ipv6 route (direccion ipv6 con su máscara) (interfaz de salida) (direccion IPv6 link-local del siguiente salto)
+
+'Ej:'
+ipv6 eoute 2001:db8:acad:1::/64 s0/1/0 FE80::2
+
+#///////////////////////////////////////////////////////////////
+
+# Como configurar rutas estáticas flotantes IPv4
+
+'Pasos:'
+1- Ingresar al route
+2- Entrar en la configuracion global del router
+3- Colocar el comando 'ip route'
+4- Colocar cualquier direccion ip (0.0.0.0) con cualquier máscara (0.0.0.0)
+5- Colocar la ip del siguiente salto
+6- Si la ruta no es de prioridad colocamos una distancia administrativa (AD) (cuanto más vajo el número, más confiable es la ruta)
+
+
+'Comandos:'
+ipv4 route (cualquier direccion IPv4) (cualquier máscara) (direccion ip del siguiente salto) '(AD)'
+
+'Ej:'
+ip route 0.0.0.0 0.0.0.0 172.16.2.2 '5'
+
+#///////////////////////////////////////////////////////////////
+
+# Como configurar rutas estáticas flotantes IPv6
+
+'Pasos:'
+1- Ingresar al route
+2- Entrar en la configuracion global del router
+3- Colocar el comando 'ipV6 route'
+4- Colocar cualquier direccion IPv6 con cualquier máscara (prefijo ::/0 representa todas las redes IPv6)
+5- Colocar la ip del siguiente salto
+6- Si la ruta no es de prioridad colocamos una distancia administrativa (AD) (cuanto más vajo el número, más confiable es la ruta)
+
+'Comandos:'
+ipv6 route (cualquier direccion IPv6 con cualquier máscara) (direccion IPv6 del siguiente salto) '(AD)'
+
+'Ej:'
+ipv6 route ::/0 2001:db8:acad:2::2 '5'
+
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

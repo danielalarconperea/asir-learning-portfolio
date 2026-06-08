@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body bgcolor="black"><font color="white">
+<script type="text/javascript">
+function ingresar_notas_alumnos(notas){
+    var f,v,contadors=0,contadora=0;
+    for(f=0; f < notas.length; f++){
+        v=prompt('ingrese nota de cada alumno:');
+        notas[f]=parseInt(v);
+        if (notas[f]< 5){
+            contadors++
+        }else{
+            contadora++
+        }
+    }
+    document.write('Han aprobado: '+contadora+' alumnos<br>');
+    document.write('Han suspendido: '+contadors+' alumnos<br><br>');
+}
+function mostrar_notas_alumnos(notas){
+    var f;
+    document.write('Listado de notas de cada alumno<br>');
+    for(f=0; f < notas.length; f++){
+        document.write('Nota del alumno '+(f+1)+' --->'+notas[f]+'<br>');
+    }
+}
+var x = parseInt(prompt('Dime cuantos alumnos tienes'))
+var notas = new Array(x);
+//mostrar_notas_alumnos(notas)
+ingresar_notas_alumnos(notas)
+mostrar_notas_alumnos(notas)
+</script></font>
+</body>
+</html>

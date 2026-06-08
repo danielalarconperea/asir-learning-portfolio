@@ -1,0 +1,291 @@
+¡Claro! Aquí tienes una guía paso a paso sobre cómo abordar esta práctica de Packet Tracer, basada en la topología y las instrucciones de la imagen:
+
+**Objetivo General:** Configurar una red con múltiples VLANs, enrutamiento inter-VLAN, DHCP, rutas estáticas y de resumen, y aplicar medidas de seguridad básicas en los switches.
+
+**Pasos Detallados:**
+
+1.  **Configuración Básica de Dispositivos:**
+    * Asigna nombres (hostname) a cada dispositivo (R1, CORE, SW1, SW2) para identificarlos fácilmente.
+        ```bash
+        # Ejemplo en CORE
+        enable
+        configure terminal
+        hostname CORE
+        ```
+    * (Opcional pero recomendado) Configura contraseñas seguras (`enable secret`, `line console 0`, `line vty 0 15`).
+
+2.  **Creación de VLANs:**
+    * En los switches CORE, SW1 y SW2, crea las VLANs necesarias según el diagrama y las instrucciones.
+        ```bash
+        # En CORE, SW1, SW2
+        vlan 10
+        name VLAN10
+        vlan 20
+        name VLAN20
+        vlan 100
+        name NATIVA_ADMIN
+        vlan 666
+        name AGUJERO_NEGRO
+        
+        # Solo en SW2, adicionalmente:
+        vlan 1 
+        name VLAN1_SW2 # La VLAN 1 existe por defecto, pero le damos nombre descriptivo si es necesario.
+        ```
+    * *Nota:* La VLAN 1 (para PC4-1 en SW2) y la VLAN 100 (Nativa/Administrativa) también son necesarias. La VLAN 666 es para puertos no utilizados.
+
+3.  **Configuración de Enlaces Troncales (Trunking):**
+    * Configura los enlaces entre CORE y SW1 (Gig1/0/1 en ambos), y entre CORE y SW2 (Gig1/0/2 en ambos) como troncales.
+    * Define la VLAN 100 como la nativa en estos troncales.
+        ```bash
+        # En CORE
+        interface range GigabitEthernet1/0/1 - 2
+         switchport mode trunk
+         switchport trunk native vlan 100
+         no shutdown
+        
+        # En SW1
+        interface GigabitEthernet1/0/1
+         switchport mode trunk
+         switchport trunk native vlan 100
+         no shutdown
+        
+        # En SW2
+        interface GigabitEthernet1/0/1  # OJO: Diagrama dice Gig1/0/1 para SW1 y Gig1/0/2 para SW2 en CORE, y Gig1/0/1 en SW1 y Gig1/0/1 en SW2. Asumimos CORE G1/0/1 -> SW1 G1/0/1 y CORE G1/0/2 -> SW2 G1/0/1
+         switchport mode trunk
+         switchport trunk native vlan 100
+         no shutdown
+        ```
+
+4.  **Configuración de Puertos de Acceso (Switches SW1 y SW2):**
+    * Asigna los puertos FastEthernet conectados a los PCs a sus respectivas VLANs (modo acceso).
+    * Aplica seguridad de puertos (`port-security`) para limitar a un máximo de 3 direcciones IP por puerto.
+    * Habilita `PortFast` y `BPDU Guard` en estos puertos de acceso.
+        ```bash
+        # Ejemplo en SW1 (puertos para VLAN 20, Fa0/1 a Fa0/6 asumiendo 6 puertos)
+        interface range FastEthernet0/1 - 6 
+         switchport mode access
+         switchport access vlan 20
+         switchport port-security                 # Habilita Port Security
+         switchport port-security maximum 3       # Máximo 3 MAC/IP
+         switchport port-security violation shutdown # Acción en caso de violación
+         spanning-tree portfast                 # Habilita PortFast
+         spanning-tree bpduguard enable         # Habilita BPDU Guard
+         no shutdown
+        
+        # Repetir para VLAN 10 en SW1 (ej: Fa0/7 - Fa0/12)
+        interface range FastEthernet0/7 - 12
+         switchport mode access
+         switchport access vlan 10
+         # ... (comandos de port-security, portfast, bpduguard)
+         no shutdown
+        
+        # Repetir en SW2 para sus VLANs (20, 10, 1) y puertos correspondientes.
+        
+        # Puertos no usados -> VLAN 666 y deshabilitados
+        # Ejemplo en SW1 (asumiendo Fa0/13-24 y Gig1/0/2 no usados)
+        interface range FastEthernet0/13 - 24, GigabitEthernet1/0/2 
+         switchport mode access
+         switchport access vlan 666
+         shutdown 
+        # Repetir en SW2 y CORE para los puertos no asignados
+        ```
+    * Habilita PortFast por defecto globalmente (como pide la instrucción):
+        ```bash
+        # En CORE, SW1, SW2
+        spanning-tree portfast default 
+        ```
+
+5.  **Configuración de Enrutamiento Inter-VLAN (Switch CORE):**
+    * Habilita el enrutamiento IP en el switch CORE.
+    * Crea Interfaces Virtuales de Switch (SVIs) para cada VLAN que necesite enrutamiento (VLAN 1, 10, 20). Asigna las direcciones IP que actuarán como puerta de enlace para los PCs en esas VLANs.
+        ```bash
+        # En CORE
+        ip routing  # Habilita enrutamiento L3
+        
+        # SVI para VLAN 20 (Red 172.22.1.0/24 y 172.22.3.0/24)
+        interface Vlan20
+         description Gateway para VLAN20 (SW1 y SW2)
+         ip address 172.22.1.1 255.255.255.0  # Gateway para 172.22.1.0/24
+         ip address 172.22.3.1 255.255.255.0 secondary # Gateway para 172.22.3.0/24
+         no shutdown
+        
+        # SVI para VLAN 10 (Red 172.22.2.0/24 y 172.22.4.0/24)
+        interface Vlan10
+         description Gateway para VLAN10 (SW1 y SW2)
+         ip address 172.22.2.1 255.255.255.0  # Gateway para 172.22.2.0/24
+         ip address 172.22.4.1 255.255.255.0 secondary # Gateway para 172.22.4.0/24
+         no shutdown
+        
+        # SVI para VLAN 1 (Red 172.22.5.0/24)
+        interface Vlan1
+         description Gateway para VLAN1 (SW2)
+         ip address 172.22.5.1 255.255.255.0 
+         no shutdown
+         
+        # SVI para VLAN 100 (Administración - IP Fija, no DHCP)
+        # Asignar una IP estática, por ejemplo:
+        interface Vlan100
+         description Red de Gestion / Nativa
+         ip address 192.168.100.1 255.255.255.0 # Ejemplo, ajustar según necesidad
+         no shutdown 
+        ```
+    * *Nota sobre IPs 192.168.255.x/30:* El diagrama muestra IPs /30 en los enlaces CORE-SW1 y CORE-SW2 (192.168.255.6, 192.168.255.10). Esto es confuso si son enlaces troncales L2. Podrían ser:
+        * Un error en el diagrama.
+        * Que se esperen enlaces L3 en lugar de troncales (requeriría `no switchport` y asignar esas IPs directamente a Gig1/0/1 y Gig1/0/2 en CORE, SW1, SW2).
+        * Que sean IPs de gestión para los switches en la VLAN nativa 100. Si es así, configura IPs estáticas en las SVIs Vlan100 de SW1 y SW2 (ej. 192.168.255.6 en SW1, 192.168.255.10 en SW2) y una IP correspondiente en la SVI Vlan100 de CORE si necesita comunicarse con ellas en esa red. Por simplicidad, me he centrado en las SVIs de datos y he puesto un ejemplo genérico para la Vlan100.
+
+6.  **Configuración del Router R1:**
+    * Configura las direcciones IP en las interfaces de R1. Una hacia CORE y otra hacia "Internet".
+        ```bash
+        # En R1
+        interface GigabitEthernet0/1/0 # Hacia Internet (asumiendo esta interfaz)
+         ip address 210.1.1.1 255.255.255.252 # IP dada /30
+         no shutdown
+        
+        interface GigabitEthernet1/0/1 # Hacia CORE (asumiendo esta interfaz)
+         # Necesitas definir una red para este enlace, ej: 192.168.255.0/30
+         ip address 192.168.255.1 255.255.255.252 # Ejemplo R1
+         no shutdown 
+         
+        # Configurar la interfaz correspondiente en CORE
+        # En CORE
+        interface GigabitEthernet1/0/3 # Asumiendo esta interfaz hacia R1
+         no switchport # Convertir en puerto L3
+         ip address 192.168.255.2 255.255.255.252 # Ejemplo CORE
+         no shutdown
+        ```
+    * Configura la **ruta por defecto** en R1 hacia Internet.
+        ```bash
+        # En R1
+        ip route 0.0.0.0 0.0.0.0 210.1.1.2 # IP del siguiente salto en Internet
+        ```
+    * Configura una **ruta resumida** en R1 hacia las redes internas (172.22.0.0/21).
+        ```bash
+        # En R1
+        # El siguiente salto es la IP de CORE en el enlace R1-CORE
+        ip route 172.22.0.0 255.255.248.0 192.168.255.2 # Usando IP de ejemplo
+        ```
+    * Configura **NAT** en R1 para permitir que las redes internas salgan a Internet (opcional si no se pide explícitamente, pero implícito al dar ruta a Internet).
+        ```bash
+        # En R1
+        # Definir qué tráfico interno se traduce (Access List)
+        access-list 1 permit 172.22.0.0 0.0.7.255 # Coincide con 172.22.0.0/21
+        
+        # Configurar NAT Overload (PAT) en la interfaz de salida
+        interface GigabitEthernet0/1/0 # Interfaz hacia Internet
+         ip nat outside
+        
+        interface GigabitEthernet1/0/1 # Interfaz hacia CORE/Interna
+         ip nat inside
+         
+        # Aplicar la regla NAT
+        ip nat inside source list 1 interface GigabitEthernet0/1/0 overload 
+        ```
+
+7.  **Configuración de Rutas en Switches:**
+    * **CORE:** Necesita una ruta por defecto hacia R1.
+        ```bash
+        # En CORE
+        # El siguiente salto es la IP de R1 en el enlace R1-CORE
+        ip route 0.0.0.0 0.0.0.0 192.168.255.1 # Usando IP de ejemplo
+        ```
+    * **SW1 y SW2:** Si son switches L2 puros, necesitan una puerta de enlace predeterminada para la gestión. Si tienen capacidad L3 (aunque CORE haga el enrutamiento inter-VLAN), podrían necesitar una ruta por defecto hacia CORE.
+        ```bash
+        # En SW1 (como gateway de gestión)
+        ip default-gateway 192.168.100.1 # IP de la SVI VLAN100 en CORE (ejemplo)
+        
+        # En SW2 (como gateway de gestión)
+        ip default-gateway 192.168.100.1 # IP de la SVI VLAN100 en CORE (ejemplo)
+        
+        # O si se configuran como L3 con rutas estáticas:
+        # ip route 0.0.0.0 0.0.0.0 <IP_CORE_en_VLAN100_o_enlace_L3> 
+        ```
+    * La instrucción pide rutas estáticas en SW1/SW2 hacia las redes de los otros switches. Esto generalmente no es necesario si CORE maneja todo el enrutamiento inter-VLAN y SW1/SW2 solo necesitan saber cómo llegar a CORE (su gateway). La ruta por defecto suele ser suficiente.
+
+8.  **Configuración del Servidor DHCP (en CORE):**
+    * Crea pools DHCP para cada subred (VLAN) que sirva a los PCs.
+    * Excluye las primeras 5 direcciones IP utilizables de cada rango.
+    * Define el router por defecto (gateway) y opcionalmente servidores DNS.
+        ```bash
+        # En CORE
+        
+        # Exclusiones (ejemplo para VLAN 20 - 172.22.1.0/24)
+        ip dhcp excluded-address 172.22.1.1 172.22.1.5 
+        # Repetir para 172.22.3.1-172.22.3.5, 172.22.2.1-172.22.2.5, etc.
+        
+        # Pool para VLAN 20 (SW1 - 172.22.1.0/24)
+        ip dhcp pool VLAN20_SW1
+         network 172.22.1.0 255.255.255.0
+         default-router 172.22.1.1 
+         dns-server 8.8.8.8 # Ejemplo
+        
+        # Pool para VLAN 10 (SW1 - 172.22.2.0/24)
+        ip dhcp pool VLAN10_SW1
+         network 172.22.2.0 255.255.255.0
+         default-router 172.22.2.1
+         dns-server 8.8.8.8 
+        
+        # Repetir pools para VLAN 20 (SW2 - 172.22.3.0/24), VLAN 10 (SW2 - 172.22.4.0/24) y VLAN 1 (SW2 - 172.22.5.0/24)
+        ```
+    * *Nota sobre VLAN 100:* No se crea pool DHCP, las IPs son fijas.
+
+9.  **Configuración de DHCP Relay (Ayudante DHCP):**
+    * La instrucción pide configurar DHCP Relay en SW1 y SW2 para llegar al servidor DHCP en CORE. *Esto es inusual si CORE es el gateway (SVI) para todas las VLANs Y también el servidor DHCP*. Las peticiones DHCP de los clientes llegarían directamente a la SVI de CORE, que podría resolverlas localmente.
+    * **Interpretación 1 (Estándar):** No se necesita `ip helper-address` en SW1/SW2 si son L2. Si CORE es el gateway y el servidor, tampoco se necesita en las SVIs de CORE.
+    * **Interpretación 2 (Literal):** Si *se debe* configurar relay en SW1/SW2, implicaría que SW1/SW2 tienen alguna capacidad L3 (SVIs propias) y necesitan reenviar las peticiones. O, más probablemente, la instrucción quiere que se configure en las *SVIs del gateway (CORE)* para reenviar a la IP donde corre el servicio DHCP (que podría ser la IP de gestión de CORE).
+        ```bash
+        # En CORE (si fuera necesario reenviar a sí mismo o a una IP específica del servicio)
+        interface Vlan10
+         ip helper-address <IP_del_servidor_DHCP_en_CORE> # Podría ser 172.22.2.1 o la IP de Vlan100
+        interface Vlan20
+         ip helper-address <IP_del_servidor_DHCP_en_CORE>
+        interface Vlan1
+         ip helper-address <IP_del_servidor_DHCP_en_CORE>
+        ```
+    * Recomiendo **probar primero sin `ip helper-address`**. Si los clientes no obtienen IP, entonces añádelo en las SVIs de CORE apuntando a una IP del propio CORE (p.ej., la IP de la SVI Vlan100).
+
+10. **Configuración de Seguridad Adicional:**
+    * **SSH:** Configura el acceso seguro por SSH en los switches.
+        ```bash
+        # En CORE, SW1, SW2
+        ip domain-name tuDominio.local  # Necesario para generar claves RSA
+        crypto key generate rsa modulus 1024 # Genera claves
+        
+        line vty 0 15
+         transport input ssh # Permite solo SSH
+         login local        # Usa base de datos local de usuarios
+        
+        username tuUsuario privilege 15 secret tuContraseñaSegura # Crea un usuario admin
+        ```
+    * **DHCP Snooping:** Mitiga ataques de servidores DHCP falsos.
+        ```bash
+        # En CORE, SW1, SW2
+        ip dhcp snooping
+        ip dhcp snooping vlan 1,10,20,100 # Habilita en VLANs relevantes (NO en 666)
+        
+        # En los puertos troncales (confiables para mensajes DHCP)
+        interface range GigabitEthernet1/0/1 - 2 # Ejemplo en CORE
+         ip dhcp snooping trust 
+        # Repetir en interfaces troncales de SW1, SW2
+        
+        # En los puertos de acceso (no confiables) - no se necesita comando extra, es el default.
+        ```
+    * **Dynamic ARP Inspection (DAI):** Previene ARP spoofing, depende de DHCP Snooping.
+        ```bash
+        # En CORE, SW1, SW2
+        ip arp inspection vlan 1,10,20,100 # Habilita en VLANs relevantes
+        
+        # En los puertos troncales (confiables)
+        interface range GigabitEthernet1/0/1 - 2 # Ejemplo en CORE
+         ip arp inspection trust
+        # Repetir en interfaces troncales de SW1, SW2
+        ```
+
+11. **Verificación:**
+    * Comprueba que los PCs obtengan direcciones IP de los pools correctos vía DHCP.
+    * Verifica la conectividad haciendo ping desde los PCs a su gateway (SVI en CORE).
+    * Haz ping entre PCs de diferentes VLANs (debería funcionar gracias al enrutamiento en CORE).
+    * Haz ping desde un PC a una dirección en Internet (ej. 8.8.8.8) para probar la ruta por defecto y NAT.
+    * Usa comandos `show` como `show ip interface brief`, `show vlan brief`, `show interface trunk`, `show ip route`, `show ip dhcp binding`, `show ip dhcp pool`, `show port-security interface <if>`, `show ip dhcp snooping`, `show ip arp inspection`.
+
+Recuerda guardar la configuración (`copy running-config startup-config` o `write memory`) en todos los dispositivos. ¡Mucha suerte con la práctica!

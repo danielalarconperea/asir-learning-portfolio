@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Problema4</title>
+</head>
+<body>
+<script type="text/javascript">
+
+var i=0, suma=0, sueldo=0, contadorbajo=0, contadoralto=0, empleados=10;
+
+while(i<empleados){
+    sueldo=parseFloat(prompt('dime tu sueldo'));
+    if(sueldo>=100 && sueldo<=300){
+        i++;
+        contadorbajo++;
+        suma += sueldo;
+    }else if(sueldo>300 && sueldo<=500){
+        i++;
+        contadoralto++;
+        suma += sueldo;
+    }else{
+        alert('Porfavor ingrese los sueldos de cada persona entre 100€-500€')
+    }
+}
+document.write('Hay '+contadorbajo+' empleados que cobran entre 100€-300€<br><br>Y '+contadoralto+' empleados que cobran más de 500€<br><br>El total que gasta la empresa en sueldos al personal es: '+suma)
+</script>
+</body>
+</html>

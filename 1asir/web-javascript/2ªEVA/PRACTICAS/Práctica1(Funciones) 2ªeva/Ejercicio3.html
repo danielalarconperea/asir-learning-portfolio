@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejercicio3</title>
+</head>
+<body>
+<script type="text/javascript">
+
+function Par_Impar(num){
+    if (num % 2 == 0){
+        alert("El número "+num+" es par");
+    }else if (num % 2 == 1){
+        alert("El número "+num+" es impar");
+    }else{ 
+        alert("Introduzca un parametro valido");
+    }
+}
+var num = parseInt(prompt('Introduzca un número y te dire si es par o impar: '));
+Par_Impar(num);
+
+</script>
+</body>
+</html>
+<!-- 
+Ejercicio 3: Comprobar si un número es par o impar
+Crea una función que reciba un número como parámetro y devuelva true si el número es par, o false si es impar. 
+Solicita al usuario que introduzca un número, usa la función para realizar la comprobación y muestra un mensaje indicando si el número es par o impar.
+ -->

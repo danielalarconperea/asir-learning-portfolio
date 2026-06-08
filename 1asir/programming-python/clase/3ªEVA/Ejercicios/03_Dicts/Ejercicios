@@ -1,0 +1,11 @@
+EJERCICIOS DE PYTHON - TUPLAS Y DICCIONARIOS
+
+Escribir un programa que guarde en un diccionario la lista de la compra con el precio de cada uno de los productos.
+Pregunta al usuario por un producto y muestra por pantalla el precio de ese producto. Si el producto preguntado no está en el diccionario debe mostrar un mensaje informando de ello.
+
+Crea un diccionario vacío y vete llenándolo con nombre, edad, sexo y teléfono que se le pida al usuario. Cada vez que se añada un nuevo dato debe imprimirse el contenido del diccionario.
+
+Crea una tupla de números. Pide al usuario un número y accede a la tupla e indica cuántas veces se encuentra en la misma.
+
+Escribir una función que meta por parámetro dos tuplas que representan dos fichas de dominó. La función devolverá "True" si encajan y "False" si no encajan.
+Por ejemplo, se le puede pasar por parámetro: (3,4) y (5,4) y devolvería "True" ya que se podría juntar la ficha (3,4) con la (5,4) mediante el 4. Sin embargo, las fichas: (2,4) con (1,3) devolvería "False".

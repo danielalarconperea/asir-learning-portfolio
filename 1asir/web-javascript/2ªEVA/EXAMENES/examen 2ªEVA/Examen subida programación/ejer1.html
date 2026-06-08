@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo de Impuestos</title>
+    <style>
+        body{
+            margin: auto;
+            display: block; 
+            text-align: center;
+            justify-content: center;
+            font-family: Arial, Helvetica, sans-serif;
+            max-width: 500px;
+        }
+        form{
+            margin: 0 100px;
+            border: 2px black solid;
+            padding: 15px;
+            max-width: auto;
+            box-shadow: 10px 20px 30px black;
+            border-radius: 15px;
+            text-align: left;
+        }
+        h1{
+            text-shadow: 1px 1px 5px rgb(54, 104, 127);
+        }
+    </style>
+</head>
+<body>
+    <script type="text/javascript">
+        function Impuesto(){
+            var indice = document.formulario.categoria.selectedIndex;
+            var categoria_prod = document.formulario.categoria.options[indice].value;
+            var precio_prod = document.formulario.precio.value;
+            var precio_final;
+            if (precio_prod <= 0){
+                alert('Debe seleccionar un precio valido');
+            }else if (categoria_prod == 'Alimentos'){
+                precio_final = precio_prod * 1.05;
+                alert('El producto con los impuestos añadidos vale: '+precio_final);
+            }else if (categoria_prod == 'Ropa'){
+                precio_final = precio_prod * 1.12;
+                alert('El producto con los impuestos añadidos vale: '+precio_final);
+            }else if (categoria_prod == 'Electrónica'){
+                precio_final = precio_prod * 1.20;
+                alert('El producto con los impuestos añadidos vale: '+precio_final);
+            }else{
+                alert('Debe seleccionar una categoría correcta');
+            }
+        }
+    </script>
+
+    <h1>Cálculo de Impuestos</h1>
+    <form name="formulario">
+        <label for="price">Precio del producto:</label>
+        <input type="number" name="precio" required><br><br>
+
+        <label for="category">Categoría:</label>
+        <select name="categoria" required>
+            <option value="">Selecciona una categoría</option>
+            <option value="Alimentos">Alimentos</option>
+            <option value="Ropa">Ropa</option>
+            <option value="Electrónica">Electrónica</option>
+        </select><br><br>
+        <button type="button" onclick="Impuesto()">Calcular Precio Final</button>
+    </form>
+
+   
+</body>
+</html>

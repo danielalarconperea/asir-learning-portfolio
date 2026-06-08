@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<style>
+    form{
+        width: 300px;
+        padding: 10px;
+        border-radius: 20px;
+        margin: auto;
+        background-color: #ca1;
+    }
+    form label{
+        width: 72px;
+        font-weight: bold;
+        display: inline-block;
+    }
+    form input[type='text'], form input[type='email']{
+        width: 180px;
+        padding: 10px;
+        border: 3px solid #f6f6f6;
+        border-radius: 3px;
+        background-color: red;
+        margin: 8px;
+        display: inline-table;
+    }
+    form input[type='submit']{
+        width: 100%;
+        padding: 8px 16px;
+        margin-top: 32px;
+        border: 1px solid #000;
+        border-radius: 5px;
+        display: block;
+        color: #fff;
+        background-color: #000;
+    }   
+    form input[type='submit']:hover{
+        cursor: pointer;
+    }
+    textarea{
+        width: 100%;
+        border: 1px solid #f6f6f6;
+        border-radius: 3px;
+        background-color: #f6f6f6;
+        margin: 8px 0;
+        resize: none; /* resize: vertical | horizontal | none | both */
+        display: block;
+    }
+</style>
+</head>
+<body>
+<form>
+    <label for="nombre">Nombre</label>
+    <input type="text" name="nombre" id="nombre" />
+
+    <label for="apellidos">Apellidos</label>
+    <input type="text" name="apellidos" id="apellidos" />
+    
+    <label for="email">Email</label>
+    <input type="email" name="email" id="email" />
+    
+    <label for="asunto">Asunto</label>
+    <input type="text" name="asunto" id="asunto" />
+    
+    <label for="mensaje">Mensaje</label>
+    <textarea name="mensaje" for="mensaje" maxlength="300"></textarea>
+
+    <input type="submit" name="enviar" value="enviar datos" />
+</form>
+</body>
+</html>
