@@ -1,4 +1,4 @@
-# Proyecto destacado
+# Proyecto final
 
 | Proyecto | Descripcion | Tecnologias | Enlace |
 | --- | --- | --- | --- |
