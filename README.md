@@ -1,6 +1,6 @@
 # Portfolio ASIR
 
-Repositorio donde voy guardando mis practicas, apuntes y proyectos de Administracion de Sistemas Informaticos en Red.
+Repositorio donde he guardando mis practicas, apuntes y proyectos de Administracion de Sistemas Informaticos en Red.
 
 Lo he separado por cursos y por areas para tenerlo todo mas limpio: sistemas, redes, bases de datos, scripting, seguridad, servicios de red, despliegue web y proyecto final.
 
