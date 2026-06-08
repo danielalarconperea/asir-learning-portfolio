@@ -2,7 +2,7 @@
 
 Ejercicios y pruebas de Python.
 
-Esta carpeta es mas de aprendizaje que de proyecto terminado. La uso para guardar ejercicios, apuntes y pruebas que he ido haciendo.
+Esta carpeta recoge ejercicios, apuntes y pruebas que hice para practicar Python.
 
 | Carpeta | Contenido |
 | --- | --- |
@@ -13,4 +13,4 @@ Esta carpeta es mas de aprendizaje que de proyecto terminado. La uso para guarda
 
 ## Nota
 
-No lo presento como una aplicacion terminada; es mi zona para practicar y repasar.
+Es material de aprendizaje, no una aplicacion final.

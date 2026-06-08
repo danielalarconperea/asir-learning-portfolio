@@ -1,8 +1,8 @@
 # Portfolio ASIR
 
-Repositorio donde he guardando mis practicas, apuntes y proyectos de Administracion de Sistemas Informaticos en Red.
+Repositorio con mis practicas, apuntes y proyectos de Administracion de Sistemas Informaticos en Red.
 
-Lo he separado por cursos y por areas para tenerlo todo mas limpio: sistemas, redes, bases de datos, scripting, seguridad, servicios de red, despliegue web y proyecto final.
+Esta organizado por cursos y por areas: sistemas, redes, bases de datos, scripting, seguridad, servicios de red, despliegue web y proyecto final.
 
 ## Contenido
 
@@ -10,14 +10,14 @@ Lo he separado por cursos y por areas para tenerlo todo mas limpio: sistemas, re
 | --- | --- |
 | [1ASIR](./1asir/) | Practicas de primer curso: SQL, Python, JavaScript, redes, sistemas y lenguaje de marcas. |
 | [2ASIR](./2asir/) | Practicas de segundo curso: administracion de sistemas, servicios, seguridad, bases de datos y despliegue web. |
-| [Projects](./projects/) | Proyectos que quiero tener mas visibles. |
-| [Python Learning Lab](./python-learning-lab/) | Ejercicios y pruebas de Python que he ido haciendo para aprender. |
+| [Projects](./projects/) | Proyecto destacado del ciclo. |
+| [Python Learning Lab](./python-learning-lab/) | Ejercicios y pruebas de Python. |
 
 ## Proyecto destacado
 
-| Proyecto | Estado | Tecnologias | Enlace |
+| Proyecto | Tipo | Tecnologias | Enlace |
 | --- | --- | --- | --- |
-| Final Project - Distributed IoT Security Architecture | En desarrollo | Raspberry Pi, AWS IoT Core, MQTT/TLS, Docker, Python | [Ver](./projects/final-project/) |
+| Final Project - Distributed IoT Security Architecture | Proyecto final | Raspberry Pi, AWS IoT Core, MQTT/TLS, Docker, Python | [Ver](./projects/final-project/) |
 
 ## Estructura
 
@@ -40,7 +40,6 @@ asir-learning-portfolio/
 |   +-- web-deployment/
 +-- projects/
 |   +-- final-project/
-|   +-- archive/
 +-- python-learning-lab/
     +-- backend-experiments/
     +-- backend-notes/
@@ -52,4 +51,4 @@ asir-learning-portfolio/
 
 El proyecto final esta en `projects/final-project`, y tambien aparece enlazado desde `2asir/final-project` porque forma parte del contenido de segundo.
 
-Las pruebas sueltas y cosas menos pulidas estan separadas para no mezclarlas con lo principal.
+Las pruebas sueltas y ejercicios de aprendizaje estan separados para que el contenido principal se vea mas claro.

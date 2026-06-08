@@ -1,6 +1,6 @@
 # Final Project - Distributed IoT Security Architecture
 
-Proyecto final sobre una arquitectura de seguridad IoT distribuida usando Raspberry Pi y AWS IoT Core.
+Proyecto final basado en una arquitectura de seguridad IoT distribuida usando Raspberry Pi y AWS IoT Core.
 
 ## Resumen
 
@@ -42,6 +42,6 @@ final-project/
 | Guia de despliegue | [docs/guia_despliegue.md](./docs/guia_despliegue.md) |
 | Guia de uso | [docs/guia_uso.md](./docs/guia_uso.md) |
 
-## Estado
+## Contenido
 
-Proyecto en desarrollo. Aqui voy dejando el codigo, la documentacion y las pruebas relacionadas con el TFG.
+La carpeta recoge el codigo, la documentacion y las pruebas principales del TFG.
