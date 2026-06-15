@@ -3,7 +3,7 @@ Genera y rota el par Ed25519 con el que PI-5 firma los comandos al sensor.
 
 Salida (par 'current', el activo):
   PI-5/certificados/sentinel_pi5_signing.key       (privada, gitignored)
-  PI-4/Agente de monitorizacion/sentinel_pi5_signing.pub  (publica, commiteable)
+  PI-4/firma-iot/sentinel_pi5_signing.pub  (publica, commiteable)
 
 Uso:
   python scripts/generate_signing_keys.py            # crea el par actual
@@ -41,7 +41,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 PRIV_DIR = os.path.join(REPO_ROOT, "PI-5", "certificados")
-PUB_DIR = os.path.join(REPO_ROOT, "PI-4", "Agente de monitorizacion")
+PUB_DIR = os.path.join(REPO_ROOT, "PI-4", "firma-iot")
 
 PRIV_PATH = os.path.join(PRIV_DIR, "sentinel_pi5_signing.key")
 PUB_PATH = os.path.join(PUB_DIR, "sentinel_pi5_signing.pub")

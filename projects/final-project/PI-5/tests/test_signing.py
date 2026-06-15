@@ -1,6 +1,6 @@
 """
 Tests del modulo de firma PI-5/src/tools/signing.py y del verificador
-PI-4/Agente de monitorizacion/signing.py.
+PI-4/firma-iot/signing.py.
 
 Verifican el contrato end-to-end:
   * Round-trip sign/verify funciona.
@@ -22,7 +22,7 @@ from cryptography.hazmat.primitives.asymmetric.rsa import generate_private_key
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 PI5_TOOLS_DIR = os.path.join(REPO_ROOT, "PI-5", "src", "tools")
-PI4_AGENT_DIR = os.path.join(REPO_ROOT, "PI-4", "Agente de monitorizacion")
+PI4_FIRMA_DIR = os.path.join(REPO_ROOT, "PI-4", "firma-iot")
 
 
 def _load_module(name: str, path: str):
@@ -42,7 +42,7 @@ def pi5_signing():
 
 @pytest.fixture
 def pi4_signing():
-    mod = _load_module("pi4_signing", os.path.join(PI4_AGENT_DIR, "signing.py"))
+    mod = _load_module("pi4_signing", os.path.join(PI4_FIRMA_DIR, "signing.py"))
     # Cada test estrena su propia cache de nonces para aislamiento.
     mod._seen_nonces.clear()
     return mod

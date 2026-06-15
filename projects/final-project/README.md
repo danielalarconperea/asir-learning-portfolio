@@ -34,7 +34,7 @@
 
 ## Sobre el Proyecto
 
-**Sentinel-IT** es un Centro de Operaciones de Seguridad (SOC) a nivel de *Edge Computing*, diseñado para monitorizar, detectar y mitigar ciberataques en tiempo real. Aprovechando una topología distribuida con clústeres de Raspberry Pi y el poder analítico de la Inteligencia Artificial (Google Gemini ADK), el sistema procesa logs masivos de manera autónoma y aísla amenazas antes de que comprometan la red.Este proyecto simula un entorno empresarial realista donde servicios críticos (Web, FTP, SSH, Bases de datos) están expuestos, recopilando telemetría cifrada mediante **MQTT/mTLS** a través de **AWS IoT Core**.
+**Sentinel-IT** es un Centro de Operaciones de Seguridad (SOC) a nivel de *Edge Computing*, diseñado para monitorizar, detectar y mitigar ciberataques en tiempo real. Aprovechando una topología distribuida con clústeres de Raspberry Pi y el poder analítico de la Inteligencia Artificial (Google Gemini ADK), el sistema procesa logs masivos de manera autónoma y aísla amenazas antes de que comprometan la red. Este proyecto simula un entorno empresarial realista donde servicios críticos (Web, FTP, SSH, Bases de datos) están expuestos, recopilando telemetría cifrada mediante **MQTT/mTLS** a través de **AWS IoT Core**.
 
 ---
 
@@ -51,6 +51,7 @@ Actuando como servidor de producción expuesto a internet, este nodo representa 
 * **Servicios Expuestos:** Apache/Nginx, FTP (vsftpd), SSH, MariaDB, DNS (dnsmasq).
 * **Honeypots (CyberGuard):** Sistemas señuelo desplegados para capturar vectores de ataque (XSS, SQLi) y recopilar inteligencia de amenazas.
 * **Telemetría y Gestión de Logs:** Funciona como un cliente IoT, extrayendo logs crudos y telemetría estructurada (Apache, vsftpd, auth.log) para publicarlos en tiempo real en la nube de AWS.
+* **Sensor genérico auto-configurable (`sentinel-agent`):** un agente en Python (solo *stdlib*) que se autodescubre en cualquier servidor (SO, servicios, puertos, fuentes de log, firewall, capacidades), publica un *System Profile* y adapta la detección al sistema real — generalizando el sensor original, antes cableado al honeypot. Ejecuta los comandos firmados tras una **denylist local dura** (rechaza verbos destructivos aunque la firma sea válida: defensa en profundidad).
 * **Gestión de Sesiones Activas:** Capacidad de monitorizar accesos (ej. robos de cookies por XSS) y cerrar sesiones PHP de forma remota en respuesta a Session Hijacking.
 
 ### 2. Coordinador SOC (Raspberry Pi 5)
@@ -66,12 +67,14 @@ Un sistema de orquestación centralizado que ingiere la telemetría del Sensor E
 
 ## Características Principales
 
-* **Integración Cloud (AWS IoT Core):** Comunicación bidireccional, asíncrona y segura (mTLS) utilizando topics MQTT (`seguridad/clientel/#`, `comandos/#`).
+* **Integración Cloud (AWS IoT Core):** Comunicación bidireccional, asíncrona y segura (mTLS) sobre un esquema de topics MQTT por dispositivo (`seguridad/<device>/{evento,telemetria,respuesta,perfil,comando}`).
 * **Análisis Cognitivo:** Sustitución de reglas de firewall rígidas por una IA capaz de interpretar patrones anómalos (fuerza bruta, inyecciones SQL, escaneos) en milisegundos.
 * **Modelo Human-in-the-Loop (HITL):** El administrador mantiene el control absoluto. El SOC propone mitigaciones destructivas pero espera confirmación visual mediante el Dashboard antes de enviarlas al nodo Edge.
 * **Sandbox Forense:** El agente IA puede ejecutar comandos inofensivos de lectura (ej. `systemctl status`) para obtener contexto adicional antes de escalar una alerta.
 * **Protección Activa de Aplicaciones Web:** Mitigación automatizada frente a Session Hijacking (mediante anulación de cookies de sesión comprometidas vía scripts CLI de PHP) e intentos de SQL Injection (SQLi) detectados en el honeypot.
 * **Telemetría Avanzada:** Análisis dinámico del nivel de amenaza, distribución de vectores de ataque y auditoría completa de eventos en SQLite.
+* **Sensor genérico y autodescubrimiento:** el sensor se despliega en cualquier servidor, descubre su *System Profile* (servicios, puertos, logs, firewall) y deshardcodea detección y mitigaciones; el contexto del sistema real se inyecta al triage de la IA, con un enriquecedor LLM *offline* opcional fuera de la ruta caliente.
+* **Cadena de mando firmada (Ed25519):** cada comando viaja firmado con `iat`/`exp`/`nonce` (anti-replay) y se verifica en el sensor; soporta **rotación de clave sin downtime** (claves *current* + *next*) y está **preparado para escalar la flota** (plantillas de AWS IoT Fleet Provisioning).
 
 ---
 
@@ -101,6 +104,14 @@ Un sistema de orquestación centralizado que ingiere la telemetría del Sensor E
 * AWS IoT Core
 * Protocolo MQTT
 * Cifrado TLS 1.2 (mTLS)
+
+---
+
+## Documentación
+
+* [Onboarding de un sensor](docs/Onboarding_Sensor.md) — alta end-to-end (provisioning mTLS, firma, despliegue con systemd).
+* [Diseño del agente Discovery](docs/diseno_agente_discovery.md) — sensor auto-configurable y plan por fases.
+* [Arquitectura MQTT](docs/funcionamiento_mqtt.md) · [Configuración y despliegue](docs/Configuration_and_Deployment.md) · [CHANGELOG](docs/CHANGELOG.md)
 
 ---
 

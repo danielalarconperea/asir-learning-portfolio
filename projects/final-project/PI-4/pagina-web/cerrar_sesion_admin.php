@@ -11,10 +11,10 @@
  * php cerrar_sesion_admin.php --cerrar-sesion abc123xyz789
  * 
  * O DESDE NAVEGADOR (NO RECOMENDADO EN PRODUCCIÓN):
- * http://localhost/PI-4/Pagina%20web/cerrar_sesion_admin.php?action=listar
- * http://localhost/PI-4/Pagina%20web/cerrar_sesion_admin.php?action=cerrar_usuario&usuario_id=3
- * http://localhost/PI-4/Pagina%20web/cerrar_sesion_admin.php?action=cerrar_nombre&nombre=Admin
- * http://localhost/PI-4/Pagina%20web/cerrar_sesion_admin.php?action=cerrar_email&email=admin@cybergard.com
+ * http://localhost/PI-4/pagina-web/cerrar_sesion_admin.php?action=listar
+ * http://localhost/PI-4/pagina-web/cerrar_sesion_admin.php?action=cerrar_usuario&usuario_id=3
+ * http://localhost/PI-4/pagina-web/cerrar_sesion_admin.php?action=cerrar_nombre&nombre=Admin
+ * http://localhost/PI-4/pagina-web/cerrar_sesion_admin.php?action=cerrar_email&email=admin@cybergard.com
  */
 
 require_once 'db.php';
