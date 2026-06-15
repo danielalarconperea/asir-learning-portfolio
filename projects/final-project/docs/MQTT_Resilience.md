@@ -89,6 +89,8 @@ Si los 6 intentos fallan, el coordinador arranca sin MQTT y reintenta en cada op
 def is_alive(self):
     if self.connection is None:
         return False
+    if self._interrupted:          # estado notificado por el SDK (2026-06-13)
+        return False
     try:
         binding = getattr(self.connection, '_binding', None)
         if binding is None:
@@ -98,7 +100,7 @@ def is_alive(self):
         return False
 ```
 
-El handle nativo `_binding` es un puntero al objeto C del SDK. Cuando la conexión es liberada internamente (por el event loop de `awscrt` tras detectar la pérdida de socket), este handle se pone a `None`.
+El handle nativo `_binding` es un puntero al objeto C del SDK, pero en la práctica **sigue existiendo tras una caída de red**, así que por sí solo no detectaba el estado zombie. Desde 2026-06-13 el cliente registra los callbacks `on_connection_interrupted`/`on_connection_resumed` de `awscrt`: el flag `self._interrupted` refleja el estado real notificado por el SDK, los cortes y reanudaciones quedan logueados, y si AWS reanuda la sesión con `session_present=False` el cliente re-suscribe automáticamente los topics registrados.
 
 **Recuperación** (`get_mqtt_client()`):
 

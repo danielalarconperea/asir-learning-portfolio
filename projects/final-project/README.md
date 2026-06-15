@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://github.com/LopedeVega22/Sentinel-IT">
+  <a href="https://github.com/danielalarconperea/asir-learning-portfolio/tree/main/projects/final-project">
     <img src="assets/portada.png" alt="Portada de Sentinel-IT" width="800" style="border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
   </a>
 
@@ -9,27 +9,32 @@
     Una plataforma de Edge Computing potenciada por Inteligencia Artificial bajo un modelo Human-in-the-Loop.
     <br />
     <br />
-    <a href="#sobre-el-proyecto">Sobre el Proyecto</a>
+    <a href="#-sobre-el-proyecto">Sobre el Proyecto</a>
     ·
-    <a href="#arquitectura">Arquitectura</a>
+    <a href="#-arquitectura">Arquitectura</a>
     ·
-    <a href="#características-principales">Características</a>
+    <a href="#-características-principales">Características</a>
     ·
-    <a href="#stack-tecnológico">Stack Tecnológico</a>
+    <a href="#-stack-tecnológico">Stack Tecnológico</a>
   </p>
 </div>
 
 <br />
 
-<div align="center">
-  <img src="https://skillicons.dev/icons?i=raspberrypi,linux,docker,py,flask,sqlite,aws,bash&perline=8" alt="Stack principal de Sentinel-IT">
-</div>
+<p align="center">
+  <a href="https://python.org"><img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python"></a>
+  <a href="https://aws.amazon.com/iot-core/"><img src="https://img.shields.io/badge/AWS_IoT_Core-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white" alt="AWS IoT Core"></a>
+  <a href="https://ai.google.dev/"><img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Google Gemini"></a>
+  <a href="https://www.raspberrypi.org/"><img src="https://img.shields.io/badge/Raspberry_Pi-A22846?style=for-the-badge&logo=raspberry-pi&logoColor=white" alt="Raspberry Pi"></a>
+  <a href="https://flask.palletsprojects.com/"><img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white" alt="Flask"></a>
+  <a href="https://www.sqlite.org/"><img src="https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite"></a>
+</p>
 
 <br />
 
 ## Sobre el Proyecto
 
-**Sentinel-IT** es un Centro de Operaciones de Seguridad (SOC) a nivel de *Edge Computing*, diseñado para monitorizar, detectar y mitigar ciberataques en tiempo real. Aprovechando una topología distribuida con clústeres de Raspberry Pi y el poder analítico de la Inteligencia Artificial (Google Gemini ADK), el sistema procesa logs masivos de manera autónoma y aísla amenazas antes de que comprometan la red. Este proyecto simula un entorno empresarial realista donde servicios críticos (Web, FTP, SSH, Bases de datos) están expuestos, recopilando telemetría cifrada mediante **MQTT/mTLS** a través de **AWS IoT Core**.
+**Sentinel-IT** es un Centro de Operaciones de Seguridad (SOC) a nivel de *Edge Computing*, diseñado para monitorizar, detectar y mitigar ciberataques en tiempo real. Aprovechando una topología distribuida con clústeres de Raspberry Pi y el poder analítico de la Inteligencia Artificial (Google Gemini ADK), el sistema procesa logs masivos de manera autónoma y aísla amenazas antes de que comprometan la red.Este proyecto simula un entorno empresarial realista donde servicios críticos (Web, FTP, SSH, Bases de datos) están expuestos, recopilando telemetría cifrada mediante **MQTT/mTLS** a través de **AWS IoT Core**.
 
 ---
 

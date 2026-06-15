@@ -143,14 +143,14 @@ En vez de un parche mínimo sobre el esquema antiguo, se hizo una migración com
 - **Clasificador** ([main_coordinator.py:224](../PI-5/src/main_coordinator.py#L224)): `queue_type = "feedback" if topic.endswith("/respuesta") else "triage"`.
 - **iot_tools** ([iot_tools.py:34-80](../PI-5/src/tools/iot_tools.py#L34)) y **dashboard** ([dashboard_soc.py:511, 574](../PI-5/src/dashboard_soc.py#L511)): publican en `seguridad/{device}/comando` (plantilla).
 
-### Pendiente menor heredado
+### Pendiente menor heredado — RESUELTO
 
-Detectado al aplicar la migración pero **no implementado** porque vive en PI-4 (territorio del compañero): en [agente_monitor3.py:194](../PI-4/Agente%20de%20monitorizacion/agente_monitor3.py#L194) la rama `else` de `on_accion` publica confirmaciones `ACCION_RECIBIDA` en el topic legacy `seguridad/cliente1/web/eventos` cuando el texto de la acción contiene `"web"`. El coordinador no escucha ese topic → los mensajes caen al vacío. Fix propuesto (no aplicado): colapsar el if/elif/else en una sola línea que publique siempre a `TOPIC_RESPUESTAS`, ya que semánticamente una confirmación de recepción es una respuesta al SOC. Pasar al compañero para aplicar.
+**Estado:** ✅ RESUELTO el 2026-06-13. La rama `else` de `on_accion` en `agente_monitor3.py` publicaba confirmaciones `ACCION_RECIBIDA` en el topic legacy `seguridad/cliente1/web/eventos` (que el coordinador no escucha) cuando el texto de la acción contenía `"web"`. Se aplicó el fix propuesto: el if/elif/else se colapsó para publicar siempre a `TOPIC_RESPUESTAS`, ya que semánticamente una confirmación de recepción es una respuesta al SOC.
 
 ---
 
 ## Notas para retomar
 
 - El flujo MQTT (sección 2) **ya está saneado**: las capas 3 y 4 del futuro Policy Engine (cache round-trip + audit_log) ya tienen los topics correctos donde anclarse (`seguridad/+/respuesta` para feedbacks). Ver [funcionamiento_mqtt.md](funcionamiento_mqtt.md).
-- Si en el futuro se gana cooperación de PI-4, sustituir la Capa 3 del Policy Engine por firma HMAC + nonce/timestamp (propuesta original previa a centralizar todo en PI-5).
-- Pendiente menor en PI-4 ([agente_monitor3.py:194](../PI-4/Agente%20de%20monitorizacion/agente_monitor3.py#L194)) descrito al final de la sección 2 — coordinar con el compañero.
+- La cooperación de PI-4 ya existe: los comandos van firmados con Ed25519 + nonce/timestamp y, desde 2026-06-13, las respuestas incluyen el `log_id` del comando para correlación exacta comando↔respuesta (ver CHANGELOG).
+- El pendiente menor de PI-4 (rama `else` de `on_accion`) está resuelto — ver el final de la sección 2.

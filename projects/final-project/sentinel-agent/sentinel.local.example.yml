@@ -1,0 +1,63 @@
+# Configuración local del sensor genérico Sentinel-IT.
+# Copiar a sentinel.local.yml y rellenar. Cada sensor tiene su propio fichero.
+
+# OBLIGATORIO. Debe coincidir EXACTAMENTE con el sufijo de su topic de comando
+# (seguridad/<device_id>/comando) y con el campo 'sensor' de cada mensaje, o el
+# sensor recibirá eventos pero NUNCA los comandos de PI-5.
+device_id: "web-prod-01"
+
+# Conexión a AWS IoT Core (mTLS). Cada sensor necesita su propio cert/Thing.
+aws:
+  endpoint: "aj4wsdnimoej8-ats.iot.eu-north-1.amazonaws.com"
+  cert_path: "/etc/sentinel/certs/device.cert.pem"
+  key_path: "/etc/sentinel/certs/device.private.key"
+  root_ca: "/etc/sentinel/certs/root-CA.crt"
+
+# Clave PÚBLICA Ed25519 del coordinador PI-5 (el sensor solo verifica, nunca firma).
+signing:
+  public_key_path: "/etc/sentinel/sentinel_pi5_signing.pub"
+  # ROTACIÓN SIN DOWNTIME (opcional): durante una rotación de la clave de firma,
+  # apunta aquí a la nueva clave pública ('next'). El sensor aceptará comandos
+  # firmados con CUALQUIERA de las dos mientras PI-5 cambia de clave. Una vez
+  # PI-5 firma con la nueva, retira este campo en el siguiente despliegue.
+  # Procedimiento completo: scripts/generate_signing_keys.py (--next/--promote)
+  # y docs/Onboarding_Sensor.md.
+  # next_public_key_path: "/etc/sentinel/sentinel_pi5_signing.next.pub"
+
+# Ejecución de comandos de mitigación.
+executor:
+  run_as: null      # null = root (default del proyecto). Un usuario aquí de-escala.
+  timeout: 30
+
+# Descubrimiento del sistema.
+discovery:
+  # 0 = solo snapshot al arranque. >0 (segundos) = perfil vivo (Fase 3): re-descubre
+  # periódicamente y republica solo si cambia. Recomendado 300-900s (el cambio
+  # estructural es raro y la acción firmada 'redescubrir' cubre la inmediatez).
+  # <60s desaconsejado (coste de subprocess por ciclo). Se deja en 0 (opt-in).
+  rediscovery_interval: 0
+
+  # Restart controlado de tailers (solo aplica si rediscovery_interval>0 o llegan
+  # comandos 'redescubrir'). Valores por defecto razonables; opcionales.
+  tailer_join_timeout: 3.0      # s de espera al parar cada tailer antes de dejarlo huérfano
+  restart_min_interval: 120.0   # debounce mínimo entre dos restarts (anti-flapping)
+  restart_cap_per_hour: 6       # tope de restarts/hora; superado, se conserva el set vigente
+
+# Detección (umbrales y patrones; sobrescriben los defaults declarativos).
+detectors:
+  thresholds:
+    ssh_fail: 5
+    ssh_window: 60
+    ftp_fail: 10
+    ftp_window: 30
+    web_fail: 20
+    web_window: 60
+  # sqli_patterns: [...]   # opcional; si se omite, usa los defaults
+  # xss_patterns:  [...]
+
+state_path: "~/.sentinel-agent/state.json"
+telemetry_interval: 30
+
+logging:
+  file_path: "/var/log/sentinel-agent.log"
+  level: "INFO"

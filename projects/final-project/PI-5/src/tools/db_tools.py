@@ -172,6 +172,235 @@ def mark_mitigation_result(log_id: int, mitigation_status: str, command_result: 
     return {"status": "error", "message": "Database timeout after retries"}
 
 
+def upsert_device_profile(
+    device: str,
+    profile: dict,
+    db_path: str = None,
+) -> dict:
+    """
+    Inserta o actualiza el System Profile de un device. Deduplica por
+    profile_hash: si el hash no cambió respecto a lo almacenado, NO reescribe
+    (evita churn). Devuelve {status, changed}.
+
+    `profile` es el dict del perfil tal cual lo publica el sensor en
+    seguridad/<device>/perfil. No va al LLM: solo se persiste aquí.
+    """
+    import json as _json
+    path = db_path or DB_PATH
+    new_hash = profile.get("profile_hash")
+    # Defensa anti-stale: un perfil sin profile_hash se almacenaría con NULL y
+    # dejaría a los enriquecimientos sin ancla de verificación (el guard de
+    # promote_override no podría comparar). Lo rechazamos en origen.
+    if not new_hash:
+        logger.error(f"[PROFILE] Perfil de '{device}' sin profile_hash; descartado (defensa anti-stale).")
+        return {"status": "error", "changed": False, "message": "perfil sin profile_hash; descartado"}
+    for attempt in range(5):
+        conn = None
+        try:
+            conn = sqlite3.connect(path, timeout=15.0, check_same_thread=False)
+            conn.execute('PRAGMA journal_mode=WAL;')
+            cur = conn.cursor()
+            row = cur.execute(
+                "SELECT profile_hash FROM device_profiles WHERE device = ?", (device,)
+            ).fetchone()
+            if row and row[0] and row[0] == new_hash:
+                conn.close()
+                return {"status": "success", "changed": False}
+
+            fw = (profile.get("firewall") or {}).get("active_manager")
+            web = (profile.get("web_server") or {}).get("engine") if profile.get("web_server") else None
+            dbe = (profile.get("db_engine") or {}).get("engine") if profile.get("db_engine") else None
+            host = profile.get("host") or {}
+            cur.execute(
+                """
+                INSERT INTO device_profiles
+                    (device, schema_version, profile_version, profile_hash,
+                     os_id, os_version, firewall, web_server, db_engine,
+                     raw_profile_json, discovered_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                ON CONFLICT(device) DO UPDATE SET
+                    schema_version=excluded.schema_version,
+                    profile_version=excluded.profile_version,
+                    profile_hash=excluded.profile_hash,
+                    os_id=excluded.os_id,
+                    os_version=excluded.os_version,
+                    firewall=excluded.firewall,
+                    web_server=excluded.web_server,
+                    db_engine=excluded.db_engine,
+                    raw_profile_json=excluded.raw_profile_json,
+                    discovered_at=excluded.discovered_at,
+                    updated_at=CURRENT_TIMESTAMP
+                """,
+                (device, profile.get("schema_version"), profile.get("profile_version"),
+                 new_hash, host.get("os_id"), host.get("os_version"), fw, web, dbe,
+                 _json.dumps(profile, ensure_ascii=False), profile.get("discovered_at")),
+            )
+            conn.commit()
+            conn.close()
+            logger.info(f"[PROFILE] Perfil de '{device}' actualizado (v{profile.get('profile_version')}).")
+            # Perfil nuevo -> los enriquecimientos pendientes quedan obsoletos.
+            try:
+                superseded = supersede_pending_enrichments(device, path)
+                if superseded:
+                    logger.info(f"[PROFILE] {superseded} enriquecimiento(s) de '{device}' marcados SUPERSEDED.")
+            except Exception as e:  # noqa: BLE001 — no romper el upsert por esto
+                logger.error(f"[PROFILE] Error superseding enrichments: {e}")
+            return {"status": "success", "changed": True}
+        except sqlite3.OperationalError as e:
+            if "locked" in str(e).lower() and attempt < 4:
+                time.sleep(1)
+                continue
+            logger.error(f"[ERROR] upsert_device_profile: {e}")
+            return {"status": "error", "message": str(e)}
+        except Exception as e:
+            logger.error(f"[ERROR] upsert_device_profile: {e}")
+            return {"status": "error", "message": str(e)}
+        finally:
+            if conn:
+                conn.close()
+    return {"status": "error", "message": "Database timeout after retries"}
+
+
+def save_enrichment(device, profile_hash, profile_version, payload, discarded,
+                    model_used=None, ai_mode=None, confidence=None, db_path=None) -> int:
+    """Inserta un enriquecimiento (ya validado) con status PENDING_REVIEW. Devuelve su id."""
+    import json as _json
+    path = db_path or DB_PATH
+    for attempt in range(5):
+        conn = None
+        try:
+            conn = sqlite3.connect(path, timeout=15.0, check_same_thread=False)
+            conn.execute('PRAGMA journal_mode=WAL;')
+            cur = conn.execute(
+                """
+                INSERT INTO device_enrichments
+                    (device, profile_hash, profile_version, enrichment_json, discarded_json,
+                     model_used, ai_mode, confidence, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'PENDING_REVIEW')
+                """,
+                (device, profile_hash, profile_version,
+                 _json.dumps(payload, ensure_ascii=False),
+                 _json.dumps(discarded or [], ensure_ascii=False),
+                 model_used, ai_mode, confidence),
+            )
+            conn.commit()
+            return int(cur.lastrowid)
+        except sqlite3.OperationalError as e:
+            if "locked" in str(e).lower() and attempt < 4:
+                time.sleep(1)
+                continue
+            logger.error(f"[ERROR] save_enrichment: {e}")
+            raise
+        finally:
+            if conn:
+                conn.close()
+    raise RuntimeError("Database timeout after retries")
+
+
+def _row_to_enrichment(row) -> dict:
+    import json as _json
+    return {
+        "id": row[0], "device": row[1], "profile_hash": row[2], "profile_version": row[3],
+        "enrichment": _json.loads(row[4]) if row[4] else {},
+        "discarded": _json.loads(row[5]) if row[5] else [],
+        "model_used": row[6], "ai_mode": row[7], "confidence": row[8], "status": row[9],
+        "promoted_item_ids": _json.loads(row[10]) if row[10] else [],
+        "created_at": row[11], "reviewed_at": row[12],
+    }
+
+
+_ENRICH_COLS = ("id, device, profile_hash, profile_version, enrichment_json, discarded_json, "
+                "model_used, ai_mode, confidence, status, promoted_item_ids, created_at, reviewed_at")
+
+
+def list_enrichments(device, status=None, db_path=None) -> list:
+    path = db_path or DB_PATH
+    try:
+        conn = sqlite3.connect(path, timeout=10.0, check_same_thread=False)
+        if status:
+            rows = conn.execute(
+                f"SELECT {_ENRICH_COLS} FROM device_enrichments WHERE device=? AND status=? ORDER BY id DESC",
+                (device, status)).fetchall()
+        else:
+            rows = conn.execute(
+                f"SELECT {_ENRICH_COLS} FROM device_enrichments WHERE device=? ORDER BY id DESC",
+                (device,)).fetchall()
+        conn.close()
+        return [_row_to_enrichment(r) for r in rows]
+    except Exception as e:
+        logger.error(f"[ERROR] list_enrichments: {e}")
+        return []
+
+
+def get_enrichment(enrichment_id, db_path=None) -> dict:
+    path = db_path or DB_PATH
+    try:
+        conn = sqlite3.connect(path, timeout=10.0, check_same_thread=False)
+        row = conn.execute(
+            f"SELECT {_ENRICH_COLS} FROM device_enrichments WHERE id=?", (enrichment_id,)).fetchone()
+        conn.close()
+        return _row_to_enrichment(row) if row else {}
+    except Exception as e:
+        logger.error(f"[ERROR] get_enrichment: {e}")
+        return {}
+
+
+def set_enrichment_status(enrichment_id, status, promoted_item_ids=None, db_path=None) -> dict:
+    import json as _json
+    path = db_path or DB_PATH
+    try:
+        conn = sqlite3.connect(path, timeout=10.0, check_same_thread=False)
+        conn.execute('PRAGMA journal_mode=WAL;')
+        conn.execute(
+            "UPDATE device_enrichments SET status=?, reviewed_at=CURRENT_TIMESTAMP, "
+            "promoted_item_ids=? WHERE id=?",
+            (status, _json.dumps(promoted_item_ids) if promoted_item_ids is not None else None, enrichment_id))
+        conn.commit()
+        conn.close()
+        return {"status": "success"}
+    except Exception as e:
+        logger.error(f"[ERROR] set_enrichment_status: {e}")
+        return {"status": "error", "message": str(e)}
+
+
+def supersede_pending_enrichments(device, db_path=None) -> int:
+    """Marca SUPERSEDED los PENDING_REVIEW del device (al llegar un perfil nuevo)."""
+    path = db_path or DB_PATH
+    try:
+        conn = sqlite3.connect(path, timeout=10.0, check_same_thread=False)
+        conn.execute('PRAGMA journal_mode=WAL;')
+        cur = conn.execute(
+            "UPDATE device_enrichments SET status='SUPERSEDED', reviewed_at=CURRENT_TIMESTAMP "
+            "WHERE device=? AND status='PENDING_REVIEW'", (device,))
+        n = cur.rowcount
+        conn.commit()
+        conn.close()
+        return int(n)
+    except Exception as e:
+        logger.error(f"[ERROR] supersede_pending_enrichments: {e}")
+        return 0
+
+
+def get_device_profile(device: str, db_path: str = None) -> dict:
+    """Devuelve el perfil completo (dict) de un device, o {} si no hay."""
+    import json as _json
+    path = db_path or DB_PATH
+    try:
+        conn = sqlite3.connect(path, timeout=10.0, check_same_thread=False)
+        conn.execute('PRAGMA journal_mode=WAL;')
+        row = conn.execute(
+            "SELECT raw_profile_json, profile_version FROM device_profiles WHERE device = ?",
+            (device,),
+        ).fetchone()
+        conn.close()
+        if not row or not row[0]:
+            return {}
+        return _json.loads(row[0])
+    except Exception as e:
+        logger.error(f"[ERROR] get_device_profile: {e}")
+        return {}
+
+
 def update_alert_status(device: str, command_result: str, mitigation_status: str) -> dict:
     """
     Actualiza el estado de mitigación del último evento registrado para un dispositivo, 

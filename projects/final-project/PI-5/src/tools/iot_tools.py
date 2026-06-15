@@ -36,6 +36,17 @@ logger = logging.getLogger("CoordinatorSOC")
 # Referencia global al cliente IoT, inyectada desde el coordinador principal
 _iot_client = None
 
+# Device del evento en curso (lo setea el triage worker antes del run_async).
+# Sirve de fallback fiable para consultar_manual_mitigacion si el LLM no pasa
+# el device explicitamente. Solo el triage usa esa tool y su worker es
+# secuencial, asi que el desempate es el parametro del LLM.
+_active_device = ""
+
+
+def set_active_device(device: str) -> None:
+    global _active_device
+    _active_device = device or ""
+
 def init_iot_tools(iot_client):
     """
     Vincula el cliente MQTT activo y carga la clave privada Ed25519 con la que
@@ -312,39 +323,24 @@ def _quarantine_for_hitl(device: str, command: str, revert_command: str, decorat
         ),
     }
 
-def consultar_manual_mitigacion(query: str) -> str:
+def consultar_manual_mitigacion(query: str, device: str = "") -> str:
     """
-    Consulta la base de conocimiento local de mitigaciones recomendadas.
-    Usa esta herramienta SIEMPRE que necesites buscar el comando Bash exacto 
-    y la explicacion para un tipo de ataque especifico.
+    Consulta el manual de mitigaciones YA filtrado y parametrizado al sistema
+    real del dispositivo objetivo. Usalo SIEMPRE que detectes un ataque y
+    necesites el comando de mitigacion/diagnostico para ese tipo de amenaza.
+
+    Las recomendaciones devueltas ya estan adaptadas a ESTE device: el gestor
+    de firewall real, las rutas de web/BD y las herramientas disponibles ya se
+    han sustituido, y las que el host no soporta se han eliminado. Confia en el
+    comando tal cual; el unico token que debes rellenar tu es la IP del ataque
+    (<IP> / {ip}), y {nombre_usuario} cuando aparezca.
 
     Args:
-        query: Palabras clave del ataque (ej. 'XSS', 'SSH', 'SQLi', 'Web').
+        query: Familia/palabras clave del ataque (ej. 'SSH', 'XSS', 'SQLi',
+            'port_scan', 'web_bruteforce', 'defacement').
+        device: ID del dispositivo objetivo, EL MISMO que aparece en el bloque
+            '### CONTEXTO DEL SISTEMA OBJETIVO (device=...)'. Si se omite, se usa
+            el device del evento en curso.
     """
-    try:
-        import json
-        rec_path = os.path.join(BASE_DIR, 'src', 'recommendations.json')
-        with open(rec_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        
-        recs = data.get("recomendaciones_mitigacion", [])
-        
-        query_lower = query.lower()
-        matches = []
-        for item in recs:
-            if query_lower in item.get("ataque", "").lower() or query_lower in item.get("explicacion", "").lower():
-                matches.append(item)
-        
-        # Si no hay match exacto, devolvemos todo el manual para que el LLM decida
-        if not matches:
-            matches = recs
-            
-        res_str = []
-        for m in matches:
-            cmd = m.get("comando", "")
-            res_str.append(f"- Ataque: {m.get('ataque', '')}\n  Comando: {cmd}\n  Explicacion: {m.get('explicacion', '')}")
-            
-        return "\n\n".join(res_str)
-    except Exception as e:
-        logger.error(f"[ERROR] consultando manual de mitigacion: {e}")
-        return f"Error consultando manual: {str(e)}"
+    from tools import mitigation_manual
+    return mitigation_manual.consultar(query, device, fallback_device=_active_device)

@@ -326,11 +326,14 @@ signing:
   ttl_seconds: 60
 ```
 
-`PI-4/Agente de monitorizacion/config.yml`:
+`sentinel-agent/sentinel.local.yml` (sensor genérico — verificador):
 
 ```yaml
 signing:
-  public_key_path: "./sentinel_pi5_signing.pub"
+  public_key_path: "/etc/sentinel/sentinel_pi5_signing.pub"
+  # next_public_key_path: "/etc/sentinel/sentinel_pi5_signing.next.pub"
+  #   ^ opcional, solo durante una rotación de clave sin downtime (Fase 5):
+  #     el sensor acepta firmas de la clave actual O de la 'next'.
 ```
 
 ### 8.4 Comportamiento de rechazo
@@ -372,8 +375,8 @@ Si el dashboard se expone fuera de la LAN, **poner un reverse proxy con TLS por 
 ## 11. Primera puesta en marcha (checklist)
 
 ```text
-[ ] Clonar el repo:
-       git clone https://github.com/LopedeVega22/Sentinel-IT.git
+[ ] Clonar el repo (el proyecto vive en projects/final-project/):
+       git clone https://github.com/danielalarconperea/asir-learning-portfolio.git
 [ ] Cargar certificados en PI-5/certificados/:
        - root-CA.crt
        - Pi5-dani.cert.pem

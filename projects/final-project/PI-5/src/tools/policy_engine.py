@@ -99,7 +99,7 @@ _READ_VERBS = {
 }
 
 _BOUNDED_WRITE_VERBS = {
-    "iptables", "ip6tables", "ufw",
+    "iptables", "ip6tables", "ufw", "nft", "firewall-cmd",
 }
 
 _BROAD_WRITE_VERBS = {
@@ -124,7 +124,54 @@ _SHELL_METACHARS = (";", "&&", "||", "`", "$(", ">", "|")  # presencia cruda en 
 _SENSITIVE_WILDCARD_PATHS = ("/etc/", "/boot/", "/sys/", "/proc/", "/var/lib/",
                             "/dev/sd", "/dev/nvme", "/dev/disk", "/root/")
 
+# Constructos que ejecutan codigo aunque vivan DENTRO de comillas. Un verbo
+# de lectura con uno de estos en sus argumentos deja de ser lectura pura:
+# `awk 'BEGIN{system("rm -rf /")}'` o `grep "$(malicioso)" f` no deben
+# auto-ejecutarse jamas. (_detect_shell_metachars ignora lo entrecomillado a
+# proposito; esta lista cubre ese hueco para el caso critico de SAFE_READ.)
+_EMBEDDED_EXEC_PATTERNS = ("$(", "`", "system(", "popen(", "exec(", "<(")
+
 _IP_REGEX = re.compile(r"^\d{1,3}(\.\d{1,3}){3}$")
+
+# IP IPv4 como SUBCADENA (cubre `--add-source=1.2.3.4` y rich-rules, donde la IP
+# no es un token completo y _IP_REGEX no la ve). Solo IPv4: las reglas IPv6 caen
+# a HIGH (fail-safe, van igualmente a HITL).
+_IP_SUBSTR = re.compile(r"\b\d{1,3}(?:\.\d{1,3}){3}\b")
+# Redes comodin muy amplias (/0../7 = >=16M hosts): NO cuentan como "IP concreta".
+_WILDCARD_NET = re.compile(r"\d{1,3}(?:\.\d{1,3}){3}/[0-7]\b")
+
+
+def _has_ip(flat: str) -> bool:
+    """
+    True si hay una IPv4 CONCRETA en `flat`. Ignora la IP que aparezca tras
+    `comment` (texto libre de nft, no un selector) y descarta redes comodin
+    amplias (0.0.0.0/0): una regla `accept 0.0.0.0/0` abre el firewall y NO debe
+    bajar a LOW por contener una "IP".
+    """
+    scan = flat.split(" comment ", 1)[0]
+    matches = list(_IP_SUBSTR.finditer(scan))
+    if not matches:
+        return False
+    concretas = [m for m in matches if not _WILDCARD_NET.match(scan[m.start():])]
+    return bool(concretas)
+
+
+# Veredictos de nft que confirman una regla de filtrado (no solo estructura).
+_NFT_VERDICTS = ("drop", "accept", "reject", "queue", "dnat", "snat", "masquerade")
+
+
+def _has_verdict(flat: str) -> bool:
+    toks = flat.split()
+    return any(v in toks for v in _NFT_VERDICTS)
+
+
+# Flags de firewall-cmd que mutan estado (para distinguir lectura de escritura).
+_FW_MUTATING_PREFIXES = ("--add", "--remove", "--change", "--set", "--new",
+                         "--delete", "--panic-on", "--reload", "--runtime-to-permanent")
+
+
+def _has_mutating_flag(args: list) -> bool:
+    return any(a.split("=")[0].startswith(_FW_MUTATING_PREFIXES) for a in args)
 
 
 # ---------------------------------------------------------------------------
@@ -146,6 +193,27 @@ def classify(cmd: str) -> Classification:
         )
 
     reasons: list = []
+
+    # Saltos de linea = separador de comandos (shlex los trata como whitespace y
+    # fusionaria 'cat x\nsystemctl restart y' en un solo verbo de lectura). Se
+    # clasifica cada linea por separado: SAFE_READ solo si TODAS lo son.
+    newline_segments = _split_unquoted_newlines(raw)
+    if len(newline_segments) > 1:
+        seg_classes = [classify(s) for s in newline_segments]
+        if all(seg.level == RiskLevel.SAFE_READ for seg in seg_classes):
+            return Classification(
+                level=RiskLevel.SAFE_READ,
+                parsed_verb=" / ".join(seg.parsed_verb for seg in seg_classes),
+                reasons=["comando multilinea: todos los tramos son lectura",
+                         *[r for seg in seg_classes for r in seg.reasons]],
+            )
+        highest = max(seg.level for seg in seg_classes)
+        return Classification(
+            level=max(RiskLevel.HIGH, highest),
+            parsed_verb=seg_classes[0].parsed_verb,
+            reasons=["comando multilinea con tramo mutante",
+                     *[r for seg in seg_classes for r in seg.reasons]],
+        )
 
     pipe_segments = _split_unquoted_pipe(raw)
     if len(pipe_segments) > 1:
@@ -252,14 +320,33 @@ def classify(cmd: str) -> Classification:
         level = _bump(level, 1)
         reasons.append("wildcard sobre path sensible (/etc, /boot, /dev/sd...): +1")
 
+    # Constructos de ejecucion embebidos (incluso entre comillas): un comando
+    # clasificado como lectura pura pierde la auto-ejecucion si los contiene.
+    if level == RiskLevel.SAFE_READ:
+        embedded = [p for p in _EMBEDDED_EXEC_PATTERNS if p in raw]
+        if embedded:
+            level = RiskLevel.HIGH
+            reasons.append(
+                f"constructo de ejecucion embebido en comando de lectura: {', '.join(embedded)}"
+            )
+
     # Heuristica especifica: `find ... -delete` o `find ... -exec` con verbo destructivo
     if verb == "find":
         if "-delete" in args:
             level = max(level, RiskLevel.HIGH)
             reasons.append("find con -delete")
-        if "-exec" in args:
+        exec_flags = [f for f in ("-exec", "-execdir", "-ok", "-okdir") if f in args]
+        if exec_flags:
             level = max(level, RiskLevel.HIGH)
-            reasons.append("find con -exec")
+            reasons.append(f"find con {', '.join(exec_flags)}")
+    # `tcpdump -z` ejecuta un comando en cada rotacion; `-w` escribe ficheros
+    if verb == "tcpdump":
+        if "-z" in args:
+            level = max(level, RiskLevel.HIGH)
+            reasons.append("tcpdump con -z (ejecuta comando post-rotacion)")
+        if "-w" in args:
+            level = max(level, RiskLevel.HIGH)
+            reasons.append("tcpdump con -w (escribe capturas a disco)")
     # `sed -i` muta archivos
     if verb == "sed" and any(a == "-i" or a.startswith("-i") for a in args):
         level = max(level, RiskLevel.HIGH)
@@ -284,7 +371,24 @@ def classify(cmd: str) -> Classification:
 
 def _classify_bounded_write(verb: str, args: list) -> tuple[RiskLevel, list]:
     """
-    Casos especiales de iptables/ip6tables/ufw:
+    Despacha la clasificacion por gestor de firewall. Cada familia tiene su
+    propia sintaxis (iptables/ip6tables, ufw, nft, firewall-cmd); clasificarlas
+    con el parser de iptables daria niveles erroneos (p.ej. `ufw status` -> HIGH).
+    """
+    if verb in ("iptables", "ip6tables"):
+        return _classify_iptables(verb, args)
+    if verb == "ufw":
+        return _classify_ufw(verb, args)
+    if verb == "nft":
+        return _classify_nft(verb, args)
+    if verb == "firewall-cmd":
+        return _classify_firewalld(verb, args)
+    return RiskLevel.HIGH, [f"{verb} no clasificado: HIGH"]  # inalcanzable
+
+
+def _classify_iptables(verb: str, args: list) -> tuple[RiskLevel, list]:
+    """
+    Casos especiales de iptables/ip6tables:
         -L / -S / --list / --check   -> SAFE_READ
         -F / --flush sin tabla       -> CRITICAL
         -A / -I / -D INPUT -s <IP>   -> LOW
@@ -327,6 +431,151 @@ def _classify_bounded_write(verb: str, args: list) -> tuple[RiskLevel, list]:
     return RiskLevel.HIGH, reasons
 
 
+def _classify_nft(verb: str, args: list) -> tuple[RiskLevel, list]:
+    """
+    nftables por subcomando:
+        list/export/monitor/describe       -> SAFE_READ
+        -f <fichero> (carga ruleset)        -> CRITICAL
+        flush ruleset / delete|destroy table-> CRITICAL (borra TODO el firewall)
+        flush/delete chain|set|map          -> HIGH
+        add|insert|replace rule + IP + verdict -> LOW (bloqueo de una IP)
+        add table/chain/...                 -> HIGH
+    """
+    if not args:
+        return RiskLevel.HIGH, ["nft sin args: HIGH"]
+    flat = " ".join(args)
+    sub = args[0]
+    if sub in ("list", "export", "monitor", "describe"):
+        return RiskLevel.SAFE_READ, [f"nft lectura ({flat})"]
+    if "-f" in args or sub in ("-f", "--file"):
+        return RiskLevel.CRITICAL, ["nft -f carga ruleset desde fichero: CRITICAL"]
+    if sub == "flush":
+        obj = args[1] if len(args) > 1 else ""
+        if obj == "ruleset":
+            return RiskLevel.CRITICAL, ["nft flush ruleset borra TODO el firewall: CRITICAL"]
+        return RiskLevel.HIGH, [f"nft flush {obj}: HIGH"]
+    if sub in ("delete", "destroy"):
+        obj = args[1] if len(args) > 1 else ""
+        if obj == "table":
+            return RiskLevel.CRITICAL, ["nft delete table elimina cadenas y reglas: CRITICAL"]
+        if obj in ("chain", "set", "map", "flowtable"):
+            return RiskLevel.HIGH, [f"nft delete {obj}: HIGH"]
+        if obj in ("rule", "element"):
+            if _has_ip(flat):
+                return RiskLevel.LOW, ["nft delete rule contra IP concreta: LOW"]
+            return RiskLevel.HIGH, ["nft delete rule sin IP: HIGH"]
+        return RiskLevel.HIGH, [f"nft delete {obj}: HIGH"]
+    if sub in ("add", "insert", "replace"):
+        obj = args[1] if len(args) > 1 else ""
+        if obj == "rule":
+            if _has_ip(flat) and _has_verdict(flat):
+                return RiskLevel.LOW, ["nft add/insert rule contra IP con verdict: LOW"]
+            return RiskLevel.HIGH, ["nft add rule sin IP/verdict claros: HIGH"]
+        if obj == "element":
+            lvl = RiskLevel.LOW if _has_ip(flat) else RiskLevel.HIGH
+            return lvl, [f"nft add element: {lvl.label()}"]
+        if obj in ("table", "chain", "set", "map", "flowtable"):
+            return RiskLevel.HIGH, [f"nft add {obj} (estructura): HIGH"]
+        return RiskLevel.HIGH, [f"nft add {obj}: HIGH"]
+    return RiskLevel.HIGH, [f"nft subcomando '{sub}' no acotado: HIGH"]
+
+
+def _classify_firewalld(verb: str, args: list) -> tuple[RiskLevel, list]:
+    """
+    firewall-cmd por flag:
+        --list/--get/--query/--state/...    -> SAFE_READ
+        --panic-on (corta TODO el trafico)  -> CRITICAL
+        --add-rich-rule/--add-source + IP   -> LOW
+        --reload / --runtime-to-permanent   -> LOW
+        --set-default-zone / cambios de zona-> HIGH
+    """
+    if not args:
+        return RiskLevel.HIGH, ["firewall-cmd sin args: HIGH"]
+    flat = " ".join(args)
+    if "--panic-on" in args:
+        return RiskLevel.CRITICAL, ["firewall-cmd --panic-on corta TODO el trafico: CRITICAL"]
+    if "--panic-off" in args:
+        return RiskLevel.HIGH, ["firewall-cmd --panic-off reabre todo: HIGH"]
+
+    # --direct/--passthrough inyectan reglas iptables/nft CRUDAS y arbitrarias:
+    # NUNCA pueden ser SAFE_READ aunque el comando lleve un flag de lectura
+    # (p. ej. `firewall-cmd --query-panic --direct --passthrough ipv4 -F`).
+    # Se delega el cuerpo del passthrough en el clasificador de iptables, que ya
+    # distingue flush global (CRITICAL), flush de cadena (HIGH) y regla+IP (LOW).
+    if "--passthrough" in args:
+        idx = args.index("--passthrough")
+        pt = args[idx + 1:]
+        if pt and pt[0] in ("ipv4", "ipv6", "eb"):
+            pt = pt[1:]
+        if pt:
+            lvl, sub = _classify_iptables("iptables", pt)
+            return lvl, [f"firewall-cmd --passthrough delega en iptables: {lvl.label()}"] + sub
+        return RiskLevel.HIGH, ["firewall-cmd --passthrough sin cuerpo: HIGH"]
+    if "--direct" in args:
+        return RiskLevel.HIGH, [f"firewall-cmd --direct manipula reglas crudas ({flat}): HIGH"]
+
+    read_prefixes = ("--list", "--get", "--query", "--info", "--state",
+                     "--version", "--help", "--check-config")
+    if any(a.startswith(read_prefixes) for a in args) and not _has_mutating_flag(args):
+        return RiskLevel.SAFE_READ, [f"firewall-cmd lectura ({flat})"]
+    broad = ("--set-default-zone", "--set-target", "--new-zone",
+             "--delete-zone", "--set-log-denied", "--set-policy")
+    if any(a.split("=")[0] in broad for a in args):
+        return RiskLevel.HIGH, [f"firewall-cmd cambio amplio de zona/politica ({flat}): HIGH"]
+    # Flags mutantes de estado que no empiezan por _FW_MUTATING_PREFIXES.
+    if any(a.split("=")[0].startswith(("--lockdown", "--load")) for a in args):
+        return RiskLevel.HIGH, [f"firewall-cmd flag mutante de estado ({flat}): HIGH"]
+    if "--reload" in args or "--complete-reload" in args:
+        return RiskLevel.LOW, ["firewall-cmd reload: LOW"]
+    if "--runtime-to-permanent" in args:
+        return RiskLevel.LOW, ["firewall-cmd runtime-to-permanent persiste estado actual: LOW"]
+    rule_flags = ("--add-rich-rule", "--remove-rich-rule", "--add-source", "--remove-source")
+    if any(a.split("=")[0] in rule_flags for a in args):
+        if _has_ip(flat):
+            return RiskLevel.LOW, ["firewall-cmd regla/source contra IP concreta: LOW"]
+        return RiskLevel.HIGH, ["firewall-cmd regla sin IP concreta: HIGH"]
+    if _has_mutating_flag(args):
+        return RiskLevel.HIGH, [f"firewall-cmd escritura no acotada a IP ({flat}): HIGH"]
+    # Solo modificadores vacios (p. ej. `--`) sin flag real -> HIGH (como "sin args").
+    if not any(a.startswith("-") and a.strip("-") != "" for a in args):
+        return RiskLevel.HIGH, [f"firewall-cmd sin flag real (solo modificadores) ({flat}): HIGH"]
+    return RiskLevel.LOW, [f"firewall-cmd flags no catalogados ({flat}): LOW"]
+
+
+def _classify_ufw(verb: str, args: list) -> tuple[RiskLevel, list]:
+    """
+    ufw por accion posicional:
+        status/show/version  -> SAFE_READ
+        reset                -> CRITICAL (borra todas las reglas)
+        disable/enable/default-> HIGH (politica global)
+        deny/allow/... + IP  -> LOW
+    """
+    if not args:
+        return RiskLevel.HIGH, ["ufw sin args: HIGH"]
+    flat = " ".join(args)
+    positional = [a for a in args if not a.startswith("-")]  # salta --force/--dry-run
+    action = positional[0] if positional else ""
+    if action in ("status", "show", "version"):
+        return RiskLevel.SAFE_READ, [f"ufw lectura ({flat})"]
+    if action == "reset":
+        return RiskLevel.CRITICAL, ["ufw reset borra TODAS las reglas: CRITICAL"]
+    if action == "disable":
+        return RiskLevel.HIGH, ["ufw disable desactiva el firewall: HIGH"]
+    if action == "enable":
+        return RiskLevel.HIGH, ["ufw enable cambia politica global: HIGH"]
+    if action == "reload":
+        return RiskLevel.LOW, ["ufw reload: LOW"]
+    if action == "default":
+        return RiskLevel.HIGH, ["ufw default cambia politica global: HIGH"]
+    if action in ("deny", "allow", "reject", "limit", "insert", "route", "delete"):
+        if _has_ip(flat):
+            return RiskLevel.LOW, [f"ufw {action} contra IP concreta: LOW"]
+        return RiskLevel.HIGH, [f"ufw {action} sin IP (afecta puerto/servicio): HIGH"]
+    if action == "":
+        return RiskLevel.HIGH, [f"ufw sin accion posicional (solo modificadores) ({flat}): HIGH"]
+    return RiskLevel.LOW, [f"ufw accion '{action}' no catalogada: LOW"]
+
+
 def _classify_broad_write(verb: str, args: list) -> tuple[RiskLevel, list]:
     """Subcomandos de solo estado dentro de herramientas normalmente mutantes."""
     if verb == "systemctl" and args:
@@ -359,6 +608,41 @@ def _detect_shell_metachars(raw: str) -> list:
         target = redirect.group(1)
         hits.append(f"> {target}")
     return hits
+
+
+def _split_unquoted_newlines(raw: str) -> list:
+    """Divide por saltos de linea/retorno de carro que esten FUERA de comillas."""
+    segments = []
+    current = []
+    quote = None
+    escaped = False
+    for ch in raw:
+        if escaped:
+            current.append(ch)
+            escaped = False
+            continue
+        if ch == "\\":
+            current.append(ch)
+            escaped = True
+            continue
+        if ch in ("'", '"'):
+            current.append(ch)
+            if quote is None:
+                quote = ch
+            elif quote == ch:
+                quote = None
+            continue
+        if ch in ("\n", "\r") and quote is None:
+            seg = "".join(current).strip()
+            if seg:
+                segments.append(seg)
+            current = []
+            continue
+        current.append(ch)
+    final = "".join(current).strip()
+    if final:
+        segments.append(final)
+    return segments if segments else [raw]
 
 
 def _split_unquoted_pipe(raw: str) -> list:

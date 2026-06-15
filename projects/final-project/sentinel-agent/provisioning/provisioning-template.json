@@ -1,0 +1,52 @@
+{
+  "Parameters": {
+    "SerialNumber": {
+      "Type": "String"
+    },
+    "ThingName": {
+      "Type": "String"
+    },
+    "AWS::IoT::Certificate::Id": {
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "thing": {
+      "Type": "AWS::IoT::Thing",
+      "Properties": {
+        "ThingName": {
+          "Ref": "ThingName"
+        },
+        "AttributePayload": {
+          "version": "v1",
+          "serialNumber": {
+            "Ref": "SerialNumber"
+          }
+        }
+      },
+      "OverrideSettings": {
+        "AttributePayload": "MERGE",
+        "ThingTypeName": "REPLACE",
+        "ThingGroups": "DO_NOTHING"
+      }
+    },
+    "certificate": {
+      "Type": "AWS::IoT::Certificate",
+      "Properties": {
+        "CertificateId": {
+          "Ref": "AWS::IoT::Certificate::Id"
+        },
+        "Status": "ACTIVE"
+      },
+      "OverrideSettings": {
+        "Status": "DO_NOTHING"
+      }
+    },
+    "policy": {
+      "Type": "AWS::IoT::Policy",
+      "Properties": {
+        "PolicyName": "SentinelSensorRuntimePolicy"
+      }
+    }
+  }
+}

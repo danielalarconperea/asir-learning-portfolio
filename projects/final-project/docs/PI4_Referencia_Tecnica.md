@@ -1,6 +1,14 @@
 # PI-4 — Nodo Protegido · Referencia Técnica Completa
 **Proyecto Sentinel IT | TFG ASIR | Autor: Félix Tejedor**
 
+> **Nota de estado (Fase 5, 2026-06-15):** este documento describe la arquitectura
+> **original del TFG**. El agente monitor monolítico `agente_monitor3.py` quedó
+> **retirado** y el sensor de PI-4 (`Pi4-Felix`) pasa a ser un *device configurado*
+> del paquete genérico [`sentinel-agent`](../sentinel-agent/README.md). Para dar de
+> alta o desplegar un sensor hoy, ver [Onboarding_Sensor.md](Onboarding_Sensor.md) y
+> [diseno_agente_discovery.md](diseno_agente_discovery.md). El cuerpo histórico se
+> conserva como referencia y no se reescribe.
+
 ---
 
 ## Índice
@@ -27,7 +35,6 @@
 | **Hostname** | `sonic` |
 | **Dominio DNS local** | `auditorsentinelti.com` |
 | **Resolución** | `auditorsentinelti.com` → `192.168.1.135` (vía dnsmasq) |
-| **Ubicación física** | Casa 1 — Félix Tejedor |
 
 ---
 
@@ -211,7 +218,7 @@ Intento 3: FALLO_SSH usuario=root       → prioridad ALTA   (triple fallo a roo
 ### 4.5 Topic que escucha PI-4 (comandos desde PI-5)
 
 ```
-comandos/Pi4-Felix    ←  PI-5 publica acciones remotas aquí
+seguridad/Pi4-Felix/comando    ←  PI-5 publica acciones remotas aquí
 ```
 
 Formato del mensaje de comando:
@@ -367,9 +374,9 @@ Evento    Telemetría
 
 ## 8. Control remoto desde PI-5
 
-PI-5 tiene acceso total a la shell de PI-4 a través de la tool `execute_remote_command()`, que publica un mensaje MQTT en `comandos/Pi4-Felix`. El agente monitor de PI-4 escucha ese topic y ejecuta el comando recibido.
+PI-5 tiene acceso a la shell de PI-4 publicando mensajes MQTT firmados (Ed25519) en `seguridad/Pi4-Felix/comando`. El agente monitor de PI-4 escucha ese topic, verifica la firma, la ventana de validez y el nonce anti-replay, y solo entonces ejecuta el comando recibido.
 
-**No hay restricción de comandos** — PI-5 puede ejecutar cualquier script bash.
+En el lado PI-5, el Policy Engine clasifica cada comando por nivel de riesgo: solo la lectura pura (`SAFE_READ`) se publica sin intervención humana; el resto pasa por el HITL del dashboard.
 
 ### 8.1 Casos de uso habituales
 
@@ -411,7 +418,7 @@ La tool `execute_remote_command()` en `PI-5/src/tools/iot_tools.py` publica este
 }
 ```
 
-Topic de destino: `comandos/Pi4-Felix` (formado como `topic_actions_base + device_id`).
+Topic de destino: `seguridad/Pi4-Felix/comando` (plantilla `seguridad/{device}/comando`). El payload viaja firmado: incluye además `iat`, `exp`, `nonce`, `sig` y, desde 2026-06-13, el `log_id` para correlación comando↔respuesta.
 
 ---
 
@@ -443,10 +450,10 @@ Topic de destino: `comandos/Pi4-Felix` (formado como `topic_actions_base + devic
 │  └────────────────────────────────────────────────────┘  │
 │                                                          │
 │  ┌────────────────────────────────────────────────────┐  │
-│  │           agente_monitor.py (daemon)               │  │
+│  │           agente_monitor3.py (daemon)              │  │
 │  │  Lee: access.log / vsftpd.log / auth.log / web logs│  │
 │  │  Publica eventos/telemetría → AWS IoT Core (MQTT)  │  │
-│  │  Escucha comandos ← comandos/Pi4-Felix             │  │
+│  │  Escucha comandos ← seguridad/Pi4-Felix/comando    │  │
 │  └────────────────────────────────────────────────────┘  │
 └──────────────────────────┬──────────────────────────────┘
                            │ MQTT / TLS 1.2
@@ -489,12 +496,12 @@ T+5s   PI-5 recibe el evento ALTA
        → Triage Agent (Gemini/Ollama) analiza el log de inmediato
        → Decide: block_ip("192.168.1.99")
 
-T+6s   PI-5 publica en comandos/Pi4-Felix:
+T+6s   PI-5 publica en seguridad/Pi4-Felix/comando (firmado Ed25519):
          { "accion": "ejecutar_comando",
            "comando": "sudo iptables -A INPUT -s 192.168.1.99 -j DROP" }
 
-T+6s   agente_monitor.py de PI-4 recibe el comando
-       → Ejecuta iptables → IP bloqueada a nivel de kernel
+T+6s   agente_monitor3.py de PI-4 recibe el comando
+       → Verifica firma + nonce → Ejecuta iptables → IP bloqueada a nivel de kernel
 
 T+7s   Atacante intenta SQLi en login.php desde otra IP
        → Apache lo registra en access.log

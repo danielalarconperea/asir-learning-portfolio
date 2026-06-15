@@ -8,7 +8,7 @@
 CERT_NAME="Pi5-dani.cert.pem"
 KEY_NAME="Pi5-dani.private.key"
 CA_NAME="root-CA.crt"
-REPO_URL="https://github.com/LopedeVega22/Sentinel-IT.git"
+REPO_URL="https://github.com/danielalarconperea/asir-learning-portfolio.git"
 CLONE_DIR=".soc_engine_src"
 
 # Colores para estética

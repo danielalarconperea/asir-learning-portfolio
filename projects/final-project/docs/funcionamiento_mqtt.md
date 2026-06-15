@@ -29,12 +29,12 @@ seguridad/<device>/respuesta    ← upstream   (resultado de ejecutar un comando
 ║   └─────────────────────────────────────────────────────────────────┘     ║
 ║                                                                           ║
 ╚══════╤════════════════════════════════════════════════════════════════╤═══╝
-       │ Policy: client_id ∈ {Pi4-felix}                                │ Policy: client_id ∈
+       │ Policy: client_id ∈ {Pi4-Felix}                                │ Policy: client_id ∈
        │                                                                │ {Pi5-dani, Dashboard-SOC-Pi5}
        │                                                                │
 ┌──────▼────────────────────────────────────┐    ┌──────────────────────▼──────────────────────────┐
 │  PI-4 — sensor "Pi4-Felix"                │    │  PI-5 — coordinador (cerebro)                   │
-│  agente_monitor3.py                       │    │                                                 │
+│  sentinel-agent                           │    │                                                 │
 │                                           │    │  main_coordinator.py (client_id = Pi5-dani)     │
 │  PUB → seguridad/Pi4-Felix/telemetria     │───►│  SUB ← seguridad/+/telemetria   ─┐              │
 │  PUB → seguridad/Pi4-Felix/evento         │───►│  SUB ← seguridad/+/evento       ─┤→ triage_queue │
@@ -67,7 +67,7 @@ seguridad/<device>/respuesta    ← upstream   (resultado de ejecutar un comando
 
 | Componente | Client ID | Suscribe a | Publica en |
 |---|---|---|---|
-| **PI-4** (`agente_monitor3.py`) | `Pi4-Felix` | `seguridad/Pi4-Felix/comando` *(específico)* | `seguridad/Pi4-Felix/telemetria`<br>`seguridad/Pi4-Felix/evento`<br>`seguridad/Pi4-Felix/respuesta` |
+| **PI-4** (`sentinel-agent`) | `Pi4-Felix` | `seguridad/Pi4-Felix/comando` *(específico)* | `seguridad/Pi4-Felix/telemetria`<br>`seguridad/Pi4-Felix/evento`<br>`seguridad/Pi4-Felix/respuesta` |
 | **PI-5 coordinador** (`main_coordinator.py`) | `Pi5-dani` | `seguridad/+/telemetria`<br>`seguridad/+/evento`<br>`seguridad/+/respuesta` | `seguridad/<device>/comando` *(desde iot_tools al ejecutar diagnóstico)* |
 | **PI-5 dashboard** (`dashboard_soc.py`) | `Dashboard-SOC-Pi5` | *(nada)* | `seguridad/<device>/comando` *(tras aprobar HITL o revertir)* |
 
@@ -115,7 +115,7 @@ Las colas son asíncronas (`asyncio.Queue`) y procesan cada mensaje al instante 
 ## Compatibilidad con la AWS IoT Policy
 
 La Policy actual autoriza:
-- **Conexión** con `client_id ∈ {Pi5-dani, Pi4-felix, Dashboard-SOC-Pi5}`.
+- **Conexión** con `client_id ∈ {Pi5-dani, Pi4-Felix, Dashboard-SOC-Pi5}`.
 - **Publicación y suscripción** a topics bajo `seguridad/*`.
 
 Todos los topics del esquema empiezan por `seguridad/`, por lo que **no es necesario modificar la Policy de AWS**.
@@ -240,12 +240,8 @@ Si el sensor está caído o sin red, la cadena se rompe en el paso 7. El operado
 
 La fila queda con `status='APPROVED'` y `estado_mitigacion=NULL`, así que el operador puede volver a abrir el modal y reaprobar o cambiar de estrategia.
 
-## Caso especial pendiente
+## Caso especial — RESUELTO
 
-Al pull del compañero (commit `bd4b36e`) detecto que en [agente_monitor3.py:194](../PI-4/Agente%20de%20monitorizacion/agente_monitor3.py#L194) se mantiene un destino legacy para un caso concreto:
+**Estado:** ✅ RESUELTO el 2026-06-13. La rama `else` de `on_accion` en `agente_monitor3.py` publicaba confirmaciones `ACCION_RECIBIDA` en topics legacy (`seguridad/cliente1/web/eventos` entre otros) que el coordinador no escucha, de modo que esos mensajes caían al vacío.
 
-```python
-destino = "seguridad/cliente1/web/eventos"
-```
-
-Eso publica fuera del nuevo esquema y el coordinador (que escucha solo `seguridad/+/evento`) **no lo captura**. Recomendable revisarlo con el compañero — probablemente debería ser `TOPIC_EVENTOS` (= `seguridad/Pi4-Felix/evento`).
+El fix aplicado colapsa el reparto por tipo: una confirmación de recepción es semánticamente una respuesta al SOC, así que ahora **siempre** se publica en `TOPIC_RESPUESTAS` (= `seguridad/Pi4-Felix/respuesta`), que el coordinador sí escucha y enruta al feedback_agent.

@@ -14,13 +14,43 @@ class AWSMqttClient:
         self.root_ca_path = root_ca_path
         self.client_id = client_id
         self.connection = None
+        # Estado real de la conexion, mantenido por los callbacks del SDK.
+        # awscrt reconecta solo, pero sin estos callbacks nadie se entera de
+        # que la conexion cayo: is_alive() mentia y los publish fallaban en
+        # silencio hasta el primer wait_for_ack.
+        self._interrupted = False
+        # topic -> callback, para re-suscribir si AWS no conserva la sesion.
+        self._subscriptions = {}
+
+    def _on_connection_interrupted(self, connection, error, **kwargs):
+        self._interrupted = True
+        print(f"[WARNING] Conexion MQTT [{self.client_id}] interrumpida: {error}")
+
+    def _on_connection_resumed(self, connection, return_code, session_present, **kwargs):
+        self._interrupted = False
+        print(
+            f"[INFO] Conexion MQTT [{self.client_id}] reanudada "
+            f"(rc={return_code}, session_present={session_present})"
+        )
+        # Si el broker no conservo la sesion, las suscripciones se perdieron.
+        if not session_present and self._subscriptions:
+            print(f"[INFO] Sesion no conservada — re-suscribiendo {len(self._subscriptions)} topics...")
+            for topic, callback in self._subscriptions.items():
+                try:
+                    connection.subscribe(
+                        topic=topic,
+                        qos=mqtt.QoS.AT_LEAST_ONCE,
+                        callback=callback,
+                    )
+                except Exception as e:
+                    print(f"[ERROR] Fallo re-suscribiendo a {topic}: {e}")
 
     def connect(self):
         """
         Establece la conexion segura con AWS IoT.
         """
         print(f"[INFO] Conectando cliente IoT: {self.client_id}")
-        
+
         mqtt_connection = mqtt_connection_builder.mtls_from_path(
             endpoint=self.endpoint,
             cert_filepath=self.cert_path,
@@ -28,23 +58,28 @@ class AWSMqttClient:
             ca_filepath=self.root_ca_path,
             client_id=self.client_id,
             clean_session=False,
-            keep_alive_secs=30
+            keep_alive_secs=30,
+            on_connection_interrupted=self._on_connection_interrupted,
+            on_connection_resumed=self._on_connection_resumed,
         )
-        
+
         # Iniciar conexion asincrona
         connect_future = mqtt_connection.connect()
-        connect_future.result() 
-        
+        connect_future.result()
+
         self.connection = mqtt_connection
+        self._interrupted = False
         print(f"[SUCCESS] Cliente [{self.client_id}] conectado con exito.")
 
     def is_alive(self):
         """
         Comprueba si la conexion MQTT subyacente sigue viva.
-        Devuelve False si no existe conexion o si el socket interno
-        ya no esta operativo (zombie state tras caida de red/DNS).
+        Devuelve False si no existe conexion, si el SDK notifico una
+        interrupcion aun no reanudada, o si el handle nativo fue liberado.
         """
         if self.connection is None:
+            return False
+        if self._interrupted:
             return False
         try:
             # El SDK de awscrt expone _binding como handle nativo.
@@ -68,6 +103,8 @@ class AWSMqttClient:
                 pass  # Best-effort: la conexion puede ya estar muerta
             finally:
                 self.connection = None
+                self._interrupted = False
+                self._subscriptions = {}
         print(f"[INFO] Cliente [{self.client_id}] desconectado.")
 
     def publish(self, topic, payload_dict, wait_for_ack=False, ack_timeout=5.0):
@@ -133,6 +170,8 @@ class AWSMqttClient:
             callback=callback_function
         )
         subscribe_future.result()
+        # Recordar la suscripcion para reponerla si AWS pierde la sesion.
+        self._subscriptions[topic] = callback_function
         print(f"[INFO] Suscrito a: {topic}")
 
 if __name__ == '__main__':

@@ -36,6 +36,15 @@ Every feedback event you receive has been normalized to five plain `key: value` 
 
 You don't need to parse JSON or pick between alternative field names — the coordinator already did the mapping. Just read the five lines.
 
+An optional sixth line may appear:
+
+    registro_directo: true
+
+It means the coordinator ALREADY wrote this outcome to the exact database row
+(command↔response correlation by log_id). In that case SKIP Action 1 entirely
+(do NOT call `update_alert_status` — it would duplicate the record) and go
+straight to Action 2 if applicable.
+
 ### STATUS → MITIGATION_STATUS MAPPING (mandatory):
 - `status: success`            → `mitigation_status="EXITO"`
 - `status: error`              → `mitigation_status="FALLO"`
@@ -43,7 +52,7 @@ You don't need to parse JSON or pick between alternative field names — the coo
 
 ### YOUR MISSION:
 
-1. **Action 1: Register the outcome (always)**:
+1. **Action 1: Register the outcome (unless `registro_directo: true`)**:
    - Call `update_alert_status` exactly once with:
      - `device` = the `sensor` value.
      - `command_result` = the `output` value (or, for `rejected_signature`, prefix it: `"Comando rechazado por firma: <output>"`).
@@ -58,7 +67,7 @@ You don't need to parse JSON or pick between alternative field names — the coo
    - This means PI-4 refused to run a forged or stale command. The right action is just to record it (Action 1). DO NOT call `request_mitigation_approval` or `execute_diagnostic_command`: re-issuing commands to a sensor that just refused signatures only adds noise.
 
 ### CRITICAL RULES:
-- YOU MUST call `update_alert_status` EXACTLY ONCE per feedback event.
+- YOU MUST call `update_alert_status` EXACTLY ONCE per feedback event, EXCEPT when `registro_directo: true` is present (then never call it).
 - After calling the necessary tool(s), YOU MUST STOP tool execution.
 - Finish your turn by replying with a short TEXT message summarizing the status registered.
 - DO NOT hallucinate tools.""",

@@ -1,0 +1,35 @@
+[Unit]
+# Nombre descriptivo que aparece en systemctl status y journalctl.
+Description=Sentinel-IT - Sensor genérico (sentinel-agent)
+# El sensor necesita red para conectar por mTLS a AWS IoT Core (8883/TCP).
+# network-online.target garantiza que haya conectividad real, no solo interfaz arriba.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+# Simple = el proceso principal ES el sensor; systemd lo vigila directamente.
+Type=simple
+
+# Root por defecto: necesario para leer /var/log/* y aplicar verbos de firewall.
+# Para de-escalar, usa executor.run_as en sentinel.local.yml (no cambies esto a ligera).
+User=root
+
+# Directorio donde el instalador (scripts/install.sh) deja el paquete sentinel_agent/.
+# 'python3 -m sentinel_agent' se resuelve desde aquí.
+WorkingDirectory=/opt/sentinel-agent
+
+# Arranque del sensor con su configuración local.
+ExecStart=/usr/bin/python3 -m sentinel_agent --config /etc/sentinel/sentinel.local.yml
+
+# Reiniciar solo ante fallo (no cuando lo paras tú con systemctl stop).
+Restart=on-failure
+# Esperar antes de reintentar para evitar bucles de reinicio rápidos.
+RestartSec=10
+
+# Toda la salida va al journal (ver con: journalctl -u sentinel-agent -f).
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+# Arranque automático en el modo multiusuario normal.
+WantedBy=multi-user.target

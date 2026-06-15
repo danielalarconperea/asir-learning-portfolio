@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+ENV/
+env/
+.env
+*.db
+.pytest_cache
+
+# Agents & Tools
+.agents/
+.claude
+.codex-deps
+graphify-out/
+basura/
+informes-adk/
+ssh_run.py
+scp_upload.py
+skills-lock.json
+certificados/*
+
+# Logs
+*.log
+
+# Secretos: claves privadas (firmas, certificados). NUNCA comitear.
+*.key
+*.pem
+!*.pub
+
+# Projects
+presentacion/
+node_modules/
+
+# sentinel-agent: config local por sensor y estado (la plantilla .example sí se versiona)
+sentinel.local.yml
+.sentinel-agent/

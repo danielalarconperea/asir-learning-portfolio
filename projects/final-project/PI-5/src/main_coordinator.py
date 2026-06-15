@@ -11,6 +11,8 @@ from aws_connector import AWSMqttClient
 from agents.triage_agent.triage_agent import triage_agent
 from agents.feedback_agent.feedback_agent import feedback_agent
 from tools.iot_tools import init_iot_tools
+from tools.db_tools import mark_mitigation_result, upsert_device_profile
+from tools import profile_context
 from tools.pending_ai_events import (
     fetch_due_pending_ai_events,
     init_pending_ai_events_schema,
@@ -38,6 +40,7 @@ ROOT_CA              = config['aws']['root_ca']
 TOPIC_SUBSCRIBE_TELEMETRIA = config['mqtt']['topic_subscribe_telemetria']
 TOPIC_SUBSCRIBE_EVENTOS    = config['mqtt']['topic_subscribe_eventos']
 TOPIC_SUBSCRIBE_RESPUESTAS = config['mqtt']['topic_subscribe_respuestas']
+TOPIC_SUBSCRIBE_PERFIL     = config['mqtt'].get('topic_subscribe_perfil', 'seguridad/+/perfil')
 
 _DB_PATH_CFG = config['database']['db_path']
 DB_PATH = _DB_PATH_CFG if os.path.isabs(_DB_PATH_CFG) else os.path.join(os.getcwd(), _DB_PATH_CFG)
@@ -57,10 +60,16 @@ numeric_level = getattr(logging, LOG_LEVEL_STR.upper(), logging.INFO)
 logger = logging.getLogger("CoordinatorSOC")
 logger.setLevel(numeric_level)
 
-handler = RotatingFileHandler(LOG_FILE_PATH, maxBytes=LOG_MAX_BYTES, backupCount=LOG_BACKUP_COUNT)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+# El fichero de log es deseable pero no imprescindible: si la ruta del
+# config no existe en este sistema (p. ej. /tmp en Windows durante
+# desarrollo), seguimos con salida solo por consola en vez de morir.
+try:
+    handler = RotatingFileHandler(LOG_FILE_PATH, maxBytes=LOG_MAX_BYTES, backupCount=LOG_BACKUP_COUNT)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+except OSError as _log_err:
+    print(f"[WARNING] No se pudo abrir el fichero de log {LOG_FILE_PATH}: {_log_err}. Solo consola.")
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
@@ -96,9 +105,41 @@ _triage_queue: asyncio.Queue | None = None
 _feedback_queue: asyncio.Queue | None = None
 
 
-def _enqueue_from_thread(queue: asyncio.Queue, device: str, raw_log: str):
+def _put_or_spill(queue: asyncio.Queue, queue_type: str, device: str, raw_log: str):
     """
-    Thread-safe bridge: schedules a put_nowait on the asyncio event loop.
+    Se ejecuta DENTRO del event loop. Si la cola esta llena, el evento no se
+    pierde: se persiste en pending_ai_events y el retry worker lo reprocesa.
+
+    Nota: la version anterior capturaba QueueFull en el hilo MQTT, pero
+    call_soon_threadsafe retorna antes de ejecutar el callback, asi que la
+    excepcion saltaba dentro del loop y el evento se perdia en silencio.
+    """
+    try:
+        queue.put_nowait((device, raw_log))
+    except asyncio.QueueFull:
+        logger.warning(
+            f"[QUEUE] Backpressure! Cola {queue_type} llena ({QUEUE_MAX_SIZE}) — "
+            f"persistiendo evento de {device} en pending_ai_events"
+        )
+        # La insercion SQLite es sincrona: la mandamos a un thread del
+        # executor para no bloquear el event loop si la BD esta ocupada.
+        _loop.run_in_executor(
+            None,
+            lambda: save_pending_ai_event(
+                DB_PATH,
+                device=device,
+                queue_type=queue_type,
+                raw_log=raw_log,
+                error_reason=f"queue_full ({QUEUE_MAX_SIZE})",
+            ),
+        )
+    except Exception as e:
+        logger.error(f"[QUEUE] Enqueue error: {e}")
+
+
+def _enqueue_from_thread(queue: asyncio.Queue, queue_type: str, device: str, raw_log: str):
+    """
+    Thread-safe bridge: schedules the enqueue on the asyncio event loop.
 
     The MQTT callback from awscrt runs in a native thread, not in the
     asyncio loop.  `call_soon_threadsafe` is the canonical way to inject
@@ -108,9 +149,7 @@ def _enqueue_from_thread(queue: asyncio.Queue, device: str, raw_log: str):
         logger.warning("[QUEUE] Event loop not ready — dropping event")
         return
     try:
-        _loop.call_soon_threadsafe(queue.put_nowait, (device, raw_log))
-    except asyncio.QueueFull:
-        logger.warning(f"[QUEUE] Backpressure! Queue full ({QUEUE_MAX_SIZE}) — dropping event from {device}")
+        _loop.call_soon_threadsafe(_put_or_spill, queue, queue_type, device, raw_log)
     except Exception as e:
         logger.error(f"[QUEUE] Enqueue error: {e}")
 
@@ -157,7 +196,32 @@ async def _worker(queue: asyncio.Queue, runner: Runner, queue_type: str, session
 
 async def _run_agent_event(device: str, raw_log: str, runner: Runner, queue_type: str, session_id: str) -> int:
     event_type = "Log" if queue_type == "triage" else "Feedback"
-    message = f"Nuevo {event_type} proveniente del dispositivo '{device}':\n{raw_log}"
+
+    # Inyeccion del contexto del sistema objetivo SOLO en triage: el agente
+    # razona sobre el OS/firewall/web reales del device descubierto en vez de
+    # asumir el honeypot. Per-evento (no en el estado de sesion) porque la
+    # sesion ADK es unica y compartida entre todos los dispositivos.
+    context_block = ""
+    if queue_type == "triage":
+        try:
+            context_block = profile_context.get_context_block(device)
+        except Exception as e:
+            logger.error(f"[TRIAGE] No se pudo cargar el contexto del device {device}: {e}")
+        # Fallback fiable para consultar_manual_mitigacion si el LLM no pasa el
+        # device explicitamente (el worker de triage es secuencial).
+        try:
+            from tools import iot_tools
+            iot_tools.set_active_device(device)
+        except Exception:
+            pass
+
+    if context_block:
+        message = (
+            f"{context_block}\n\n"
+            f"### EVENTO\nNuevo {event_type} proveniente del dispositivo '{device}':\n{raw_log}"
+        )
+    else:
+        message = f"Nuevo {event_type} proveniente del dispositivo '{device}':\n{raw_log}"
 
     response_count = 0
     async for event in runner.run_async(
@@ -355,7 +419,27 @@ def process_event(topic, payload, dup=None, qos=None, retain=None, **kwargs):
 
         # Detectar el nombre del dispositivo origen (soporte legacy y nuevo)
         source_device = data.get("dispositivo") or data.get("sensor") or "Desconocido"
-        
+
+        # --- System Profile (agente Discovery) ---
+        # Llega por seguridad/<device>/perfil (o como telemetria tipo
+        # PERFIL_SISTEMA, red de seguridad). NO va al LLM ni crea fila en logs:
+        # se persiste y queda disponible para inyectar como contexto del triage.
+        is_profile = topic.endswith("/perfil") or data.get("tipo") == "PERFIL_SISTEMA"
+        if is_profile:
+            def _store_profile(device, profile):
+                result = upsert_device_profile(device, profile, DB_PATH)
+                if result.get("changed"):
+                    profile_context.invalidate(device)
+                logger.info(
+                    f"[MQTT] [PERFIL] Perfil de {device} recibido "
+                    f"(v{profile.get('profile_version')}, changed={result.get('changed')})"
+                )
+            if _loop is not None and not _loop.is_closed():
+                _loop.run_in_executor(None, lambda: _store_profile(source_device, data))
+            else:
+                _store_profile(source_device, data)
+            return
+
         # Si el payload es un JSON completo sin envoltura de `raw_log`, tratar todo el JSON como el log a parsear
         if "raw_log" in data and isinstance(data["raw_log"], str):
             raw_log = data.get("raw_log", "")
@@ -377,12 +461,38 @@ def process_event(topic, payload, dup=None, qos=None, retain=None, **kwargs):
             if norm is not None:
                 raw_log = _format_normalized_feedback(norm)
 
+            # Via rapida del round-trip HITL: si PI-4 devuelve el log_id que
+            # PI-5 adjunto al comando firmado, actualizamos exactamente esa
+            # fila ya mismo. El dashboard (poll de 1s) ve el resultado sin
+            # esperar al LLM y sin la heuristica fragil de "ultima fila del
+            # dispositivo" de update_alert_status.
+            log_id = data.get("log_id")
+            if log_id is not None and norm is not None:
+                try:
+                    status_map = {
+                        "success": "EXITO",
+                        "error": "FALLO",
+                        "rejected_signature": "RECHAZADO_FIRMA",
+                    }
+                    mitigation_status = status_map.get(norm["status"], norm["status"].upper())
+                    result = mark_mitigation_result(int(log_id), mitigation_status, norm["output"])
+                    if result.get("status") == "success":
+                        # Avisar al feedback_agent de que el resultado ya esta
+                        # registrado en la fila exacta: no debe duplicarlo via
+                        # update_alert_status (heuristica de ultima fila).
+                        raw_log += "\nregistro_directo: true"
+                        logger.info(
+                            f"[MQTT] [FEEDBACK] Round-trip directo: log_id={log_id} -> {mitigation_status}"
+                        )
+                except Exception as e:
+                    logger.error(f"[MQTT] Error en round-trip directo (log_id={log_id}): {e}")
+
         queue = _feedback_queue if queue_type == "feedback" else _triage_queue
 
         logger.info(f"[MQTT] [{queue_type.upper()}] Event received from {source_device} on topic {topic} — queued")
 
         # Thread-safe enqueue into the asyncio event loop for immediate processing
-        _enqueue_from_thread(queue, source_device, raw_log)
+        _enqueue_from_thread(queue, queue_type, source_device, raw_log)
 
     except Exception as e:
         logger.error(f"[MQTT] Error in process_event: {e}")
@@ -451,6 +561,7 @@ async def main():
         global_iot_client.subscribe(TOPIC_SUBSCRIBE_TELEMETRIA, process_event)
         global_iot_client.subscribe(TOPIC_SUBSCRIBE_EVENTOS,    process_event)
         global_iot_client.subscribe(TOPIC_SUBSCRIBE_RESPUESTAS, process_event)
+        global_iot_client.subscribe(TOPIC_SUBSCRIBE_PERFIL,     process_event)
 
         logger.info("[INFO] Autonomous SOC (ADK Powered) Active.")
         logger.info(f"[INFO] Async queue mode: max_size={QUEUE_MAX_SIZE} (immediate processing)")

@@ -30,10 +30,15 @@ WEB_HOST = config['web']['host']
 # Dashboard web panel logging configuration
 logger = logging.getLogger("DashboardSOC")
 logger.setLevel(logging.INFO)
-handler = RotatingFileHandler("/tmp/dashboard_soc.log", maxBytes=5242880, backupCount=3)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+# Fichero de log best-effort: si /tmp no existe (p. ej. desarrollo en
+# Windows) seguimos solo con consola en vez de impedir el arranque.
+try:
+    handler = RotatingFileHandler("/tmp/dashboard_soc.log", maxBytes=5242880, backupCount=3)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+except OSError as _log_err:
+    print(f"[WARNING] No se pudo abrir /tmp/dashboard_soc.log: {_log_err}. Solo consola.")
 logger.addHandler(logging.StreamHandler())
 
 # MQTT client initialization for remote actions
@@ -75,54 +80,57 @@ def get_mqtt_client(max_attempts=4, initial_delay=1.0):
                 pass
             mqtt_client = None
 
-    ENDPOINT = config['aws']['endpoint']
-    CLIENT_ID = "Dashboard-SOC-Pi5"
-    CERT_PATH = os.path.join(BASE_DIR, config['aws']['cert_path'].replace('./', ''))
-    KEY_PATH = os.path.join(BASE_DIR, config['aws']['key_path'].replace('./', ''))
-    ROOT_CA = os.path.join(BASE_DIR, config['aws']['root_ca'].replace('./', ''))
+        # NOTA: el bucle de conexion permanece dentro del lock a proposito.
+        # Dos requests concurrentes creando clientes con el mismo client_id
+        # provocan que AWS IoT los desconecte mutuamente en bucle.
+        ENDPOINT = config['aws']['endpoint']
+        CLIENT_ID = "Dashboard-SOC-Pi5"
+        CERT_PATH = os.path.join(BASE_DIR, config['aws']['cert_path'].replace('./', ''))
+        KEY_PATH = os.path.join(BASE_DIR, config['aws']['key_path'].replace('./', ''))
+        ROOT_CA = os.path.join(BASE_DIR, config['aws']['root_ca'].replace('./', ''))
 
-    signing_key_cfg = config.get('signing', {}) or {}
-    SIGNING_KEY_PATH = os.path.join(
-        BASE_DIR,
-        signing_key_cfg.get('private_key_path', 'certificados/sentinel_pi5_signing.key')
-    )
-    try:
-        signing.load_private_key(SIGNING_KEY_PATH)
-    except Exception as e:
-        mqtt_init_error = f"signing init failed: {e}"
-        logger.error(f"[ERROR] {mqtt_init_error}")
+        signing_key_cfg = config.get('signing', {}) or {}
+        SIGNING_KEY_PATH = os.path.join(
+            BASE_DIR,
+            signing_key_cfg.get('private_key_path', 'certificados/sentinel_pi5_signing.key')
+        )
+        try:
+            signing.load_private_key(SIGNING_KEY_PATH)
+        except Exception as e:
+            mqtt_init_error = f"signing init failed: {e}"
+            logger.error(f"[ERROR] {mqtt_init_error}")
+            mqtt_client = None
+            return None
+
+        delay = initial_delay
+        last_err = None
+        for attempt in range(1, max_attempts + 1):
+            try:
+                candidate = AWSMqttClient(
+                    endpoint=ENDPOINT,
+                    cert_path=CERT_PATH,
+                    key_path=KEY_PATH,
+                    root_ca_path=ROOT_CA,
+                    client_id=CLIENT_ID
+                )
+                candidate.connect()
+                mqtt_client = candidate
+                mqtt_init_error = None
+                logger.info(f"[INFO] MQTT dashboard connection established (attempt {attempt}).")
+                return mqtt_client
+            except Exception as e:
+                last_err = e
+                logger.warning(
+                    f"[WARNING] MQTT connect attempt {attempt}/{max_attempts} failed: {e}"
+                )
+                if attempt < max_attempts:
+                    time.sleep(delay)
+                    delay = min(delay * 2, 8.0)
+
+        mqtt_init_error = str(last_err)
+        logger.error(f"[ERROR] MQTT dashboard connection failed after {max_attempts} attempts: {last_err}")
         mqtt_client = None
         return None
-
-    delay = initial_delay
-    last_err = None
-    for attempt in range(1, max_attempts + 1):
-        try:
-            candidate = AWSMqttClient(
-                endpoint=ENDPOINT,
-                cert_path=CERT_PATH,
-                key_path=KEY_PATH,
-                root_ca_path=ROOT_CA,
-                client_id=CLIENT_ID
-            )
-            candidate.connect()
-            mqtt_client = candidate
-            mqtt_init_error = None
-            logger.info(f"[INFO] MQTT dashboard connection established (attempt {attempt}).")
-            return mqtt_client
-        except Exception as e:
-            last_err = e
-            logger.warning(
-                f"[WARNING] MQTT connect attempt {attempt}/{max_attempts} failed: {e}"
-            )
-            if attempt < max_attempts:
-                time.sleep(delay)
-                delay = min(delay * 2, 8.0)
-
-    mqtt_init_error = str(last_err)
-    logger.error(f"[ERROR] MQTT dashboard connection failed after {max_attempts} attempts: {last_err}")
-    mqtt_client = None
-    return None
 
 # Initial connection attempt (best effort, mas tolerante porque arranca en paralelo con DNS)
 get_mqtt_client(max_attempts=6, initial_delay=2.0)
@@ -144,14 +152,19 @@ if not _AUTH_PASS_HASH:
     if _plain:
         _AUTH_PASS_HASH = generate_password_hash(_plain)
     else:
-        # Fallback: if no credentials configured, log a warning
-        logger.warning("[WARNING] No DASHBOARD_PASSWORD set in .env — dashboard is NOT protected!")
+        # Fail-closed: sin credenciales el dashboard DENIEGA todo acceso.
+        # Antes era fail-open ("modo dev") y un .env mal desplegado dejaba
+        # el HITL completo (aprobacion de comandos firmados) abierto a la LAN.
+        logger.critical(
+            "[CRITICAL] No DASHBOARD_PASSWORD ni DASHBOARD_PASSWORD_HASH en .env — "
+            "todo acceso sera DENEGADO. Configura las credenciales y reinicia."
+        )
 
 @auth.verify_password
 def verify_password(username, password):
     if not _AUTH_PASS_HASH:
-        # No password configured — allow access (dev mode)
-        return True
+        # Sin credenciales configuradas no entra nadie (fail-closed).
+        return None
     if username == _AUTH_USER and check_password_hash(_AUTH_PASS_HASH, password):
         return username
     return None
@@ -662,7 +675,10 @@ def approve_mitigation():
             action_payload = {
                 "accion": "ejecutar_comando",
                 "comando": final_command,
-                "motivo": f"Manual approval from dashboard for IP {blocked_ip}"
+                "motivo": f"Manual approval from dashboard for IP {blocked_ip}",
+                # Correlacion comando<->respuesta: PI-4 lo devuelve tal cual
+                # y el coordinador actualiza exactamente esta fila.
+                "log_id": log_id,
             }
             logger.info(
                 f"[INFO] Sending approved mitigation ({classification.level.label()}) "
@@ -862,10 +878,34 @@ def revert_action(log_id):
         action_payload = {
             "accion": "ejecutar_comando",
             "comando": revert_command,
-            "motivo": reason
+            "motivo": reason,
+            # Correlacion comando<->respuesta (igual que en approve).
+            "log_id": log_id,
         }
-        
+
         revert_classification = policy_engine.classify(revert_command)
+        # Mismo gate que /api/mitigate/approve: un revert editado a mano
+        # tambien puede ser CRITICAL y requiere doble confirmacion explicita.
+        if (revert_classification.level == policy_engine.RiskLevel.CRITICAL
+                and not bool(req_data.get('confirm_critical', False))):
+            conn.close()
+            policy_engine.audit(
+                event_type="REJECT_CRITICAL_UNCONFIRMED",
+                device=device,
+                command=revert_command,
+                classification=revert_classification,
+                decision_reason="Falta confirm_critical para revert CRITICAL",
+                related_log_id=log_id,
+            )
+            return jsonify({
+                "status": "needs_confirmation",
+                "risk_level": revert_classification.level.label(),
+                "reasons": revert_classification.reasons,
+                "message": (
+                    "El comando de revert se ha clasificado como CRITICAL. "
+                    "Marque la confirmacion de doble riesgo para ejecutarlo."
+                ),
+            }), 400
         logger.info(
             f"[INFO] Sending revert ({revert_classification.level.label()}) "
             f"to {topic}: {revert_command}"
@@ -949,6 +989,61 @@ def revert_action(log_id):
     except Exception as e:
         logger.error(f"[ERROR] Failed to revert action {log_id}: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
+# ---------------------------------------------------------------------------
+# Enriquecedor LLM offline (Fase 4) — endpoints OPCIONALES, fuera de la ruta
+# caliente. Imports perezosos para no arrastrar litellm/jsonschema al arrancar.
+# ---------------------------------------------------------------------------
+import re as _re
+_SAFE_DEVICE_RE = _re.compile(r'^[A-Za-z0-9_-]+$')
+
+
+@app.route('/api/enrich/<device>', methods=['GET'])
+@auth.login_required
+def enrich_list(device):
+    """Panel de SOLO LECTURA: enriquecimientos pendientes de un device."""
+    if not _SAFE_DEVICE_RE.match(device):
+        return jsonify({"status": "error", "message": "device inseguro"}), 400
+    from tools import db_tools
+    return jsonify({"device": device, "pending": db_tools.list_enrichments(device, status="PENDING_REVIEW")})
+
+
+@app.route('/api/enrich/<device>', methods=['POST'])
+@auth.login_required
+def enrich_generate(device):
+    """Genera un enriquecimiento (síncrono). NO entra en la ruta de triage."""
+    if not _SAFE_DEVICE_RE.match(device):
+        return jsonify({"status": "error", "message": "device inseguro"}), 400
+    from tools import profile_enricher
+    try:
+        res = profile_enricher.enrich(device)
+    except profile_enricher.ProviderError as e:
+        return jsonify({"status": "error", "kind": e.kind, "message": str(e)}), 503
+    except profile_enricher.HallucinationError as e:
+        return jsonify({"status": "error", "message": f"salida del modelo inválida: {e}"}), 422
+    code = 200 if res.get("status") == "success" else 400
+    return jsonify(res), code
+
+
+@app.route('/api/enrich/promote', methods=['POST'])
+@auth.login_required
+def enrich_promote():
+    """Promueve borradores aprobados a recommendations/<device>.json."""
+    data = request.get_json(silent=True) or {}
+    device = data.get("device", "")
+    enrichment_id = data.get("enrichment_id")
+    item_ids = data.get("item_ids")
+    if not _SAFE_DEVICE_RE.match(device) or not enrichment_id:
+        return jsonify({"status": "error", "message": "device/enrichment_id inválidos"}), 400
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "enrich_profile_cli",
+        os.path.join(BASE_DIR, "scripts", "enrich_profile.py"))
+    cli = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(cli)
+    res = cli.promote_override(device, enrichment_id, item_ids)
+    return jsonify(res), (200 if res.get("status") == "success" else 400)
+
 
 if __name__ == '__main__':
     logger.info(f"[INFO] Dashboard SOC started on {WEB_HOST}:{WEB_PORT}")

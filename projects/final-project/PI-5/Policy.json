@@ -7,7 +7,7 @@
       "Resource": [
         "arn:aws:iot:eu-north-1:582997418897:client/${iot:Connection.Thing.ThingName}",
         "arn:aws:iot:eu-north-1:582997418897:client/Pi5-dani",
-        "arn:aws:iot:eu-north-1:582997418897:client/Pi4-felix",
+        "arn:aws:iot:eu-north-1:582997418897:client/Pi4-Felix",
         "arn:aws:iot:eu-north-1:582997418897:client/Dashboard-SOC-Pi5"
       ]
     },

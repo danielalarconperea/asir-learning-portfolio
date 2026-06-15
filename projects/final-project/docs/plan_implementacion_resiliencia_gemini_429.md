@@ -1,5 +1,7 @@
 # Plan de implementacion: resiliencia ante Gemini 429
 
+**Estado:** ✅ IMPLEMENTADO el 2026-05-28 (commit `5dbfd12`). La tabla y el worker viven en `PI-5/src/tools/pending_ai_events.py` y `main_coordinator.py` (`_pending_ai_retry_worker`), con backoff 60/300/900/3600s, contador en el dashboard, purga desde SOC Manager (`soc_manager.sh` opción 5→3) y tests en `tests/test_pending_ai_events.py`. Desde 2026-06-13 la misma tabla absorbe también los eventos desbordados por backpressure de colas (`error_reason='queue_full'`). El resto del documento se conserva como registro del diseño.
+
 ## Objetivo
 
 Evitar que el SOC pierda eventos cuando el modelo remoto Gemini falle por cuota o limite de gasto, manteniendo el comportamiento actual del proyecto:

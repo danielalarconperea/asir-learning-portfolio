@@ -1,0 +1,219 @@
+{
+  "version": 1,
+  "device": "Pi4-Felix",
+  "entries": [
+    {
+      "id": "pi4felix-web-session-list",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [
+        "php"
+      ],
+      "applies_if": {
+        "web_server.engine": "apache",
+        "web_server.docroots_contains": "/var/www/html/sentinelti.com"
+      },
+      "match": {
+        "families": [
+          "session_hijacking",
+          "web_bruteforce",
+          "xss"
+        ],
+        "keywords": [
+          "sesion",
+          "session",
+          "auditoria",
+          "listar",
+          "cuenta",
+          "admin",
+          "hijack"
+        ]
+      },
+      "command": "php /var/www/html/sentinelti.com/cerrar_sesion_admin.php --listar",
+      "placeholders": [],
+      "explanation": "Lista todas las sesiones web activas en la base de datos del servidor (usuario, email, IP de origen, ultima actividad). Lectura pura: no modifica estado, sirve de paso previo a un cierre forzado de sesion.",
+      "notas_correccion": "Override 100% del sitio: ruta /var/www/html/sentinelti.com y script propietario cerrar_sesion_admin.php no derivables de un perfil generico. read-only; el policy_engine ve 'php' como interprete -> LOW (php no esta en _READ_VERBS), por lo que pasa por HITL salvo aprobacion. requires:['php'] coincide con la capability canonica."
+    },
+    {
+      "id": "pi4felix-web-session-revoke",
+      "intent": "mitigation",
+      "severity": "media",
+      "requires": [
+        "php"
+      ],
+      "applies_if": {
+        "web_server.engine": "apache",
+        "web_server.docroots_contains": "/var/www/html/sentinelti.com"
+      },
+      "match": {
+        "families": [
+          "session_hijacking",
+          "web_bruteforce"
+        ],
+        "keywords": [
+          "sesion",
+          "session",
+          "revocar",
+          "cerrar",
+          "cuenta",
+          "compromiso",
+          "hijack",
+          "usuario"
+        ]
+      },
+      "command": "php /var/www/html/sentinelti.com/cerrar_sesion_admin.php --cerrar-nombre \"{nombre_usuario}\"",
+      "placeholders": [
+        "nombre_usuario"
+      ],
+      "explanation": "Cierra de forma forzada y revoca todas las sesiones web activas del nombre de usuario indicado, destruyendo la sesion PHP y eliminando el registro para expulsar al atacante de una cuenta web comprometida.",
+      "notas_correccion": "Especifico del sitio. El placeholder {nombre_usuario} NO es derivable del perfil: lo aporta el contexto de la alerta, no el System Profile, por lo que el motor lo deja literal igual que {ip} y lo rellena el LLM. Va entrecomillado para nombres con espacios."
+    },
+    {
+      "id": "pi4felix-block-ip-web",
+      "intent": "mitigation",
+      "severity": "media",
+      "requires": [
+        "iptables"
+      ],
+      "applies_if": {
+        "firewall.active_manager": "iptables",
+        "web_server.reverse_proxy_to_contains": 8080,
+        "surface.exposed_ports_contains_all": [
+          80,
+          8080
+        ]
+      },
+      "match": {
+        "families": [
+          "web_bruteforce",
+          "sqli",
+          "xss",
+          "port_scan",
+          "session_hijacking"
+        ],
+        "keywords": [
+          "bloquear",
+          "block",
+          "ip",
+          "web",
+          "puerto",
+          "atacante"
+        ]
+      },
+      "command": "sudo iptables -A INPUT -p tcp -s {ip} --dport 80 -j DROP && sudo iptables -A INPUT -p tcp -s {ip} --dport 8080 -j DROP",
+      "revert": "sudo iptables -D INPUT -p tcp -s {ip} --dport 80 -j DROP && sudo iptables -D INPUT -p tcp -s {ip} --dport 8080 -j DROP",
+      "placeholders": [
+        "ip"
+      ],
+      "explanation": "Bloquea trafico TCP entrante desde la IP indicada en los puertos 80 y 8080. IMPORTANTE: hay que bloquear AMBOS puertos siempre. El 80 es solo el proxy nginx que redirige internamente al 8080, donde esta el Apache real. Si solo se bloquea el 80, el atacante puede saltarse el filtro accediendo directamente al 8080.",
+      "notas_correccion": "El doble bloqueo 80+8080 ES site-specific (topologia proxy nginx->apache del honeypot). requires:['iptables'] (capability canonica). La revert con -D asume que la posicion de la regla coincide; en iptables-nft -D por especificacion exacta funciona. Solo {ip} es parametrizable (validada por regex). El policy_engine: encadenado con && -> al menos HIGH -> HITL."
+    },
+    {
+      "id": "pi4felix-web-restore-defacement",
+      "intent": "recovery",
+      "severity": "critica",
+      "requires": [
+        "restic",
+        "systemctl"
+      ],
+      "applies_if": {
+        "capabilities.restic": true,
+        "web_server.docroots_contains": "/var/www/html/sentinelti.com"
+      },
+      "match": {
+        "families": [
+          "defacement",
+          "web_recovery"
+        ],
+        "keywords": [
+          "restaurar",
+          "restore",
+          "defacement",
+          "deface",
+          "backup",
+          "recuperar",
+          "web"
+        ]
+      },
+      "command": "bash -c 'source /home/lopex/backup_env.sh && sudo -E restic restore latest --target / --include /var/www/html/sentinelti.com && sudo chown -R www-data:www-data /var/www/html/sentinelti.com'",
+      "placeholders": [],
+      "explanation": "Restaura los archivos de /var/www/html/sentinelti.com desde el snapshot restic mas reciente almacenado en S3 y reaplica el ownership www-data. El env-file /home/lopex/backup_env.sh carga las credenciales AWS antes de invocar restic. ACCION DESTRUCTIVA (sobrescribe ficheros actuales): exige confirmacion humana explicita.",
+      "notas_correccion": "Override puro: restic + bucket S3 + backup_env.sh + ruta /home/lopex no derivables de un perfil. severity=critica para forzar HITL con checkbox; verificado contra el policy_engine -> CRITICAL (bash -c + chown sobre rutas). requires:['restic','systemctl'] (capabilities canonicas)."
+    },
+    {
+      "id": "pi4felix-db-restore-compromise",
+      "intent": "recovery",
+      "severity": "critica",
+      "requires": [
+        "restic",
+        "mysql"
+      ],
+      "applies_if": {
+        "capabilities.restic": true,
+        "capabilities.mysql": true,
+        "db_engine.engine": "mysql"
+      },
+      "match": {
+        "families": [
+          "db_compromise",
+          "db_recovery",
+          "credential_compromise"
+        ],
+        "keywords": [
+          "restaurar",
+          "restore",
+          "bbdd",
+          "base de datos",
+          "database",
+          "dump",
+          "backup",
+          "credenciales",
+          "password",
+          "sqli"
+        ]
+      },
+      "command": "bash -c 'source /home/lopex/backup_env.sh && sudo -E restic restore latest --target /home/lopex/restauracion_web --include /tmp/all_databases.sql && mysql --defaults-extra-file=/home/lopex/.my.cnf < /home/lopex/restauracion_web/tmp/all_databases.sql'",
+      "placeholders": [],
+      "explanation": "Restaura el dump completo de bases de datos desde el ultimo snapshot restic y lo reimporta con mysql. ACCION DESTRUCTIVA (reemplaza el estado de las BBDD): exige confirmacion humana explicita. Indicada tras compromiso de BBDD (SQLi con escritura, borrado de tablas) o cambio de contrasena no autorizado de administradores.",
+      "notas_correccion": "Site-specific: restic, ruta de dump /tmp/all_databases.sql, restauracion en /home/lopex/restauracion_web. La contrasena mysql se mantiene fuera del comando via --defaults-extra-file=/home/lopex/.my.cnf (NO se inyecta en claro). FUSIONA las dos entradas identicas del manual viejo (db_compromise y credential_compromise) multi-etiquetando families para que el match por keyword 'credenciales'/'password'/'hijacking' la seleccione, eliminando el duplicado pi4felix-credentials-db-restore. severity=critica para HITL."
+    },
+    {
+      "id": "pi4felix-xss-integral-response",
+      "intent": "recovery",
+      "severity": "critica",
+      "requires": [
+        "iptables",
+        "restic",
+        "mysql",
+        "php"
+      ],
+      "applies_if": {
+        "firewall.active_manager": "iptables",
+        "capabilities.restic": true,
+        "capabilities.mysql": true,
+        "web_server.docroots_contains": "/var/www/html/sentinelti.com"
+      },
+      "match": {
+        "families": [
+          "xss",
+          "web_recovery",
+          "db_recovery"
+        ],
+        "keywords": [
+          "xss",
+          "integral",
+          "persistente",
+          "sugerencias",
+          "respuesta completa",
+          "restaurar todo"
+        ]
+      },
+      "command": "sudo iptables -A INPUT -p tcp -s {ip} --dport 80 -j DROP && sudo iptables -A INPUT -p tcp -s {ip} --dport 8080 -j DROP && bash -c 'source /home/lopex/backup_env.sh && sudo -E restic restore latest --target / --include /var/www/html/sentinelti.com && sudo chown -R www-data:www-data /var/www/html/sentinelti.com && sudo -E restic restore latest --target /home/lopex/restauracion_web --include /tmp/all_databases.sql && mysql --defaults-extra-file=/home/lopex/.my.cnf < /home/lopex/restauracion_web/tmp/all_databases.sql' && php /var/www/html/sentinelti.com/cerrar_sesion_admin.php --listar",
+      "placeholders": [
+        "ip"
+      ],
+      "explanation": "Respuesta integral ante XSS persistente (detectado p.ej. en la tabla sugerencias): bloquea la IP atacante en 80 y 8080, restaura los archivos web para limpiar alteraciones (defacement/webshells), restaura la base de datos completa para eliminar payloads XSS persistentes y finaliza listando las sesiones para revisar cuentas comprometidas. ACCION DESTRUCTIVA encadenada: exige confirmacion humana explicita.",
+      "notas_correccion": "Comando compuesto que encadena bloqueo IP + restore web + restore DB + auditoria de sesion. Solo {ip} es parametrizable (validada); el resto es site-specific. severity=critica obligatoria. Riesgo: si una fase falla, '&&' aborta el resto y la restauracion queda parcial; valorar revisar el encadenamiento en una iteracion posterior."
+    }
+  ]
+}

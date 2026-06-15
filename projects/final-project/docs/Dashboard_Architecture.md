@@ -235,7 +235,7 @@ GET /api/mitigate/status/123
 | contiene `[FALLO]` | `failed` | PI-4 reportó error → toast rojo con detalle, detiene poll |
 | otro contenido | `feedback` | Hay feedback pero sin marca clara → toast neutro |
 
-**Quién rellena `estado_mitigacion`:** la vía rápida es `main_coordinator.process_event` → `mark_mitigation_result(log_id, ...)` en cuanto llega `seguridad/<device>/respuesta`. La vía asíncrona compatible es `feedback_agent` → `update_alert_status` cuando procesa el mensaje en su cola asíncrona — solo escribe si la rápida no llegó antes (la rápida prefija con `[EXITO]/[FALLO]`; la lenta concatena con `||`).
+**Quién rellena `estado_mitigacion`:** la vía rápida es `main_coordinator.process_event` → `mark_mitigation_result(log_id, ...)` en cuanto llega `seguridad/<device>/respuesta` con el `log_id` que PI-5 adjuntó al comando firmado (implementado el 2026-06-13). Cuando la vía rápida escribe, el texto normalizado que recibe el `feedback_agent` lleva la marca `registro_directo: true` y el agente **no** llama a `update_alert_status` (evita duplicados). La vía del agente (`update_alert_status`, heurística de "última fila del dispositivo") queda solo para feedbacks legacy sin `log_id`.
 
 **Por qué este endpoint es de solo lectura:** no muta nada. Es seguro pollearlo agresivamente.
 

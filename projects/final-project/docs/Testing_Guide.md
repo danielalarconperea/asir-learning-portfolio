@@ -15,28 +15,44 @@ No describe la lógica que validan los tests — para eso ir al doc del componen
 
 ## 2. Mapa de tests
 
+Desde 2026-06-13 la suite está dividida en dos mundos físicamente separados:
+
+- **`PI-5/tests/`** — tests automatizados **offline** (196 tests). Sin red, sin Gemini, sin hardware. Es lo que ejecuta `pytest` a secas (hay `pytest.ini` + `conftest.py` en `PI-5/`).
+- **`PI-5/tests/manual/`** — scripts manuales y E2E que requieren AWS IoT real (mTLS), Gemini y/o el coordinador corriendo. **Excluidos de la colección de pytest** (varios conectan a AWS en código de nivel de módulo); se lanzan uno a uno a mano.
+
 ```
 PI-5/tests/
-├── test_policy_engine.py     ← unitario  ← motor de políticas (36 tests, offline)
-├── test_feedback_loop.py     ← integ.    ← tools + BD reales, MQTT mock (offline)
-├── test_dashboard_api.py     ← unitario  ← endpoints Flask, MQTT mock (offline)
-├── test_adk.py               ← integ.    ← triage_agent vivo con Gemini, MQTT mock (online IA)
-├── test_flexible_command.py  ← E2E       ← MQTT real, mock de Pi4 local (online MQTT)
-├── test_agent_flow.py        ← E2E       ← MQTT real + coordinator vivo + BD real (full stack)
-├── test_pi4_simulation.py    ← manual    ← se hace pasar por Pi4 desde otra máquina
-└── test_local.py             ← humo      ← publica un log de prueba y termina
+├── test_policy_engine.py            ← unitario ← motor de políticas (36 tests)
+├── test_policy_engine_hardening.py  ← unitario ← bypasses por contenido entrecomillado
+├── test_signing.py                  ← unitario ← contrato Ed25519 PI-5 ↔ PI-4
+├── test_feedback_normalizer.py      ← unitario ← normalizador de feedback del coordinador
+├── test_coordinator_routing.py      ← unitario ← routing, round-trip log_id, backpressure
+├── test_hitl_approve.py             ← unitario ← /api/mitigate/approve, gate CRITICAL, auth fail-closed
+├── test_dashboard_api.py            ← unitario ← /api/data, /, /revert
+├── test_pending_ai_events.py        ← unitario ← persistencia ante 429 de Gemini
+├── test_revert_commands.py          ← unitario ← derivación de rollbacks
+├── test_soc_manager_script.py       ← unitario ← invariantes de soc_manager.sh
+├── aws_mqtt.txt                     ← notas sueltas sobre conexión MQTT
+└── manual/
+    ├── test_adk.py                  ← integ.   ← triage_agent vivo con Gemini (online IA)
+    ├── test_feedback_loop.py        ← integ.   ← tools + BD real data/soc_data.db
+    ├── test_flexible_command.py     ← E2E      ← MQTT real, mock de Pi4 local
+    ├── test_agent_flow.py           ← E2E      ← MQTT real + coordinator vivo + BD real
+    ├── test_pi4_simulation.py       ← manual   ← se hace pasar por Pi4 desde otra máquina
+    ├── test_local.py                ← humo     ← publica un log de prueba (topics legacy)
+    ├── test_mqtt.py                 ← humo     ← conexión MQTT básica (topics legacy)
+    └── test_publish_pi.py           ← humo     ← publish manual
 ```
 
 | Tipo | Sin red | Necesita Gemini | Necesita coordinator vivo | Modifica BD real |
 |------|---------|-----------------|--------------------------|------------------|
-| `test_policy_engine.py` | ✓ (BD temporal) | — | — | — |
-| `test_feedback_loop.py` | ✓ | — | — | ✓ (data/soc_data.db) |
-| `test_dashboard_api.py` | ✓ | — | — | — (lee con mocks) |
-| `test_adk.py` | — (Gemini) | ✓ | — | — |
-| `test_flexible_command.py` | — (AWS IoT) | — | ✗ (lo para temporalmente) | — |
-| `test_agent_flow.py` | — (AWS IoT) | ✓ (vía coord.) | ✓ | ✓ |
-| `test_pi4_simulation.py` | — (AWS IoT) | ✓ (vía coord.) | ✓ | ✓ |
-| `test_local.py` | — (AWS IoT) | — | opcional | — |
+| `tests/*.py` (todos) | ✓ (BD temporal/mocks) | — | — | — |
+| `manual/test_feedback_loop.py` | ✓ | — | — | ✓ (data/soc_data.db) |
+| `manual/test_adk.py` | — (Gemini) | ✓ | — | — |
+| `manual/test_flexible_command.py` | — (AWS IoT) | — | ✗ (lo para temporalmente) | — |
+| `manual/test_agent_flow.py` | — (AWS IoT) | ✓ (vía coord.) | ✓ | ✓ |
+| `manual/test_pi4_simulation.py` | — (AWS IoT) | ✓ (vía coord.) | ✓ | ✓ |
+| `manual/test_local.py` / `test_mqtt.py` | — (AWS IoT) | — | opcional | — |
 
 ## 3. `test_policy_engine.py` — Unitarios del motor
 
@@ -164,7 +180,7 @@ Cada escenario tiene una ventana de espera (`TRIAGE_WAIT_SECONDS=45`, `FEEDBACK_
 
 **Cuándo correrlo:** validación full-stack tras cualquier cambio mayor (coordinator, agentes, Policy Engine, MQTT, BD). Es el test más cercano a producción y el que más coste tiene (Gemini se invoca dos veces).
 
-**Pi-4 real:** este test asume que la Pi-4 NO está conectada al broker en ese momento. Si está conectada, habría carrera porque ambas publican en los mismos topics. Si tienes una Pi-4 viva, desconecta su servicio antes (`sudo systemctl stop soc-sensor-pi4` o equivalente).
+**Pi-4 real:** este test asume que la Pi-4 NO está conectada al broker en ese momento. Si está conectada, habría carrera porque ambas publican en los mismos topics. Si tienes una Pi-4 viva, desconecta su servicio antes (`sudo systemctl stop sentinel-agent` o equivalente).
 
 ## 9. `test_pi4_simulation.py` — Pi-4 manual desde otro host
 
@@ -182,32 +198,34 @@ Publica un único log de fuerza bruta SSH en `seguridad/logs/Pi5-Simulador/ssh` 
 
 ```bash
 cd PI-5
-python -m unittest discover -s tests -p "test_*.py" -v 2>&1 | tee /tmp/test_run.log
+python -m pytest          # 196 tests, ~8 s, sin red. pytest.ini excluye tests/manual/
+
+# El sensor genérico tiene su propia suite (94 tests offline):
+cd ../sentinel-agent && python -m pytest    # parsers, detectores, denylist, firma+rotación, perfil
 ```
 
-`unittest discover` ejecuta `test_policy_engine.py`, `test_dashboard_api.py` y cualquier test que use `unittest.TestCase`. Los tests que usan `if __name__ == "__main__"` con `print` (como `test_adk.py`, `test_feedback_loop.py`, los E2E) **no** se descubren y hay que lanzarlos manualmente.
+Para desarrollo se necesitan además las dependencias de `requirements-dev.txt` (`pip install -r requirements.txt -r requirements-dev.txt`).
+
+> ⚠️ **No usar `unittest discover` sobre `tests/manual/`**: varios de esos scripts (`test_local.py`, `test_mqtt.py`) conectan a AWS IoT en código de nivel de módulo — importarlos ya abre sockets. Por eso viven en una carpeta excluida de la colección.
 
 ## 12. Tests pendientes
 
 Áreas que no tienen cobertura automatizada todavía:
 
-- **HITL completo:** un test que apruebe una mitigación PENDING vía el endpoint `/api/mitigate/approve` y verifique el flujo de re-clasificación + audit. Hoy solo se cubre con `test_dashboard_api.py` a nivel de smoke.
-- **Revert end-to-end completo:** existe cobertura unitaria para la derivación de rollback (`test_revert_commands.py`) y casos de endpoint en `test_dashboard_api.py`, pero falta una prueba E2E con MQTT real que confirme ejecución en PI-4 y feedback de `estado_mitigacion`.
-- **Queues asíncronas:** no hay test que valide los límites de backpressure bajo carga pesada. El comportamiento se valida indirectamente en `test_agent_flow.py`.
+- **Revert end-to-end completo:** existe cobertura unitaria para la derivación de rollback (`test_revert_commands.py`), el endpoint (`test_dashboard_api.py`, `test_hitl_approve.py`) y la correlación log_id (`test_coordinator_routing.py`), pero falta una prueba E2E con MQTT real que confirme ejecución en PI-4 y feedback de `estado_mitigacion`.
+- **`aws_connector.py`:** las ramas de error (`is_alive` zombie, PUBACK timeout, re-suscripción tras `session_present=False`) son testables con dobles de `awsiot` y no lo están.
+- **CI:** los 196 tests offline no se ejecutan automáticamente en ningún commit (no hay GitHub Actions).
 
 Estas mejoras quedan registradas en [futuras_mejoras.md](futuras_mejoras.md) (si se añaden) o como issues.
 
 ## 13. Archivos involucrados
 
+Ver el mapa completo de la sección 2. Infraestructura de la suite:
+
 ```
-PI-5/tests/
-├── test_policy_engine.py     # Unitarios del motor (offline)
-├── test_feedback_loop.py     # Tools + BD reales (offline)
-├── test_dashboard_api.py     # Smoke Flask (offline)
-├── test_adk.py               # Triage con Gemini real (MQTT mock)
-├── test_flexible_command.py  # MQTT real con mock de Pi-4 local
-├── test_agent_flow.py        # E2E completo (coordinator vivo + Pi-4 simulada)
-├── test_pi4_simulation.py    # Pi-4 manual desde otra máquina (topics legacy)
-├── test_local.py             # Humo MQTT (topics legacy)
-└── aws_mqtt.txt              # Notas sueltas sobre conexión MQTT
+PI-5/
+├── conftest.py           # añade src/ al sys.path para todos los tests
+├── pytest.ini            # testpaths=tests, excluye tests/manual/
+├── requirements-dev.txt  # pytest, pytest-cov
+└── tests/                # offline (pytest) + tests/manual/ (a mano)
 ```

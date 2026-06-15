@@ -1,0 +1,947 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "block_ip_full",
+      "family": "_universal",
+      "intent": "mitigation",
+      "severity": "alta",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "iptables": "sudo iptables -I INPUT 1 -s {ip} -j DROP",
+        "ufw": "sudo ufw insert 1 deny from {ip}",
+        "nftables": "sudo nft add rule inet filter input ip saddr {ip} drop",
+        "firewalld": "sudo firewall-cmd --add-rich-rule=\"rule family='ipv4' source address='{ip}' drop\""
+      },
+      "revert_templates": {
+        "iptables": "sudo iptables -D INPUT -s {ip} -j DROP",
+        "ufw": "sudo ufw delete deny from {ip}",
+        "nftables": "sudo nft -a list chain inet filter input  # localizar el handle de la regla 'ip saddr {ip} drop' y luego: sudo nft delete rule inet filter input handle <N>",
+        "firewalld": "sudo firewall-cmd --remove-rich-rule=\"rule family='ipv4' source address='{ip}' drop\""
+      },
+      "placeholders": [
+        "ip"
+      ],
+      "keywords": [
+        "block",
+        "bloquear",
+        "ip",
+        "drop",
+        "ban",
+        "scanner",
+        "session",
+        "hijack",
+        "sqli",
+        "xss"
+      ],
+      "explanation": "Entrada universal de bloqueo: descarta TODO el trafico entrante de la IP atacante a nivel de firewall. Es la mitigacion comun a casi cualquier familia (sqli, xss, session_hijacking, port_scan, web_bruteforce graves). Se inserta al principio de la cadena para tener prioridad sobre reglas ACCEPT previas. El motor elige la plantilla del firewall activo del perfil (firewall.active_manager); no se aplican varias a la vez. Drop silencioso (sin RST). La persistencia depende del gestor: ufw y firewalld persisten su estado; iptables y nftables crudos requieren guardar el ruleset. Para nftables se asume 'inet filter'/'input' (la convencion de firewalld y ufw-nft); si el ruleset es manual, verificar con 'sudo nft list ruleset' antes de aplicar.",
+      "notas_correccion": "Deduplica block_ip de sqli/xss/session_hijacking/port_scan/web_bruteforce en una sola entrada universal parametrizada por firewall. La {ip} se valida por regex antes de sustituir (la pone el LLM con la IP del evento). family '_universal' permite que select_entries la incluya para cualquier query de bloqueo."
+    },
+    {
+      "id": "block_ip_web_port",
+      "family": "_universal",
+      "intent": "mitigation",
+      "severity": "alta",
+      "requires": [],
+      "applies_if": {
+        "web_server.engine": "*"
+      },
+      "command_templates": {
+        "iptables": "sudo iptables -I INPUT 1 -p tcp -s {ip} --dport {web_port} -j DROP",
+        "ufw": "sudo ufw insert 1 deny from {ip} to any port {web_port} proto tcp",
+        "nftables": "sudo nft add rule inet filter input ip saddr {ip} tcp dport {web_port} drop",
+        "firewalld": "sudo firewall-cmd --add-rich-rule=\"rule family='ipv4' source address='{ip}' port port='{web_port}' protocol='tcp' drop\""
+      },
+      "revert_templates": {
+        "iptables": "sudo iptables -D INPUT -p tcp -s {ip} --dport {web_port} -j DROP",
+        "ufw": "sudo ufw delete deny from {ip} to any port {web_port} proto tcp",
+        "nftables": "sudo nft -a list chain inet filter input  # localizar el handle de la regla 'ip saddr {ip} tcp dport {web_port} drop' y luego: sudo nft delete rule inet filter input handle <N>",
+        "firewalld": "sudo firewall-cmd --remove-rich-rule=\"rule family='ipv4' source address='{ip}' port port='{web_port}' protocol='tcp' drop\""
+      },
+      "placeholders": [
+        "ip",
+        "web_port"
+      ],
+      "keywords": [
+        "block",
+        "bloquear",
+        "web",
+        "puerto",
+        "port",
+        "http",
+        "bruteforce",
+        "login"
+      ],
+      "explanation": "Variante quirurgica del bloqueo: descarta el trafico de la IP atacante solo en el puerto del servidor web descubierto ({web_port}, derivado de web_server.listen_ports o surface.exposed_ports). Util cuando la IP debe conservar acceso a otros servicios legitimos o ante fuerza bruta web. El puerto se valida (1-65535) antes de sustituir; si el perfil no lo aporta, la entrada se OMITE (no se inventa). AVISO con reverse_proxy: si web_server.reverse_proxy_to no esta vacio, el trafico real entra por el puerto frontal del proxy y el backend escucha en otro; si AMBOS estan expuestos, complementar con la entrada del proxy. Para SQLi/XSS graves preferir el bloqueo total (block_ip_full).",
+      "notas_correccion": "Sustituye sqli_block_ip_web_ports, block_ip_web_iptables/ufw/firewalld/nftables y block_ip_web_proxy_extra en una sola entrada parametrizada por firewall. applies_if usa la clave anidada real 'web_server.engine' con comodin. {web_port} se valida como entero 1-65535."
+    },
+    {
+      "id": "ratelimit_new_connections",
+      "family": "port_scan",
+      "intent": "mitigation",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {
+        "web_server.engine": "*"
+      },
+      "command_templates": {
+        "iptables": "sudo iptables -I INPUT -p tcp -s {ip} -m conntrack --ctstate NEW -m hashlimit --hashlimit-name scanlimit --hashlimit-mode srcip --hashlimit-above 20/min --hashlimit-burst 30 -j DROP",
+        "ufw": "sudo ufw limit from {ip} to any port {web_port} proto tcp",
+        "nftables": "sudo nft add rule inet filter input ip saddr {ip} ct state new limit rate over 20/minute drop",
+        "firewalld": "sudo firewall-cmd --add-rich-rule=\"rule family='ipv4' source address='{ip}' port port='{web_port}' protocol='tcp' limit value='20/m' accept\" && sudo firewall-cmd --runtime-to-permanent"
+      },
+      "revert_templates": {
+        "iptables": "sudo iptables -D INPUT -p tcp -s {ip} -m conntrack --ctstate NEW -m hashlimit --hashlimit-name scanlimit --hashlimit-mode srcip --hashlimit-above 20/min --hashlimit-burst 30 -j DROP",
+        "ufw": "sudo ufw delete limit from {ip} to any port {web_port} proto tcp",
+        "nftables": "sudo nft -a list chain inet filter input  # localizar el handle de la regla 'limit rate over 20/minute' y luego: sudo nft delete rule inet filter input handle <N>",
+        "firewalld": "sudo firewall-cmd --remove-rich-rule=\"rule family='ipv4' source address='{ip}' port port='{web_port}' protocol='tcp' limit value='20/m' accept\" && sudo firewall-cmd --runtime-to-permanent"
+      },
+      "placeholders": [
+        "ip",
+        "web_port"
+      ],
+      "keywords": [
+        "scan",
+        "nmap",
+        "ratelimit",
+        "rate",
+        "limit",
+        "sondeo",
+        "recon"
+      ],
+      "explanation": "Limita la tasa de conexiones NUEVAS desde la IP en lugar de bloquearla del todo. Util ante sondeo agresivo cuando no se quiere cortar de raiz (menor riesgo de falso positivo que el DROP completo). iptables (hashlimit) y nftables (limit rate over ... drop) aplican el limite por IP a nivel de paquete; ufw y firewalld NO saben limitar por-IP nativo, solo por puerto, por eso requieren {web_port} y NO son equivalentes exactos. Si el perfil no expone ningun puerto web, las variantes ufw/firewalld se omiten (placeholder {web_port} no resoluble) y se usa iptables/nftables.",
+      "notas_correccion": "applies_if exige web_server presente (necesita {web_port} en ufw/firewalld). Si fw=='iptables'/'nftables' el comando no usa {web_port} y materializa; si fw=='ufw'/'firewalld' y falta {web_port}, la entrada se omite por placeholder no resoluble (politica resolver-o-omitir)."
+    },
+    {
+      "id": "ssh_block_ip",
+      "family": "ssh_bruteforce",
+      "intent": "mitigation",
+      "severity": "alta",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "iptables": "sudo iptables -A INPUT -p tcp -s {ip} --dport {ssh_port} -j DROP",
+        "ufw": "sudo ufw deny from {ip} to any port {ssh_port} proto tcp",
+        "nftables": "sudo nft add rule inet filter input ip saddr {ip} tcp dport {ssh_port} drop",
+        "firewalld": "sudo firewall-cmd --add-rich-rule=\"rule family='ipv4' source address='{ip}' port port='{ssh_port}' protocol='tcp' drop\""
+      },
+      "revert_templates": {
+        "iptables": "sudo iptables -D INPUT -p tcp -s {ip} --dport {ssh_port} -j DROP",
+        "ufw": "sudo ufw delete deny from {ip} to any port {ssh_port} proto tcp",
+        "nftables": "sudo nft -a list chain inet filter input  # localizar el handle y luego: sudo nft delete rule inet filter input handle <N>",
+        "firewalld": "sudo firewall-cmd --remove-rich-rule=\"rule family='ipv4' source address='{ip}' port port='{ssh_port}' protocol='tcp' drop\""
+      },
+      "placeholders": [
+        "ip",
+        "ssh_port"
+      ],
+      "keywords": [
+        "ssh",
+        "brute",
+        "bruteforce",
+        "fuerza bruta",
+        "auth"
+      ],
+      "explanation": "Bloquea el trafico TCP entrante hacia el puerto SSH desde la IP atacante para cortar una fuerza bruta en curso. Mitigacion rapida y reversible; no afecta a otras IPs. El puerto SSH ({ssh_port}) se deriva del servicio sshd del perfil (services[].port) o de surface.exposed_ports; por defecto 22 si no se resuelve otro. Para firewalld la regla rica solo persiste con --permanent y reload; aqui se aplica en runtime para corte inmediato.",
+      "notas_correccion": "{ssh_port} formaliza el puerto antes fijo a 22: se resuelve del perfil (puerto del servicio ssh) y por defecto cae a 22 si el perfil no lo expone, nunca queda crudo. Para corte total puede anteponerse 'sudo conntrack -D -s {ip}' si conntrack esta disponible. nftables asume 'inet filter'/'input'; verificar o preferir ufw/firewalld."
+    },
+    {
+      "id": "ssh_block_ip_fail2ban",
+      "family": "ssh_bruteforce",
+      "intent": "mitigation",
+      "severity": "media",
+      "requires": [
+        "fail2ban"
+      ],
+      "applies_if": {},
+      "command_templates": {
+        "default": "sudo fail2ban-client set sshd banip {ip}"
+      },
+      "revert_templates": {
+        "default": "sudo fail2ban-client set sshd unbanip {ip}"
+      },
+      "placeholders": [
+        "ip"
+      ],
+      "keywords": [
+        "ssh",
+        "brute",
+        "fail2ban",
+        "ban"
+      ],
+      "explanation": "Si fail2ban esta instalado (capability fail2ban) y la jail 'sshd' activa, banea la IP via fail2ban en lugar de tocar el firewall a mano. El ban respeta bantime/findtime, queda en su registro, se revierte limpio con unbanip y fail2ban aplica la regla en el backend configurado. Preferir esta entrada frente al bloqueo manual cuando la capacidad fail2ban este presente.",
+      "notas_correccion": "Jail asumida 'sshd' (estandar). requires:['fail2ban'] coincide con la clave canonica del caps_probe (alias de fail2ban-client). El policy_engine clasifica 'fail2ban-client' como LOW (verbo desconocido)."
+    },
+    {
+      "id": "ssh_inspect_attempts",
+      "family": "ssh_bruteforce",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "default": "sudo journalctl -u ssh -u sshd --since '1 hour ago' --no-pager | grep -Ei 'Failed password|Invalid user|authentication failure' || sudo grep -Ei 'Failed password|Invalid user|authentication failure' /var/log/auth.log /var/log/secure 2>/dev/null"
+      },
+      "placeholders": [],
+      "keywords": [
+        "ssh",
+        "brute",
+        "log",
+        "intentos",
+        "auth",
+        "diagnostic"
+      ],
+      "explanation": "Diagnostico de solo lectura: muestra los intentos de autenticacion SSH fallidos de la ultima hora. Intenta journald (systemd) y, si esta vacio, cae a los ficheros clasicos auth.log o secure. Sirve para confirmar el ataque, contar intentos e identificar IPs y usuarios probados antes de bloquear.",
+      "notas_correccion": "Unidad varia (ssh/sshd); se consultan ambas. Ruta del log clasico varia por distro; idealmente parametrizar desde log_sources. El policy_engine clasifica el pipeline journalctl|grep como SAFE_READ (auto-ejecutable)."
+    },
+    {
+      "id": "ssh_inspect_active_conns",
+      "family": "ssh_bruteforce",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "default": "sudo ss -tnp state established '( dport = :{ssh_port} or sport = :{ssh_port} )'"
+      },
+      "placeholders": [
+        "ssh_port"
+      ],
+      "keywords": [
+        "ssh",
+        "conexiones",
+        "ss",
+        "established",
+        "diagnostic"
+      ],
+      "explanation": "Diagnostico de solo lectura: lista las conexiones TCP establecidas contra el puerto SSH ({ssh_port}) con el proceso asociado. Permite ver desde que IPs hay sesiones activas y detectar conexiones sospechosas persistentes tras una fuerza bruta. El puerto se deriva del perfil o cae a 22.",
+      "notas_correccion": "ss en iproute2 (capability 'ss'). {ssh_port} del perfil con default 22. SAFE_READ."
+    },
+    {
+      "id": "ftp_block_ip",
+      "family": "ftp_bruteforce",
+      "intent": "mitigation",
+      "severity": "alta",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "iptables": "sudo iptables -A INPUT -p tcp -s {ip} --dport {ftp_port} -j DROP",
+        "ufw": "sudo ufw deny from {ip} to any port {ftp_port} proto tcp",
+        "nftables": "sudo nft add rule inet filter input ip saddr {ip} tcp dport {ftp_port} drop",
+        "firewalld": "sudo firewall-cmd --add-rich-rule=\"rule family='ipv4' source address='{ip}' port port='{ftp_port}' protocol='tcp' drop\""
+      },
+      "revert_templates": {
+        "iptables": "sudo iptables -D INPUT -p tcp -s {ip} --dport {ftp_port} -j DROP",
+        "ufw": "sudo ufw delete deny from {ip} to any port {ftp_port} proto tcp",
+        "nftables": "sudo nft -a list chain inet filter input  # localizar el handle y luego: sudo nft delete rule inet filter input handle <N>",
+        "firewalld": "sudo firewall-cmd --remove-rich-rule=\"rule family='ipv4' source address='{ip}' port port='{ftp_port}' protocol='tcp' drop\""
+      },
+      "placeholders": [
+        "ip",
+        "ftp_port"
+      ],
+      "keywords": [
+        "ftp",
+        "brute",
+        "bruteforce",
+        "vsftpd",
+        "proftpd"
+      ],
+      "explanation": "Bloquea el trafico TCP entrante hacia el puerto de control FTP ({ftp_port}, por defecto 21) desde la IP atacante para detener una fuerza bruta sobre FTP. Mitigacion inmediata y reversible. FTP pasivo usa puertos de datos adicionales; bloquear el canal de control ya impide el login. El puerto se deriva del perfil o cae a 21.",
+      "notas_correccion": "{ftp_port} formaliza el puerto antes fijo a 21. Para bloqueo completo en pasivo habria que cubrir el rango de datos (config del daemon). nftables asume 'inet filter'/'input'."
+    },
+    {
+      "id": "ftp_block_ip_fail2ban",
+      "family": "ftp_bruteforce",
+      "intent": "mitigation",
+      "severity": "media",
+      "requires": [
+        "fail2ban"
+      ],
+      "applies_if": {},
+      "command_templates": {
+        "default": "sudo fail2ban-client status | grep -qi 'vsftpd' && sudo fail2ban-client set vsftpd banip {ip} || echo 'No hay jail vsftpd activa; usar el bloqueo por firewall (ftp_block_ip)'"
+      },
+      "revert_templates": {
+        "default": "sudo fail2ban-client set vsftpd unbanip {ip}"
+      },
+      "placeholders": [
+        "ip"
+      ],
+      "keywords": [
+        "ftp",
+        "brute",
+        "fail2ban",
+        "ban",
+        "vsftpd"
+      ],
+      "explanation": "Si fail2ban esta disponible y existe una jail de FTP (vsftpd por defecto), banea la IP via fail2ban. El ban se integra con la jail (bantime/findtime, unban limpio). Antes de banear comprueba que la jail existe y, si no, indica caer al bloqueo por firewall (ftp_block_ip).",
+      "notas_correccion": "Jail asumida 'vsftpd'; segun el daemon puede ser 'proftpd'/'pure-ftpd'. Se anade un guard que comprueba la jail antes de actuar para no fallar si no existe."
+    },
+    {
+      "id": "ftp_inspect_attempts",
+      "family": "ftp_bruteforce",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "default": "sudo journalctl -u vsftpd -u proftpd -u pure-ftpd --since '1 hour ago' --no-pager | grep -Ei 'FAIL LOGIN|authentication failure|login failed|530' || sudo grep -Ei 'FAIL LOGIN|authentication failure|login failed|530' /var/log/vsftpd.log /var/log/proftpd/proftpd.log /var/log/auth.log /var/log/secure 2>/dev/null"
+      },
+      "placeholders": [],
+      "keywords": [
+        "ftp",
+        "brute",
+        "log",
+        "intentos",
+        "diagnostic"
+      ],
+      "explanation": "Diagnostico de solo lectura: muestra los intentos de login FTP fallidos de la ultima hora via journald y, si no hay coincidencias, cae a los logs en disco mas auth.log/secure (PAM). Permite confirmar el ataque e identificar IPs y usuarios.",
+      "notas_correccion": "Daemon FTP y su log no derivables de forma fiable sin perfil; barrido amplio best-effort. SAFE_READ."
+    },
+    {
+      "id": "ftp_inspect_active_conns",
+      "family": "ftp_bruteforce",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "default": "sudo ss -tnp state established '( dport = :{ftp_port} or sport = :{ftp_port} )'"
+      },
+      "placeholders": [
+        "ftp_port"
+      ],
+      "keywords": [
+        "ftp",
+        "conexiones",
+        "ss",
+        "established",
+        "diagnostic"
+      ],
+      "explanation": "Diagnostico de solo lectura: lista las conexiones TCP establecidas contra el puerto de control FTP ({ftp_port}, por defecto 21) con el proceso asociado.",
+      "notas_correccion": "Solo muestra el canal de control. {ftp_port} del perfil con default 21. ss de iproute2."
+    },
+    {
+      "id": "sqli_grep_access_log",
+      "family": "sqli",
+      "intent": "diagnostic",
+      "severity": "media",
+      "requires": [],
+      "applies_if": {
+        "web_server.engine": "*"
+      },
+      "command_templates": {
+        "default": "sudo grep -F '{ip}' {web_log} | grep -iE 'union(\\+| )select|information_schema|sleep\\(|benchmark\\(|--|%27| or 1=1|concat\\(|load_file|into +outfile|0x[0-9a-f]{2,}' | tail -n 200"
+      },
+      "placeholders": [
+        "ip",
+        "web_log"
+      ],
+      "keywords": [
+        "sqli",
+        "sql",
+        "injection",
+        "inyeccion",
+        "log",
+        "diagnostic"
+      ],
+      "explanation": "Diagnostico de SOLO LECTURA: extrae del access_log las peticiones de la IP sospechosa con patrones de inyeccion SQL (UNION SELECT, information_schema, sleep()/benchmark(), --, %27, OR 1=1, load_file, INTO OUTFILE, hex). Confirma el ataque y dimensiona el alcance. {web_log} se deriva de log_sources del perfil; si no se resuelve, la entrada se OMITE.",
+      "notas_correccion": "{web_log} se resuelve desde log_sources (path de la fuente web_access), se valida por allowlist (debe empezar por /var/log/ o /var/www/) y se OMITE si None: nunca se ejecuta un grep como root con ruta a medias."
+    },
+    {
+      "id": "sqli_grep_500_errors",
+      "family": "sqli",
+      "intent": "diagnostic",
+      "severity": "media",
+      "requires": [],
+      "applies_if": {
+        "web_server.engine": "*"
+      },
+      "command_templates": {
+        "default": "sudo awk -v ip='{ip}' '$0 ~ ip && ($9==500 || $9==403)' {web_log} | tail -n 100"
+      },
+      "placeholders": [
+        "ip",
+        "web_log"
+      ],
+      "keywords": [
+        "sqli",
+        "sql",
+        "500",
+        "error",
+        "diagnostic"
+      ],
+      "explanation": "Diagnostico de SOLO LECTURA: aisla del access_log las peticiones de la IP atacante con respuesta 500 (payloads SQLi que rompen la consulta) o 403 (bloqueadas por WAF). Una racha de 500 es senal fuerte de SQLi en curso. Asume formato combinado (estado en campo 9). {web_log} del perfil.",
+      "notas_correccion": "{web_log} validado por allowlist y omitido si None. {ip} validada como IP antes de inyectarla en la variable awk, evitando inyeccion de codigo awk via la IP."
+    },
+    {
+      "id": "xss_grep_access_log",
+      "family": "xss",
+      "intent": "diagnostic",
+      "severity": "media",
+      "requires": [],
+      "applies_if": {
+        "web_server.engine": "*"
+      },
+      "command_templates": {
+        "default": "sudo grep -F '{ip}' {web_log} | grep -iE '%3cscript|<script|onerror=|onload=|javascript:|%3csvg|<svg|document\\.cookie|String\\.fromCharCode|alert%28|alert\\(' | tail -n 200"
+      },
+      "placeholders": [
+        "ip",
+        "web_log"
+      ],
+      "keywords": [
+        "xss",
+        "script",
+        "cross-site",
+        "log",
+        "diagnostic"
+      ],
+      "explanation": "Diagnostico de SOLO LECTURA: busca en el access_log las peticiones de la IP con marcadores de XSS en claro y URL-encoded (<script>/%3Cscript, onerror=/onload=, javascript:, <svg>, document.cookie, String.fromCharCode, alert()). En XSS ALMACENADO el payload pudo llegar por POST y no aparece aqui; verificar en la web/BD. {web_log} del perfil.",
+      "notas_correccion": "{web_log} validado por allowlist y omitido si None. Solo cubre GET."
+    },
+    {
+      "id": "xss_grep_docroot_payloads",
+      "family": "xss",
+      "intent": "diagnostic",
+      "severity": "media",
+      "requires": [],
+      "applies_if": {
+        "web_server.docroots": "*"
+      },
+      "command_templates": {
+        "default": "sudo grep -rilE '<script[^>]*>|onerror=|javascript:|document\\.cookie' {web_docroot} 2>/dev/null | head -n 50"
+      },
+      "placeholders": [
+        "web_docroot"
+      ],
+      "keywords": [
+        "xss",
+        "docroot",
+        "webshell",
+        "ficheros",
+        "diagnostic"
+      ],
+      "explanation": "Diagnostico de SOLO LECTURA: rastrea el docroot ({web_docroot}) buscando ficheros con marcadores de script inyectados, para detectar XSS almacenado en disco o webshells/defacement. Lista solo nombres (-l). Falsos positivos en .js/.html legitimos: pista para revision manual. {web_docroot} de web_server.docroots.",
+      "notas_correccion": "{web_docroot} validado por allowlist (debe empezar por /var/www, /srv, /home o /usr/share) y omitido si None: jamas se ejecuta un grep -r como root con '{web_docroot}' crudo. applies_if exige docroots presentes."
+    },
+    {
+      "id": "fail2ban_jail_web",
+      "family": "web_bruteforce",
+      "intent": "mitigation",
+      "severity": "media",
+      "requires": [
+        "fail2ban"
+      ],
+      "applies_if": {},
+      "command_templates": {
+        "default": "sudo fail2ban-client status"
+      },
+      "placeholders": [],
+      "keywords": [
+        "web",
+        "bruteforce",
+        "fail2ban",
+        "jail",
+        "login"
+      ],
+      "explanation": "Si el host tiene fail2ban, lista los jails disponibles para identificar el jail web correcto (apache-auth, nginx-http-auth o uno del CMS) y banear despues con 'sudo fail2ban-client set <jail> banip <IP>'. El nombre del jail web NO es derivable del perfil generico, por eso esta entrada solo hace el 'status' de solo lectura.",
+      "notas_correccion": "Antes el comando incluia '<JAIL_WEB>' como marcador crudo a sustituir; eso violaba 'resolver-o-omitir'. Reducida a un 'status' que NO ejecuta el ban con un jail inventado; el ban concreto requiere conocer el jail (override o decision del operador)."
+    },
+    {
+      "id": "diag_web_active_conns",
+      "family": "web_bruteforce",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "default": "sudo ss -ntp 'dst = {ip} or src = {ip}'"
+      },
+      "placeholders": [
+        "ip"
+      ],
+      "keywords": [
+        "web",
+        "bruteforce",
+        "conexiones",
+        "ss",
+        "diagnostic"
+      ],
+      "explanation": "Diagnostico de solo lectura: muestra las conexiones TCP activas relacionadas con la IP atacante (estado, puerto y proceso con -p). Permite confirmar si el atacante sigue conectado y a que servicio.",
+      "notas_correccion": "ss casi universal (capability 'ss'); el filtro de direccion requiere comillas. {ip} validada como IP."
+    },
+    {
+      "id": "restart_web_nginx",
+      "family": "web_bruteforce",
+      "intent": "recovery",
+      "severity": "media",
+      "requires": [
+        "systemctl"
+      ],
+      "applies_if": {
+        "web_server.engine": "nginx"
+      },
+      "command_templates": {
+        "default": "sudo systemctl reload nginx || sudo systemctl restart nginx"
+      },
+      "placeholders": [],
+      "keywords": [
+        "web",
+        "nginx",
+        "reload",
+        "restart",
+        "recovery"
+      ],
+      "explanation": "Recarga (o reinicia si la recarga falla) nginx para que relea config, cierre conexiones colgadas y aplique cambios tras un incidente web. 'reload' es preferible por no cortar el servicio. La unidad systemd de nginx se llama 'nginx' en Debian y RHEL.",
+      "notas_correccion": "requires:['systemctl'] anadido (clave canonica del caps_probe). 'reload' no expulsa al atacante por si solo: combinar con bloqueo de IP."
+    },
+    {
+      "id": "restart_web_apache",
+      "family": "web_bruteforce",
+      "intent": "recovery",
+      "severity": "media",
+      "requires": [
+        "systemctl"
+      ],
+      "applies_if": {
+        "web_server.engine": "apache"
+      },
+      "command_templates": {
+        "default": "sudo systemctl reload apache2 2>/dev/null || sudo systemctl reload httpd 2>/dev/null || sudo systemctl restart apache2 2>/dev/null || sudo systemctl restart httpd"
+      },
+      "placeholders": [],
+      "keywords": [
+        "web",
+        "apache",
+        "httpd",
+        "reload",
+        "restart",
+        "recovery"
+      ],
+      "explanation": "Recarga (o reinicia como respaldo) Apache tras un incidente. Cubre el nombre de unidad en ambas familias: 'apache2' en Debian/Ubuntu y 'httpd' en RHEL/CentOS. Se prioriza reload sobre restart.",
+      "notas_correccion": "requires:['systemctl']. El nombre de unidad depende de la distro; el comando prueba ambos. Idealmente el motor fijaria la unidad por host.os_id."
+    },
+    {
+      "id": "diag_active_sessions_conns",
+      "family": "session_hijacking",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "default": "sudo ss -ntp 'src = {ip} or dst = {ip}'"
+      },
+      "placeholders": [
+        "ip"
+      ],
+      "keywords": [
+        "session",
+        "hijack",
+        "sesion",
+        "conexiones",
+        "ss",
+        "diagnostic"
+      ],
+      "explanation": "Diagnostico de solo lectura ante sospecha de robo de sesion: lista las conexiones TCP vivas con la IP sospechosa y el proceso que las atiende (-p). Paso previo a decidir el bloqueo y, si procede, la invalidacion de la sesion (logica de la app, override del device).",
+      "notas_correccion": "ss de lectura pura. NO identifica la sesion de aplicacion (cookie/token); invalidarla requiere logica de la app (override). {ip} validada."
+    },
+    {
+      "id": "restart_web_after_hijacking",
+      "family": "session_hijacking",
+      "intent": "recovery",
+      "severity": "media",
+      "requires": [
+        "systemctl"
+      ],
+      "applies_if": {
+        "web_server.engine": "nginx"
+      },
+      "command_templates": {
+        "default": "sudo systemctl reload nginx || sudo systemctl restart nginx"
+      },
+      "placeholders": [],
+      "keywords": [
+        "session",
+        "hijack",
+        "nginx",
+        "reload",
+        "recovery"
+      ],
+      "explanation": "Recarga/reinicio de nginx como apoyo ante secuestro de sesion. Por si solo NO cierra sesiones de aplicacion: la invalidacion real del token depende de la app (override del device).",
+      "notas_correccion": "requires:['systemctl']. Solo nginx; para Apache usar restart_web_apache. Reiniciar la web NO destruye sesiones en BD/redis/PHP files."
+    },
+    {
+      "id": "defacement_stop_web_server",
+      "family": "defacement",
+      "intent": "mitigation",
+      "severity": "alta",
+      "requires": [
+        "systemctl"
+      ],
+      "applies_if": {
+        "web_server.engine": "*"
+      },
+      "command_templates": {
+        "default": "sudo systemctl stop {web_unit}"
+      },
+      "revert_templates": {
+        "default": "sudo systemctl start {web_unit}"
+      },
+      "placeholders": [
+        "web_unit"
+      ],
+      "keywords": [
+        "deface",
+        "defacement",
+        "stop",
+        "parar",
+        "web"
+      ],
+      "explanation": "Detiene el servidor web para sacar de servicio inmediatamente las paginas alteradas y cortar la difusion del defacement mientras se investiga. Accion de contencion reversible. El nombre de la unidad systemd ({web_unit}) lo resuelve el motor mapeando web_server.engine + host.os_id (nginx -> 'nginx'; apache -> 'apache2' en Debian, 'httpd' en RHEL).",
+      "notas_correccion": "requires:['systemctl'] anadido. El placeholder se renombra a {web_unit} (unidad systemd real) resuelto por mapeo engine+os_id, NO web_server.engine crudo. Si el motor web corre en contenedor (capabilities.docker sin unidad systemd), la entrada se filtra/deriva a override."
+    },
+    {
+      "id": "defacement_forensic_recent_changes",
+      "family": "defacement",
+      "intent": "diagnostic",
+      "severity": "media",
+      "requires": [],
+      "applies_if": {
+        "web_server.docroots": "*"
+      },
+      "command_templates": {
+        "default": "sudo find {web_docroot} -type f -mtime -2 -printf '%TY-%Tm-%Td %TH:%TM  %s bytes  %p\\n' | sort"
+      },
+      "placeholders": [
+        "web_docroot"
+      ],
+      "keywords": [
+        "deface",
+        "forense",
+        "find",
+        "modificados",
+        "diagnostic"
+      ],
+      "explanation": "Lista de SOLO LECTURA de los ficheros del docroot modificados en las ultimas 48 horas (fecha, tamano, ruta). Identifica que paginas/assets fueron alterados y detecta webshells recien escritas. {web_docroot} de web_server.docroots.",
+      "notas_correccion": "{web_docroot} validado por allowlist y omitido si None. -printf es de GNU find (Linux); en BusyBox sustituir por -newermt. 'find' sin -delete/-exec es SAFE_READ."
+    },
+    {
+      "id": "defacement_forensic_grep_webshell",
+      "family": "defacement",
+      "intent": "diagnostic",
+      "severity": "media",
+      "requires": [
+        "php"
+      ],
+      "applies_if": {
+        "web_server.docroots": "*"
+      },
+      "command_templates": {
+        "default": "sudo grep -rnE '(eval|base64_decode|system|shell_exec|passthru|assert)\\s*\\(' {web_docroot} --include='*.php' || echo 'Sin coincidencias de patrones de webshell PHP'"
+      },
+      "placeholders": [
+        "web_docroot"
+      ],
+      "keywords": [
+        "deface",
+        "webshell",
+        "php",
+        "forense",
+        "diagnostic"
+      ],
+      "explanation": "Busqueda de SOLO LECTURA de patrones de webshell PHP (eval, base64_decode, system, shell_exec, passthru, assert) en los .php del docroot. Requiere PHP (capability php). No es concluyente pero prioriza ficheros a revisar.",
+      "notas_correccion": "requires:['php']; para stacks no-PHP se filtra. {web_docroot} validado/omitido si None. El '|| echo' evita codigo de salida 1."
+    },
+    {
+      "id": "defacement_forensic_access_log",
+      "family": "defacement",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {
+        "web_server.engine": "*"
+      },
+      "command_templates": {
+        "default": "sudo grep -E ' (PUT|DELETE|PATCH) |(POST .*\\.(php|jsp|asp))' {web_log} | tail -n 200"
+      },
+      "placeholders": [
+        "web_log"
+      ],
+      "keywords": [
+        "deface",
+        "forense",
+        "log",
+        "put",
+        "post",
+        "diagnostic"
+      ],
+      "explanation": "Inspeccion de SOLO LECTURA del access_log filtrando metodos de escritura (PUT/DELETE/PATCH) y POST a endpoints ejecutables (.php/.jsp/.asp), vectores de subida/modificacion de contenido en un defacement. {web_log} de log_sources.",
+      "notas_correccion": "{web_log} se resuelve desde log_sources (extension formalizada al PLACEHOLDER_MAP) y se valida/omite si None."
+    },
+    {
+      "id": "defacement_recovery_requires_override",
+      "family": "defacement",
+      "intent": "recovery",
+      "severity": "critica",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "default": "echo 'RECUPERACION NO DISPONIBLE EN EL MANUAL GENERICO: la restauracion de ficheros web tras defacement depende de la herramienta de backup del sitio (restic/borg/rsync) y sus rutas, que no forman parte del perfil descubierto. Define un override del device (recommendations/<device>.json) con el comando de restauracion concreto. Pasos seguros previos: detener el servidor web y ejecutar los diagnosticos forenses de esta familia.'"
+      },
+      "placeholders": [],
+      "keywords": [
+        "deface",
+        "recovery",
+        "restaurar",
+        "backup"
+      ],
+      "explanation": "Marcador explicito: la recuperacion real (restaurar el docroot desde backup y reaplicar ownership) NO puede generarse desde el perfil porque la herramienta de backup, sus credenciales y las rutas de snapshot son conocimiento del sitio. NUNCA ejecuta una restauracion; informa de que debe existir un override del device.",
+      "notas_correccion": "Entrada de gobernanza: 'echo' inocuo (SAFE_READ). Si existe override del device para defacement.recovery, el motor lo prefiere y omite esta. Sin restic/borg/rutas para no filtrar el honeypot."
+    },
+    {
+      "id": "db_compromise_stop_web_server",
+      "family": "db_compromise",
+      "intent": "mitigation",
+      "severity": "alta",
+      "requires": [
+        "systemctl"
+      ],
+      "applies_if": {
+        "web_server.engine": "*"
+      },
+      "command_templates": {
+        "default": "sudo systemctl stop {web_unit}"
+      },
+      "revert_templates": {
+        "default": "sudo systemctl start {web_unit}"
+      },
+      "placeholders": [
+        "web_unit"
+      ],
+      "keywords": [
+        "db",
+        "database",
+        "bbdd",
+        "compromise",
+        "stop",
+        "web"
+      ],
+      "explanation": "Ante un compromiso de BD via la aplicacion web, detiene el servidor web para cortar el vector. Se para la WEB, NO el motor de BD, para no dificultar el forense. Accion reversible. {web_unit} se deriva del mapeo engine+os_id.",
+      "notas_correccion": "requires:['systemctl']. {web_unit} (unidad systemd real) resuelta por mapeo, no web_server.engine crudo."
+    },
+    {
+      "id": "db_compromise_forensic_mysql",
+      "family": "db_compromise",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [
+        "mysql"
+      ],
+      "applies_if": {
+        "db_engine.engine": "mysql"
+      },
+      "command_templates": {
+        "default": "sudo mysql -e \"SHOW VARIABLES LIKE 'general_log%'; SHOW VARIABLES LIKE 'log_error'; SELECT user, host FROM mysql.user;\""
+      },
+      "placeholders": [],
+      "keywords": [
+        "db",
+        "mysql",
+        "mariadb",
+        "forense",
+        "usuarios",
+        "diagnostic"
+      ],
+      "explanation": "Diagnostico de SOLO LECTURA sobre MySQL/MariaDB: comprueba si el general query log esta activo, ubica el log de errores y lista las cuentas (mysql.user). Detecta cuentas creadas por el atacante tras un SQLi. Usa autenticacion de root del sistema (socket auth), sin exponer credenciales.",
+      "notas_correccion": "requires:['mysql'] — CLAVE CANONICA del caps_probe; el doc de diseno mostraba 'mysql_client' pero el probe real emite 'mysql'. 'sudo mysql' funciona sin password con auth_socket; si hay password, el acceso autenticado (--defaults-extra-file) va en override, NUNCA en generico."
+    },
+    {
+      "id": "db_compromise_forensic_postgres",
+      "family": "db_compromise",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [
+        "psql"
+      ],
+      "applies_if": {
+        "db_engine.engine": "postgres"
+      },
+      "command_templates": {
+        "default": "sudo -u postgres psql -c '\\du' -c 'SHOW log_destination;' -c 'SHOW logging_collector;'"
+      },
+      "placeholders": [],
+      "keywords": [
+        "db",
+        "postgres",
+        "postgresql",
+        "roles",
+        "forense",
+        "diagnostic"
+      ],
+      "explanation": "Diagnostico de SOLO LECTURA para PostgreSQL: lista roles/usuarios (\\du) y la config de logging. Detecta roles creados/elevados tras un SQLi. Usa peer auth via 'sudo -u postgres', sin credenciales en claro.",
+      "notas_correccion": "requires:['psql'] (clave canonica del caps_probe). applies_if usa 'db_engine.engine'=='postgres' (valor emitido por el stack_probe: _DB_PROCS mapea postgres/postmaster a 'postgres')."
+    },
+    {
+      "id": "db_compromise_forensic_recent_writes",
+      "family": "db_compromise",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {
+        "web_server.engine": "*"
+      },
+      "command_templates": {
+        "default": "sudo grep -aiE 'union[[:space:]]+select|information_schema|drop[[:space:]]+table|update[[:space:]].*set|into[[:space:]]+outfile|load_file' {web_log} | tail -n 200"
+      },
+      "placeholders": [
+        "web_log"
+      ],
+      "keywords": [
+        "db",
+        "sqli",
+        "forense",
+        "log",
+        "diagnostic"
+      ],
+      "explanation": "Inspeccion de SOLO LECTURA del access_log buscando patrones de inyeccion SQL. Confirma el vector del compromiso de BD y correlaciona con la IP del evento. {web_log} de log_sources.",
+      "notas_correccion": "{web_log} validado/omitido si None. Solo detecta SQLi por GET; POST no esta en el access_log."
+    },
+    {
+      "id": "db_compromise_recovery_requires_override",
+      "family": "db_compromise",
+      "intent": "recovery",
+      "severity": "critica",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "default": "echo 'RECUPERACION NO DISPONIBLE EN EL MANUAL GENERICO: restaurar o reimportar la base de datos tras un compromiso depende de la herramienta de backup del sitio (restic/borg/mysqldump/pg_dump), rutas y credenciales que no forman parte del perfil descubierto. Define un override del device (recommendations/<device>.json) con el comando de restauracion concreto. Pasos seguros previos: detener el servidor web y ejecutar los diagnosticos forenses de BD.'"
+      },
+      "placeholders": [],
+      "keywords": [
+        "db",
+        "recovery",
+        "restaurar",
+        "backup",
+        "dump",
+        "credenciales",
+        "password"
+      ],
+      "explanation": "Marcador explicito: la recuperacion real de la BD NO puede generarse desde el perfil. NUNCA restaura nada; informa de que la restauracion definitiva debe estar en un override del device. Severidad critica para forzar HITL.",
+      "notas_correccion": "Entrada de gobernanza: 'echo' inocuo (SAFE_READ). Si existe override del device, el motor lo prefiere y omite esta. Sin restic/rutas/defaults-extra-file para no filtrar el honeypot."
+    },
+    {
+      "id": "diag_listening_ports",
+      "family": "port_scan",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "default": "sudo ss -tulpnH"
+      },
+      "placeholders": [],
+      "keywords": [
+        "scan",
+        "puertos",
+        "listening",
+        "ss",
+        "recon",
+        "diagnostic"
+      ],
+      "explanation": "Lista todos los sockets TCP/UDP en escucha con el proceso (PID/programa). Primer diagnostico ante un port_scan. Contrastar con surface.exposed_ports del perfil para detectar servicios no esperados.",
+      "notas_correccion": "ss de iproute2 (capability 'ss'); no depende del firewall. Si la distro no soporta -H, usar 'sudo ss -tulpn'. SAFE_READ."
+    },
+    {
+      "id": "diag_scanner_connection_origin",
+      "family": "port_scan",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "default": "sudo ss -tnp state all 'src {ip}' state all 'dst {ip}'"
+      },
+      "placeholders": [
+        "ip"
+      ],
+      "keywords": [
+        "scan",
+        "origen",
+        "conexiones",
+        "ss",
+        "diagnostic"
+      ],
+      "explanation": "Muestra todas las conexiones TCP activas o a medio establecer con la IP sospechosa, para ver si el escaner ha conseguido sesiones reales o solo tantea puertos. Ayuda a decidir entre rate-limit y DROP completo.",
+      "notas_correccion": "ss acepta filtros de direccion. {ip} validada. No depende del firewall."
+    },
+    {
+      "id": "diag_inspect_firewall_ruleset",
+      "family": "recon",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "iptables": "sudo iptables -L INPUT -n -v --line-numbers",
+        "ufw": "sudo ufw status verbose",
+        "nftables": "sudo nft list ruleset",
+        "firewalld": "sudo firewall-cmd --list-all"
+      },
+      "placeholders": [],
+      "keywords": [
+        "recon",
+        "firewall",
+        "reglas",
+        "ruleset",
+        "diagnostic"
+      ],
+      "explanation": "Vuelca el estado actual del cortafuegos del gestor activo para verificar que reglas hay en vigor antes de aplicar o revertir una mitigacion. Util tambien para descubrir la tabla/cadena real de nftables. El motor elige la plantilla del firewall activo.",
+      "notas_correccion": "Comandos de listado puro (SAFE_READ: iptables -L, ufw status, nft list, firewall-cmd --list-all). 'nft list ruleset' resuelve la incertidumbre de tabla/cadena de las entradas de bloqueo."
+    },
+    {
+      "id": "diag_recent_connection_attempts",
+      "family": "recon",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "default": "sudo ss -tan state syn-recv"
+      },
+      "placeholders": [],
+      "keywords": [
+        "recon",
+        "syn",
+        "half-open",
+        "ss",
+        "diagnostic"
+      ],
+      "explanation": "Lista las conexiones TCP en estado SYN-RECV (half-open), patron tipico de un SYN scan o reconocimiento. Si aparecen multiples destinos desde una misma IP, confirma barrido.",
+      "notas_correccion": "Estado 'syn-recv' valido en ss. No depende del firewall. Un volumen alto tambien puede indicar SYN flood."
+    },
+    {
+      "id": "diag_exposed_surface_review",
+      "family": "recon",
+      "intent": "diagnostic",
+      "severity": "baja",
+      "requires": [],
+      "applies_if": {},
+      "command_templates": {
+        "default": "sudo ss -tulpnH | awk '{print $5}' | sed 's/.*://' | sort -un"
+      },
+      "placeholders": [],
+      "keywords": [
+        "recon",
+        "superficie",
+        "puertos",
+        "ss",
+        "diagnostic"
+      ],
+      "explanation": "Extrae la lista deduplicada de puertos locales en escucha, para contrastar la superficie viva contra surface.exposed_ports del perfil y detectar discrepancias.",
+      "notas_correccion": "Pipeline de solo lectura sobre ss; awk/sed/sort en cualquier base. El recorte ':puerto' funciona para IPv4 y IPv6. El policy_engine clasifica ss|awk|sed|sort como SAFE_READ."
+    }
+  ]
+}
