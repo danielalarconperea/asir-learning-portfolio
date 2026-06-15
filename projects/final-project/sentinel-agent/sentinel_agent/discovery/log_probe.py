@@ -4,7 +4,7 @@ Probe de fuentes de log: dónde está cada log y con qué formato/parser.
 Para servicios systemd se prefiere journald (estructurado). Para servidores
 web/FTP se derivan rutas de fichero (de la config del servicio cuando se puede,
 con defaults por familia si no). Cada fuente lleva el `parser` a usar y los
-`detectors` aplicables — NO se infiere por ruta fija como el monolito.
+`detectors` aplicables; las rutas no van cableadas en el código.
 """
 
 from __future__ import annotations

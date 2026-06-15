@@ -289,7 +289,7 @@ python scripts/generate_signing_keys.py
 Produce dos archivos:
 
 - `PI-5/certificados/sentinel_pi5_signing.key` — clave privada PEM, gitignored por `*.key`. **Nunca subir a git.**
-- `PI-4/firma-iot/sentinel_pi5_signing.pub` — clave pública PEM, commiteable en el repo de PI-4.
+- `PI-5/sentinel_pi5_signing.pub` — clave pública PEM (la privada vive en `PI-5/certificados/`, gitignored).
 
 Para rotar:
 

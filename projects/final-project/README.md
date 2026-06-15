@@ -44,9 +44,9 @@
 
 El ecosistema opera mediante una topología de red distribuida compuesta por dos nodos principales:
 
-### 1. Sensor Edge (Raspberry Pi 4)
+### 1. Nodo protegido — honeypot de demostración (Raspberry Pi 4)
 
-Actuando como servidor de producción expuesto a internet, este nodo representa el objetivo principal y la primera línea de defensa.
+Un servidor de producción de ejemplo, expuesto a internet, que sirve como **objetivo de demostración** para validar el SOC de extremo a extremo. El sistema es genérico —el sensor se autoconfigura en cualquier servidor—; este honeypot es solo el escenario donde se ven los ataques y las respuestas.
 
 * **Servicios Expuestos:** Apache/Nginx, FTP (vsftpd), SSH, MariaDB, DNS (dnsmasq).
 * **Honeypots (CyberGuard):** Sistemas señuelo desplegados para capturar vectores de ataque (XSS, SQLi) y recopilar inteligencia de amenazas.

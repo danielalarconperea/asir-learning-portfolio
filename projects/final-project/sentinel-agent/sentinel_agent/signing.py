@@ -1,9 +1,8 @@
 """
 Verificación de comandos firmados por PI-5 (Ed25519) — lado sensor.
 
-Portado byte a byte (en la canonicalización) del verificador de PI-4
-(PI-4/firma-iot/signing.py). El sensor conoce ÚNICAMENTE la
-clave pública del coordinador: comprometerlo no permite forjar comandos.
+El sensor conoce ÚNICAMENTE la clave pública del coordinador: comprometerlo
+no permite forjar comandos.
 
 `_canonical_bytes` DEBE ser idéntico al de PI-5/src/tools/signing.py:
     json.dumps(sort_keys=True, separators=(",", ":"))  excluyendo "sig".

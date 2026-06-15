@@ -1,9 +1,9 @@
 """
 Transporte MQTT hacia AWS IoT Core (mTLS) para el sensor genérico.
 
-Reescritura limpia del patrón del monolito (cola de publicación + hilo
-publicador dedicado, porque publicar desde el callback del SDK provoca
-publishTimeoutException). Los 4 topics se derivan de un único device_id.
+Cola de publicación + hilo publicador dedicado (publicar desde el callback
+del SDK provoca publishTimeoutException). Los 4 topics se derivan de un
+único device_id.
 
 El import del SDK de AWS está protegido para poder importar este módulo en
 entornos sin la librería (p. ej. la máquina de desarrollo en Windows); el SDK

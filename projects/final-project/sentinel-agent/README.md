@@ -1,13 +1,12 @@
 # sentinel-agent — sensor genérico de Sentinel-IT
 
-Sensor auto-configurable que reemplaza al monolito `PI-4/agente_monitor3.py`
-(atado al honeypot). Se despliega en cualquier servidor Linux, **se autodescubre**
+Sensor auto-configurable de Sentinel-IT. Se despliega en cualquier servidor Linux, **se autodescubre**
 (servicios, puertos, logs y formatos, servidor web, BD, firewall, capacidades),
 publica un **System Profile** a PI-5 y ejecuta comandos de mitigación firmados
 (Ed25519) con una **barrera local** que rechaza verbos destructivos.
 
 Diseño completo: [`docs/diseno_agente_discovery.md`](../docs/diseno_agente_discovery.md).
-Esta es la **Fase 1** (snapshot al arranque + contexto al LLM).
+Alta paso a paso: [`docs/Onboarding_Sensor.md`](../docs/Onboarding_Sensor.md).
 
 ## Estructura
 

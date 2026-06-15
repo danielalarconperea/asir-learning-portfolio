@@ -3,8 +3,8 @@ Parsers por tipo de servicio: convierten una línea de log en una "observación"
 normalizada (dict con al menos {kind, ip}) que consumen los detectores.
 
 Cada parser es una función pura `parse(line) -> dict | None`. Se seleccionan
-por el campo `parser` de cada log_source del System Profile, en vez de las
-regexes fijas a vsftpd/apache/sshd del monolito.
+por el campo `parser` de cada log_source del System Profile, en vez de
+regexes fijas cableadas a vsftpd/apache/sshd.
 """
 
 from __future__ import annotations

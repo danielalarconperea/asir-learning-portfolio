@@ -2,6 +2,8 @@
 
 Esta guía explica los pasos necesarios para instalar y poner en marcha el panel web de SentinelIT y preparar la base de datos.
 
+> ⚠️ **Honeypot deliberadamente vulnerable.** Esta web es el **objetivo de demostración** del proyecto (SQLi, XSS, *session hijacking*); ver [`README.md`](README.md). Despliégala solo en laboratorio/demo, nunca expuesta a internet con datos reales. Las credenciales por defecto son débiles a propósito.
+
 ## 1. Requisitos Previos
 * **Servidor Web:** Apache o Nginx
 * **PHP:** Versión 7.4 o superior (con extensión PDO_MySQL habilitada)
@@ -32,7 +34,7 @@ Esta guía explica los pasos necesarios para instalar y poner en marcha el panel
    - **Administrador:** admin@SentinelIT.com / admin123
    - **Clientes:** cliente1@SentinelIT.com o cliente2@SentinelIT.com / cliente123
 
-## 5. Configuración de los Agentes (Sensores Raspberry Pi)
-*(Opcional: solo si conectarás agentes reales al panel)*
-Para que una Raspberry Pi envíe datos a este panel, asegúrate de que el script en Python o Bash alojado en tu Raspberry inserte directamente los registros (tipo de evento, servicio, IP detectada) en la tabla `eventos` de esta misma base de datos o envíe peticiones POST a un archivo PHP de recepción que deberás habilitar.
+## 5. Relación con el SOC (monitorización)
+
+El panel de esta web es **independiente del SOC**: su tabla `eventos` es solo el registro interno de la propia aplicación. La monitorización de seguridad la realiza el sensor [`sentinel-agent`](../../sentinel-agent/README.md) instalado en la Raspberry Pi, que lee los logs del host (Apache, vsftpd, SSH), detecta los ataques y los publica **por MQTT/mTLS a AWS IoT Core → PI-5** (el coordinador SOC). No hay que insertar registros a mano ni habilitar endpoints de recepción en esta web.
 

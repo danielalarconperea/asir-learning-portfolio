@@ -1,6 +1,6 @@
 """
-Tests del modulo de firma PI-5/src/tools/signing.py y del verificador
-PI-4/firma-iot/signing.py.
+Tests del modulo de firma PI-5/src/tools/signing.py contra el verificador
+del sensor generico (sentinel-agent/sentinel_agent/signing.py).
 
 Verifican el contrato end-to-end:
   * Round-trip sign/verify funciona.
@@ -22,7 +22,7 @@ from cryptography.hazmat.primitives.asymmetric.rsa import generate_private_key
 
 REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 PI5_TOOLS_DIR = os.path.join(REPO_ROOT, "PI-5", "src", "tools")
-PI4_FIRMA_DIR = os.path.join(REPO_ROOT, "PI-4", "firma-iot")
+SENSOR_AGENT_DIR = os.path.join(REPO_ROOT, "sentinel-agent", "sentinel_agent")
 
 
 def _load_module(name: str, path: str):
@@ -41,8 +41,8 @@ def pi5_signing():
 
 
 @pytest.fixture
-def pi4_signing():
-    mod = _load_module("pi4_signing", os.path.join(PI4_FIRMA_DIR, "signing.py"))
+def sensor_signing():
+    mod = _load_module("sensor_signing", os.path.join(SENSOR_AGENT_DIR, "signing.py"))
     # Cada test estrena su propia cache de nonces para aislamiento.
     mod._seen_nonces.clear()
     return mod
@@ -66,65 +66,65 @@ def keypair(tmp_path):
     return str(priv_path), str(pub_path)
 
 
-def test_sign_and_verify_roundtrip(pi5_signing, pi4_signing, keypair):
+def test_sign_and_verify_roundtrip(pi5_signing, sensor_signing, keypair):
     priv_path, pub_path = keypair
     pi5_signing.load_private_key(priv_path)
-    pi4_signing.load_public_key(pub_path)
+    sensor_signing.load_public_key(pub_path)
 
     payload = {"accion": "ejecutar_comando", "comando": "ls /tmp", "motivo": "test"}
     signed = pi5_signing.sign_payload(payload)
 
     assert {"iat", "exp", "nonce", "sig"}.issubset(signed.keys())
-    ok, motivo = pi4_signing.verify_payload(signed)
+    ok, motivo = sensor_signing.verify_payload(signed)
     assert ok, f"verificacion deberia pasar: {motivo}"
 
 
-def test_tampered_command_is_rejected(pi5_signing, pi4_signing, keypair):
+def test_tampered_command_is_rejected(pi5_signing, sensor_signing, keypair):
     priv_path, pub_path = keypair
     pi5_signing.load_private_key(priv_path)
-    pi4_signing.load_public_key(pub_path)
+    sensor_signing.load_public_key(pub_path)
 
     signed = pi5_signing.sign_payload({"accion": "ejecutar_comando", "comando": "ls /tmp"})
     signed["comando"] = "rm -rf /"  # Atacante muta el comando tras firmarlo
 
-    ok, motivo = pi4_signing.verify_payload(signed)
+    ok, motivo = sensor_signing.verify_payload(signed)
     assert not ok
     assert "firma" in motivo.lower()
 
 
-def test_expired_command_is_rejected(pi5_signing, pi4_signing, keypair, monkeypatch):
+def test_expired_command_is_rejected(pi5_signing, sensor_signing, keypair, monkeypatch):
     priv_path, pub_path = keypair
     pi5_signing.load_private_key(priv_path)
-    pi4_signing.load_public_key(pub_path)
+    sensor_signing.load_public_key(pub_path)
 
     # Forzamos un TTL negativo: el payload nace expirado.
     signed = pi5_signing.sign_payload({"comando": "ls"}, ttl_seconds=-3600)
     # Sin nonce cache pollution previa.
-    pi4_signing._seen_nonces.clear()
+    sensor_signing._seen_nonces.clear()
 
-    ok, motivo = pi4_signing.verify_payload(signed)
+    ok, motivo = sensor_signing.verify_payload(signed)
     assert not ok
     assert "expirado" in motivo.lower()
 
 
-def test_replay_same_nonce_is_rejected(pi5_signing, pi4_signing, keypair):
+def test_replay_same_nonce_is_rejected(pi5_signing, sensor_signing, keypair):
     priv_path, pub_path = keypair
     pi5_signing.load_private_key(priv_path)
-    pi4_signing.load_public_key(pub_path)
+    sensor_signing.load_public_key(pub_path)
 
     signed = pi5_signing.sign_payload({"comando": "ls"})
 
-    ok1, _ = pi4_signing.verify_payload(signed)
-    ok2, motivo2 = pi4_signing.verify_payload(signed)
+    ok1, _ = sensor_signing.verify_payload(signed)
+    ok2, motivo2 = sensor_signing.verify_payload(signed)
     assert ok1 is True
     assert ok2 is False
     assert "nonce" in motivo2.lower()
 
 
-def test_missing_signature_is_rejected(pi5_signing, pi4_signing, keypair):
+def test_missing_signature_is_rejected(pi5_signing, sensor_signing, keypair):
     _, pub_path = keypair
-    pi4_signing.load_public_key(pub_path)
-    ok, motivo = pi4_signing.verify_payload({"comando": "ls"})
+    sensor_signing.load_public_key(pub_path)
+    ok, motivo = sensor_signing.verify_payload({"comando": "ls"})
     assert not ok
     assert "sig" in motivo.lower()
 

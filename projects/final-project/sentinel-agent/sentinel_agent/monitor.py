@@ -1,7 +1,7 @@
 """
 Orquestador del sensor genérico: discovery al arranque, publicación del perfil,
 monitorización de logs (tailers + parsers + detectores) y ejecución de comandos
-firmados. Reemplaza al monolito agente_monitor3.py.
+firmados.
 
 Fase 3 (perfil vivo): el re-descubrimiento periódico/on-demand republica el
 perfil solo si cambia, y si cambia QUÉ se vigila (log_sources) reinicia de forma
