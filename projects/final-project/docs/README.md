@@ -9,7 +9,7 @@ tags: ["index", "sentinel-it", "pi5", "documentation"]
 
 Este directorio contiene la documentación técnica del proyecto **Sentinel-IT**, organizada por fases. Cada documento es **autocontenido** y cubre un área concreta del sistema: arquitectura general, MQTT, agentes IA, motor de políticas, HITL, dashboard, base de datos, testing y despliegue.
 
-> **Alcance actual:** la documentación está centrada en el **coordinador SOC (PI-5)**. La parte del sensor edge (PI-4) está cubierta sólo a nivel de referencia rápida en [PI4_Referencia_Tecnica.md](PI4_Referencia_Tecnica.md) y se completará en una fase posterior.
+> **Alcance actual:** la documentación está centrada en el **coordinador SOC (PI-5)**. El sensor edge —ahora el paquete genérico `sentinel-agent`— se cubre en [Onboarding_Sensor.md](Onboarding_Sensor.md) (alta end-to-end) y en [diseno_agente_discovery.md](diseno_agente_discovery.md) (diseño). La ficha histórica del nodo PI-4 original se conserva como referencia rápida en [PI4_Referencia_Tecnica.md](PI4_Referencia_Tecnica.md).
 
 ## Cómo leer esta documentación
 
@@ -30,7 +30,7 @@ Si vienes nuevo al proyecto, lee los documentos en el orden de las fases. Si vie
 | **9. Testing** | [Testing_Guide.md](Testing_Guide.md) | Test E2E (`test_agent_flow.py`), unitarios (`test_policy_engine.py`), pruebas MQTT (`test_flexible_command.py`), mocks |
 | **10. Despliegue** | [Configuration_and_Deployment.md](Configuration_and_Deployment.md) | `config.yml`, `.env`, Docker Compose, `soc_manager.sh`, perfiles `local-ai` vs Gemini API |
 | **11. Trabajo futuro** | [futuras_mejoras.md](futuras_mejoras.md) | Propuestas evaluadas no implementadas, motivación y plan de migración |
-| **11b. Agente Discovery** | [diseno_agente_discovery.md](diseno_agente_discovery.md) | 🔵 Propuesta de diseño. Sensor genérico auto-configurable que descubre el sistema objetivo y alimenta el contexto al agente IA (System Profile, plan por fases) |
+| **11b. Agente Discovery** | [diseno_agente_discovery.md](diseno_agente_discovery.md) | ✅ Fases 1-5 implementadas y testeadas. Sensor genérico auto-configurable que descubre el sistema objetivo y alimenta el contexto al agente IA (System Profile, plan por fases) |
 | **12. Resiliencia Gemini 429** | [plan_implementacion_resiliencia_gemini_429.md](plan_implementacion_resiliencia_gemini_429.md) | ✅ Implementado. Persistencia `pending_ai_events`, backoff de reintento y limpieza desde SOC Manager |
 | **12b. Mejoras diferidas 429** | [futuras_mejoras_429_gemini.md](futuras_mejoras_429_gemini.md) | Mejoras aparcadas tras el incidente 429 (WSGI en producción, higiene de secretos, sesiones ADK separadas, auditoría HITL avanzada) |
 

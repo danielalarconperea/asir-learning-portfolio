@@ -1,9 +1,16 @@
 /* ============================================================
-   main.css — Estilos personalizados SentinelIT
+   main.css — Sistema de estilo SentinelIT / CyberGuard
+   ------------------------------------------------------------
+   Refinado de forma conservadora: se conservan TODAS las clases
+   y variables existentes (las páginas dependen de ellas). Lo
+   nuevo es aditivo (tokens de escala, sombras, estados, utils).
    ============================================================ */
 
-/* Variables globales */
+/* ============================================================
+   1. TOKENS / VARIABLES GLOBALES
+   ============================================================ */
 :root {
+    /* --- Colores base (existentes, sin cambios) --- */
     --color-bg:       #F8F9FA;
     --color-surface:  #FFFFFF;
     --color-border:   rgba(0, 0, 0, 0.12);
@@ -13,54 +20,193 @@
     --color-warning:  #FFC107;
     --color-text:     #212529;
     --color-muted:    #6C757D;
-    --radius:         12px;
+
+    /* --- Colores derivados / nuevos (aditivos) --- */
+    --color-primary-rgb:   0, 86, 210;        /* para rgba() coherentes        */
+    --color-success-rgb:   0, 135, 90;
+    --color-danger-rgb:    220, 53, 69;
+    --color-warning-rgb:   255, 193, 7;
+    --color-primary-hover: #0047B0;           /* primary un poco más oscuro    */
+    --color-primary-soft:  rgba(0, 86, 210, 0.10);  /* fondo "tinte" del brand */
+    --color-surface-alt:   #F2F5FB;           /* superficie alterna sutil      */
+    --color-bg-subtle:     rgba(0, 86, 210, 0.03);
+
+    /* --- Tipografía (existente + escala nueva) --- */
     --font-display:   'Syne', sans-serif;
     --font-body:      'DM Sans', sans-serif;
     --font-mono:      'JetBrains Mono', monospace;
+    --leading-tight:  1.15;
+    --leading-snug:   1.35;
+    --leading-normal: 1.65;
+
+    /* --- Escala de espaciado (base 4px) --- */
+    --space-1: 0.25rem;   /*  4px */
+    --space-2: 0.5rem;    /*  8px */
+    --space-3: 0.75rem;   /* 12px */
+    --space-4: 1rem;      /* 16px */
+    --space-5: 1.5rem;    /* 24px */
+    --space-6: 2rem;      /* 32px */
+    --space-7: 3rem;      /* 48px */
+    --space-8: 4rem;      /* 64px */
+
+    /* --- Radios (escala coherente; --radius existente conservado) --- */
+    --radius-sm:  8px;
+    --radius:     12px;   /* existente — radio por defecto */
+    --radius-lg:  16px;
+    --radius-xl:  20px;
+    --radius-pill: 999px;
+
+    /* --- Sombras coherentes (suaves, tema claro) --- */
+    --shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.05);
+    --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.08), 0 1px 2px rgba(16, 24, 40, 0.04);
+    --shadow-md: 0 4px 14px rgba(16, 24, 40, 0.08);
+    --shadow-lg: 0 12px 28px rgba(16, 24, 40, 0.12);
+    --shadow-primary: 0 8px 22px rgba(0, 86, 210, 0.22);
+
+    /* --- Transiciones --- */
+    --ease:       cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: 0.2s var(--ease);
+
+    /* --- Anillo de foco accesible --- */
+    --focus-ring: 0 0 0 3px rgba(0, 86, 210, 0.30);
 }
 
-/* Base */
+/* ============================================================
+   2. BASE
+   ============================================================ */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
 body {
     background-color: var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-body);
+    line-height: var(--leading-normal);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
+    line-height: var(--leading-tight);
+    letter-spacing: -0.01em;
 }
 
-/* Navbar */
+h6 { font-family: var(--font-display); }
+
+p { line-height: var(--leading-normal); }
+
+a { transition: color var(--transition); }
+
+/* Selección de texto con el color de marca */
+::selection {
+    background: var(--color-primary-soft);
+    color: var(--color-primary);
+}
+
+/* Foco accesible global por teclado (no afecta a clics de ratón) */
+:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: var(--radius-sm);
+}
+
+/* Respeta a quien prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+}
+
+/* ============================================================
+   3. NAVBAR
+   ============================================================ */
 #mainNav {
     background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--color-border);
+    transition: box-shadow var(--transition), background var(--transition);
 }
+#mainNav .navbar-brand {
+    letter-spacing: -0.02em;
+    transition: opacity var(--transition);
+}
+#mainNav .navbar-brand:hover { opacity: 0.85; }
+
 #mainNav .nav-link {
     color: var(--color-muted) !important;
     font-size: 0.9rem;
-    transition: color 0.2s;
+    font-weight: 500;
+    padding-inline: 0.65rem;
+    border-radius: var(--radius-sm);
+    position: relative;
+    transition: color var(--transition);
 }
 #mainNav .nav-link:hover,
 #mainNav .nav-link.active {
     color: var(--color-primary) !important;
 }
+/* Subrayado animado del enlace activo (solo escritorio, no rompe móvil) */
+@media (min-width: 992px) {
+    #mainNav .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 0.65rem;
+        right: 0.65rem;
+        bottom: 0.15rem;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--color-primary);
+        transform: scaleX(0);
+        transform-origin: left center;
+        transition: transform var(--transition);
+    }
+    #mainNav .nav-link:hover::after,
+    #mainNav .nav-link.active::after { transform: scaleX(1); }
+    /* Los botones tipo .btn-cyber no llevan subrayado */
+    #mainNav .nav-link.btn-cyber::after { content: none; }
+}
 
-/* Botón de la navbar */
+#mainNav .navbar-toggler {
+    border-radius: var(--radius-sm);
+    transition: box-shadow var(--transition);
+}
+#mainNav .navbar-toggler:focus { box-shadow: var(--focus-ring); }
+
+/* Botón "pill" de la navbar */
 #mainNav .btn-cyber {
-    background: rgba(0, 86, 210, 0.1);
+    background: var(--color-primary-soft);
     color: var(--color-primary) !important;
     border: 1px solid rgba(0, 86, 210, 0.3);
+    border-radius: var(--radius-pill);
     font-weight: 600;
     font-size: 0.85rem;
-    transition: all 0.2s;
+    transition: background var(--transition), color var(--transition),
+                border-color var(--transition), transform var(--transition),
+                box-shadow var(--transition);
 }
 #mainNav .btn-cyber:hover {
     background: var(--color-primary);
     color: #FFF !important;
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-primary);
 }
+#mainNav .btn-cyber:active { transform: translateY(0); }
 
-/* Hero */
+/* ============================================================
+   4. HERO
+   ============================================================ */
 .hero {
     min-height: 92vh;
     display: flex;
@@ -73,83 +219,117 @@ h1, h2, h3, h4, h5 {
 .hero-title {
     font-size: clamp(2.5rem, 6vw, 5rem);
     font-weight: 800;
-    line-height: 1.1;
+    line-height: var(--leading-tight);
+    letter-spacing: -0.02em;
 }
-.hero-title span {
-    color: var(--color-primary);
-}
+.hero-title span { color: var(--color-primary); }
 .hero-subtitle {
     color: var(--color-muted);
     font-size: 1.15rem;
+    line-height: var(--leading-normal);
     max-width: 540px;
 }
 
-/* Botones principales */
+/* ============================================================
+   5. BOTONES
+   ============================================================ */
 .btn-primary-cyber {
     background: var(--color-primary);
     color: #FFF;
     font-weight: 700;
     padding: 0.8rem 2rem;
-    border-radius: 8px;
-    border: none;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
     text-decoration: none;
     display: inline-block;
-    transition: filter 0.2s, transform 0.2s;
+    line-height: 1.4;
+    box-shadow: var(--shadow-sm);
+    transition: background var(--transition), filter var(--transition),
+                transform var(--transition), box-shadow var(--transition);
 }
 .btn-primary-cyber:hover {
-    filter: brightness(1.15);
+    background: var(--color-primary-hover);
+    filter: none;
     transform: translateY(-2px);
+    box-shadow: var(--shadow-primary);
     color: #FFF;
 }
+.btn-primary-cyber:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+.btn-primary-cyber:focus-visible { box-shadow: var(--focus-ring); }
+
 .btn-outline-cyber {
     background: transparent;
     color: var(--color-text);
     font-weight: 600;
     padding: 0.8rem 2rem;
-    border-radius: 8px;
-    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     text-decoration: none;
     display: inline-block;
-    transition: border-color 0.2s, color 0.2s;
+    line-height: 1.4;
+    transition: border-color var(--transition), color var(--transition),
+                background var(--transition), transform var(--transition);
 }
 .btn-outline-cyber:hover {
     border-color: var(--color-primary);
     color: var(--color-primary);
+    background: var(--color-primary-soft);
+    transform: translateY(-2px);
+}
+.btn-outline-cyber:active { transform: translateY(0); }
+.btn-outline-cyber:focus-visible {
+    box-shadow: var(--focus-ring);
+    border-color: var(--color-primary);
 }
 
-/* Tarjetas */
+/* ============================================================
+   6. TARJETAS
+   ============================================================ */
 .card-cyber {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     padding: 2rem;
-    transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    box-shadow: var(--shadow-xs);
+    transition: border-color var(--transition), box-shadow var(--transition),
+                transform var(--transition);
 }
 .card-cyber:hover {
-    border-color: var(--color-primary);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 86, 210, 0.45);
+    box-shadow: var(--shadow-lg);
     transform: translateY(-4px);
 }
 .card-cyber .icon-wrap {
     width: 52px;
     height: 52px;
-    border-radius: 12px;
+    border-radius: var(--radius);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.4rem;
     margin-bottom: 1.2rem;
-    background: rgba(0, 86, 210, 0.1);
+    background: var(--color-primary-soft);
     color: var(--color-primary);
+    transition: transform var(--transition);
 }
+.card-cyber:hover .icon-wrap { transform: scale(1.06); }
 
-/* Sección de estadísticas (counters) */
+/* ============================================================
+   7. ESTADÍSTICAS (counters animados por js/main.js)
+      ⚠ No tocar .stat-counter[data-target] ni su markup base.
+   ============================================================ */
 .stat-counter {
     font-family: var(--font-mono);
     font-size: 3rem;
     font-weight: 700;
     color: var(--color-primary);
     line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
 }
 .stat-label {
     color: var(--color-muted);
@@ -157,76 +337,126 @@ h1, h2, h3, h4, h5 {
     margin-top: 0.5rem;
 }
 
-/* Badge de servicio */
+/* ============================================================
+   8. BADGE
+   ============================================================ */
 .badge-cyber {
-    background: rgba(0, 86, 210, 0.1);
+    background: var(--color-primary-soft);
     color: var(--color-primary);
     border: 1px solid rgba(0, 86, 210, 0.2);
-    border-radius: 6px;
+    border-radius: var(--radius-pill);
     font-size: 0.75rem;
-    padding: 0.3rem 0.7rem;
+    padding: 0.35rem 0.85rem;
     font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+}
+/* Variantes de color (aditivas — opcionales para las páginas) */
+.badge-cyber.badge-success {
+    background: rgba(var(--color-success-rgb), 0.10);
+    color: var(--color-success);
+    border-color: rgba(var(--color-success-rgb), 0.25);
+}
+.badge-cyber.badge-danger {
+    background: rgba(var(--color-danger-rgb), 0.10);
+    color: var(--color-danger);
+    border-color: rgba(var(--color-danger-rgb), 0.25);
+}
+.badge-cyber.badge-warning {
+    background: rgba(var(--color-warning-rgb), 0.15);
+    color: #9A7400;
+    border-color: rgba(var(--color-warning-rgb), 0.40);
 }
 
-/* Sección alternativa */
+/* ============================================================
+   9. SECCIONES Y TÍTULOS
+   ============================================================ */
 .section-alt {
-    background: rgba(0, 86, 210, 0.03);
+    background: var(--color-bg-subtle);
     border-top: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
 }
 
-/* Títulos de sección */
 .section-title {
-    font-size: 2.2rem;
+    font-size: clamp(1.8rem, 3.5vw, 2.2rem);
     font-weight: 800;
+    line-height: var(--leading-tight);
+    letter-spacing: -0.02em;
 }
 .section-subtitle {
     color: var(--color-muted);
     font-size: 1rem;
+    line-height: var(--leading-normal);
     max-width: 520px;
     margin: 0 auto;
 }
 
-/* Línea decorativa bajo títulos */
 .title-line {
     width: 48px;
     height: 3px;
-    background: var(--color-primary);
-    border-radius: 2px;
+    background: linear-gradient(90deg, var(--color-primary), rgba(0, 86, 210, 0.4));
+    border-radius: var(--radius-pill);
     margin: 1rem auto 2rem;
 }
 
-/* Formulario de contacto */
+/* Utilidad de espaciado vertical de sección (aditiva).
+   Existe py-6 referenciada en index.php; Bootstrap 5 no define .py-6,
+   así que la proveemos aquí para que el espaciado sea consistente. */
+.py-6  { padding-top: var(--space-7) !important; padding-bottom: var(--space-7) !important; }
+.py-7  { padding-top: var(--space-8) !important; padding-bottom: var(--space-8) !important; }
+.section-pad { padding-top: var(--space-7); padding-bottom: var(--space-7); }
+
+/* ============================================================
+   10. FORMULARIOS
+   ============================================================ */
 .form-control-cyber {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     color: var(--color-text);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: 0.75rem 1rem;
+    transition: border-color var(--transition), box-shadow var(--transition);
 }
+.form-control-cyber:hover { border-color: rgba(0, 86, 210, 0.35); }
 .form-control-cyber:focus {
     background: var(--color-surface);
     border-color: var(--color-primary);
     color: var(--color-text);
-    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+    outline: none;
+    /* Alineado al brand azul (antes era cyan y desentonaba) */
+    box-shadow: var(--focus-ring);
 }
-.form-control-cyber::placeholder { color: var(--color-muted); }
+.form-control-cyber::placeholder {
+    color: var(--color-muted);
+    opacity: 0.85;
+}
 
-/* Panel — tarjetas de KPI */
+/* ============================================================
+   11. PANEL — KPIs y gráficas
+   ============================================================ */
 .kpi-card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     padding: 1.8rem;
     text-align: center;
-    transition: border-color 0.2s;
+    box-shadow: var(--shadow-xs);
+    transition: border-color var(--transition), box-shadow var(--transition),
+                transform var(--transition);
 }
-.kpi-card:hover { border-color: var(--color-primary); }
+.kpi-card:hover {
+    border-color: rgba(0, 86, 210, 0.45);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
 .kpi-value {
     font-family: var(--font-mono);
     font-size: 2.8rem;
     font-weight: 700;
     line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
 }
 .kpi-label {
     color: var(--color-muted);
@@ -236,15 +466,17 @@ h1, h2, h3, h4, h5 {
     letter-spacing: 0.05em;
 }
 
-/* Contenedor de gráfica */
 .chart-container {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
+    box-shadow: var(--shadow-xs);
 }
 
-/* Timeline (página cómo funciona) */
+/* ============================================================
+   12. TIMELINE (página "cómo funciona")
+   ============================================================ */
 .timeline-step {
     display: flex;
     gap: 1.5rem;
@@ -255,7 +487,7 @@ h1, h2, h3, h4, h5 {
     height: 44px;
     min-width: 44px;
     border-radius: 50%;
-    background: rgba(0, 86, 210, 0.1);
+    background: var(--color-primary-soft);
     border: 2px solid var(--color-primary);
     color: var(--color-primary);
     font-family: var(--font-mono);
@@ -263,15 +495,74 @@ h1, h2, h3, h4, h5 {
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: var(--shadow-xs);
 }
 
-/* Footer links */
-.footer-link:hover { color: var(--color-primary) !important; }
+/* ============================================================
+   13. FOOTER
+   ============================================================ */
+.footer-link {
+    transition: color var(--transition), padding-left var(--transition);
+}
+.footer-link:hover {
+    color: var(--color-primary) !important;
+    padding-left: 3px;
+}
 
-/* Responsive */
+/* ============================================================
+   14. UTILIDADES NUEVAS (aditivas, opcionales)
+   ============================================================ */
+.text-gradient-cyber {
+    background: linear-gradient(90deg, var(--color-primary), #2E86FF);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.surface-cyber {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xs);
+}
+.divider-cyber {
+    height: 1px;
+    border: 0;
+    background: var(--color-border);
+    margin: var(--space-6) 0;
+}
+.shadow-cyber    { box-shadow: var(--shadow-md) !important; }
+.shadow-cyber-lg { box-shadow: var(--shadow-lg) !important; }
+
+/* ============================================================
+   15. RESPONSIVE
+   ============================================================ */
+@media (max-width: 991.98px) {
+    /* Menú colapsado: los enlaces respiran un poco más */
+    #mainNav .navbar-collapse {
+        padding-top: 0.5rem;
+        padding-bottom: 0.25rem;
+    }
+    #mainNav .nav-link { padding-block: 0.5rem; }
+}
+
 @media (max-width: 768px) {
     .hero { min-height: 80vh; }
     .hero-title { font-size: 2.2rem; }
+    .hero-subtitle { font-size: 1.05rem; }
     .stat-counter { font-size: 2rem; }
+    .kpi-value { font-size: 2.2rem; }
+    .card-cyber { padding: 1.5rem; }
+    .section-title { font-size: 1.7rem; }
 }
 
+@media (max-width: 480px) {
+    .btn-primary-cyber,
+    .btn-outline-cyber {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding-inline: 1rem;
+    }
+    .timeline-step { gap: 1rem; }
+}

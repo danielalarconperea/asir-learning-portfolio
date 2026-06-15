@@ -5,34 +5,39 @@ function activo($archivo) {
     global $actual;
     return $actual === $archivo ? 'active' : '';
 }
+// Atributo de accesibilidad para el enlace activo (lector de pantalla).
+function aria_actual($archivo) {
+    global $actual;
+    return $actual === $archivo ? ' aria-current="page"' : '';
+}
 ?>
 <nav class="navbar navbar-expand-lg navbar-light sticky-top" id="mainNav">
     <div class="container">
         <a class="navbar-brand fw-bold" href="index.php">
             <i class="bi bi-shield-fill-check me-2" style="color:var(--color-primary)"></i><?= htmlspecialchars($site_title_global ?? 'SentinelIT') ?>
         </a>
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Abrir menú de navegación">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navMenu">
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
                 <li class="nav-item">
-                    <a class="nav-link <?= activo('index.php') ?>" href="index.php">Inicio</a>
+                    <a class="nav-link <?= activo('index.php') ?>" href="index.php"<?= aria_actual('index.php') ?>>Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= activo('servicios.php') ?>" href="servicios.php">Servicios</a>
+                    <a class="nav-link <?= activo('servicios.php') ?>" href="servicios.php"<?= aria_actual('servicios.php') ?>>Servicios</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= activo('como-funciona.php') ?>" href="como-funciona.php">Cómo funciona</a>
+                    <a class="nav-link <?= activo('como-funciona.php') ?>" href="como-funciona.php"<?= aria_actual('como-funciona.php') ?>>Cómo funciona</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= activo('tecnologias.php') ?>" href="tecnologias.php">Tecnologías</a>
+                    <a class="nav-link <?= activo('tecnologias.php') ?>" href="tecnologias.php"<?= aria_actual('tecnologias.php') ?>>Tecnologías</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= activo('equipo.php') ?>" href="equipo.php">Equipo</a>
+                    <a class="nav-link <?= activo('equipo.php') ?>" href="equipo.php"<?= aria_actual('equipo.php') ?>>Equipo</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= activo('contacto.php') ?>" href="contacto.php">Contacto</a>
+                    <a class="nav-link <?= activo('contacto.php') ?>" href="contacto.php"<?= aria_actual('contacto.php') ?>>Contacto</a>
                 </li>
                 <?php if (isset($_SESSION['usuario_id'])): ?>
                     <li class="nav-item ms-lg-2">

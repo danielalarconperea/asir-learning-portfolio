@@ -20,6 +20,8 @@ $contact_email_global = $ajustes_globales['contact_email'] ?? 'info@SentinelIT.c
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="<?= htmlspecialchars($site_title_global) ?> — Soluciones de ciberseguridad basadas en Raspberry Pi y AWS IoT">
+    <meta name="theme-color" content="#0056D2">
+    <meta name="color-scheme" content="light">
     <title><?= htmlspecialchars($page_title ?? $site_title_global) ?> | <?= htmlspecialchars($site_title_global) ?></title>
 
     <!-- Bootstrap 5 -->

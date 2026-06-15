@@ -229,4 +229,4 @@ python -m unittest tests.test_policy_engine -v
 | [PI-5/src/agents/feedback_agent/feedback_agent.py](../PI-5/src/agents/feedback_agent/feedback_agent.py) | Prompt actualizado: registra feedbacks normalizados       |
 | [PI-5/src/database.py](../PI-5/src/database.py)                                  | Crea la tabla `audit_log` y sus triggers anti-modificación            |
 | [PI-5/src/templates/index.html](../PI-5/src/templates/index.html)                | Modal HITL con banner de color + checkbox CRITICAL                    |
-| [PI-5/tests/test_policy_engine.py](../PI-5/tests/test_policy_engine.py)          | 30 tests unitarios                                                    |
+| [PI-5/tests/test_policy_engine.py](../PI-5/tests/test_policy_engine.py)          | 36 tests unitarios                                                    |
